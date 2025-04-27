@@ -10,79 +10,86 @@ USUARIO = "Gsr89roja"
 CONTRASENA = "serg890105"
 
 meses_es = {
-    "January":   "ENERO",      "February": "FEBRERO",
-    "March":     "MARZO",      "April":    "ABRIL",
-    "May":       "MAYO",       "June":     "JUNIO",
-    "July":      "JULIO",      "August":   "AGOSTO",
-    "September": "SEPTIEMBRE", "October":  "OCTUBRE",
-    "November":  "NOVIEMBRE",  "December": "DICIEMBRE"
+    "January": "ENERO", "February": "FEBRERO", "March": "MARZO", "April": "ABRIL",
+    "May": "MAYO", "June": "JUNIO", "July": "JULIO", "August": "AGOSTO",
+    "September": "SEPTIEMBRE", "October": "OCTUBRE", "November": "NOVIEMBRE", "December": "DICIEMBRE"
 }
 
 coords_cdmx = {
-    "folio":    (87, 130, 14, (1, 0, 0)),
-    "fecha":    (130, 145, 12, (0, 0, 0)),
-    "marca":    (87, 290, 11, (0, 0, 0)),
-    "serie":    (375, 290, 11, (0, 0, 0)),
-    "linea":    (87, 307, 11, (0, 0, 0)),
-    "motor":    (375, 307, 11, (0, 0, 0)),
-    "anio":     (87, 323, 11, (0, 0, 0)),
+    "folio": (87, 130, 14, (1, 0, 0)),
+    "fecha": (130, 145, 12, (0, 0, 0)),
+    "marca": (87, 290, 11, (0, 0, 0)),
+    "serie": (375, 290, 11, (0, 0, 0)),
+    "linea": (87, 307, 11, (0, 0, 0)),
+    "motor": (375, 307, 11, (0, 0, 0)),
+    "anio": (87, 323, 11, (0, 0, 0)),
     "vigencia": (375, 323, 11, (0, 0, 0)),
-    "nombre":   (375, 340, 11, (0, 0, 0)),
+    "nombre": (375, 340, 11, (0, 0, 0)),
 }
 coords_edomex = {
-    "folio":     (535, 135, 14, (1, 0, 0)),
-    "marca":     (109, 190, 10, (0, 0, 0)),
-    "linea":     (238, 190, 10, (0, 0, 0)),
-    "anio":      (410, 190, 10, (0, 0, 0)),
-    "motor":     (104, 233, 10, (0, 0, 0)),
-    "serie":     (230, 233, 10, (0, 0, 0)),
-    "color":     (400, 233, 10, (0, 0, 0)),
+    "folio": (535, 135, 14, (1, 0, 0)),
+    "marca": (109, 190, 10, (0, 0, 0)),
+    "linea": (238, 190, 10, (0, 0, 0)),
+    "anio": (410, 190, 10, (0, 0, 0)),
+    "motor": (104, 233, 10, (0, 0, 0)),
+    "serie": (230, 233, 10, (0, 0, 0)),
+    "color": (400, 233, 10, (0, 0, 0)),
     "fecha_exp": (190, 280, 10, (0, 0, 0)),
     "fecha_ven": (380, 280, 10, (0, 0, 0)),
-    "nombre":    (394, 320, 10, (0, 0, 0)),
+    "nombre": (394, 320, 10, (0, 0, 0)),
 }
 coords_morelos = {
-    "folio":       (665, 282, 18, (1, 0, 0)),
-    "placa":       (200, 200, 60, (0, 0, 0)),
-    "fecha":       (200, 340, 14, (0, 0, 0)),
-    "vigencia":    (600, 340, 14, (0, 0, 0)),
-    "marca":       (110, 425, 14, (0, 0, 0)),
-    "linea":       (110, 455, 14, (0, 0, 0)),
-    "anio":        (110, 485, 14, (0, 0, 0)),
-    "serie":       (460, 420, 14, (0, 0, 0)),
-    "motor":       (460, 445, 14, (0, 0, 0)),
-    "color":       (460, 395, 14, (0, 0, 0)),
-    "tipo":        (510, 470, 14, (0, 0, 0)),
-    "nombre":      (150, 370, 14, (0, 0, 0)),
+    "folio": (665, 282, 18, (1, 0, 0)),
+    "placa": (200, 200, 60, (0, 0, 0)),
+    "fecha": (200, 340, 14, (0, 0, 0)),
+    "vigencia": (600, 340, 14, (0, 0, 0)),
+    "marca": (110, 425, 14, (0, 0, 0)),
+    "linea": (110, 455, 14, (0, 0, 0)),
+    "anio": (110, 485, 14, (0, 0, 0)),
+    "serie": (460, 420, 14, (0, 0, 0)),
+    "motor": (460, 445, 14, (0, 0, 0)),
+    "color": (460, 395, 14, (0, 0, 0)),
+    "tipo": (510, 470, 14, (0, 0, 0)),
+    "nombre": (150, 370, 14, (0, 0, 0)),
     "fecha_hoja2": (100, 100, 14, (0, 0, 0)),
 }
 coords_oaxaca = {
-    "folio":    (553,  96, 16, (1, 0, 0)),
-    "fecha1":   (168, 130, 12, (0, 0, 0)),
-    "fecha2":   (140, 540, 10, (0, 0, 0)),
-    "marca":    (50, 215, 12, (0, 0, 0)),
-    "serie":    (200, 258, 12, (0, 0, 0)),
-    "linea":    (200, 215, 12, (0, 0, 0)),
-    "motor":    (360, 258, 12, (0, 0, 0)),
-    "anio":     (360, 215, 12, (0, 0, 0)),
-    "color":    (50, 258, 12, (0, 0, 0)),
+    "folio": (553, 96, 16, (1, 0, 0)),
+    "fecha1": (168, 130, 12, (0, 0, 0)),
+    "fecha2": (140, 540, 10, (0, 0, 0)),
+    "marca": (50, 215, 12, (0, 0, 0)),
+    "serie": (200, 258, 12, (0, 0, 0)),
+    "linea": (200, 215, 12, (0, 0, 0)),
+    "motor": (360, 258, 12, (0, 0, 0)),
+    "anio": (360, 215, 12, (0, 0, 0)),
+    "color": (50, 258, 12, (0, 0, 0)),
     "vigencia": (410, 130, 12, (0, 0, 0)),
-    "nombre":   (133, 149, 10, (0, 0, 0)),
+    "nombre": (133, 149, 10, (0, 0, 0)),
 }
 coords_gto = {
-    "folio":    (1800, 455, 60, (1, 0, 0)),
-    "fecha":    (2200, 580, 35, (0, 0, 0)),
-    "marca":    (385, 715, 35, (0, 0, 0)),
-    "linea":    (800, 715, 35, (0, 0, 0)),
-    "anio":     (1145, 715, 35, (0, 0, 0)),
-    "serie":    (350, 800, 35, (0, 0, 0)),
-    "motor":    (1290, 800, 35, (0, 0, 0)),
-    "color":    (1960, 715, 35, (0, 0, 0)),
-    "nombre":   (950, 1100, 90, (0, 0, 0)),
+    "folio": (1800, 455, 60, (1, 0, 0)),
+    "fecha": (2200, 580, 35, (0, 0, 0)),
+    "marca": (385, 715, 35, (0, 0, 0)),
+    "linea": (800, 715, 35, (0, 0, 0)),
+    "anio": (1145, 715, 35, (0, 0, 0)),
+    "serie": (350, 800, 35, (0, 0, 0)),
+    "motor": (1290, 800, 35, (0, 0, 0)),
+    "color": (1960, 715, 35, (0, 0, 0)),
+    "nombre": (950, 1100, 90, (0, 0, 0)),
     "vigencia": (2200, 645, 35, (0, 0, 0)),
 }
-
-def generar_folio_automatico(ruta="folios_globales.txt"):
+coords_guerrero = {
+    "folio": (100, 100, 14, (0.5, 0, 0)),
+    "fecha1": (100, 150, 12, (0, 0, 0)),
+    "fecha2": (100, 180, 12, (0, 0, 0)),
+    "tipo": (100, 220, 12, (0, 0, 0)),
+    "serie": (100, 260, 12, (0, 0, 0)),
+    "motor": (100, 290, 12, (0, 0, 0)),
+    "marca": (100, 320, 12, (0, 0, 0)),
+    "modelo": (100, 350, 12, (0, 0, 0)),
+    "linea": (100, 380, 12, (0, 0, 0)),
+    "nombre": (100, 410, 12, (0, 0, 0)),
+}def generar_folio_automatico(ruta="folios_globales.txt"):
     mes_actual = datetime.now().strftime("%m")
     if not os.path.exists(ruta):
         open(ruta, "w").close()
@@ -121,6 +128,29 @@ def generar_placa_digital():
         f.write(nuevo + "\n")
     return nuevo
 
+def generar_folio_guerrero():
+    archivo = "folios_guerrero.txt"
+    letras = list(string.ascii_uppercase)
+    if not os.path.exists(archivo):
+        with open(archivo, "w") as f:
+            f.write("AA0000\n")
+    ult_line = open(archivo).read().strip().split("\n")[-1]
+    pref, num = ult_line[:2], int(ult_line[2:])
+    if num < 9999:
+        nuevo = f"{pref}{num+1:04d}"
+    else:
+        l1, l2 = list(pref)
+        i2 = letras.index(l2)
+        if i2 < 25:
+            l2 = letras[i2+1]
+        else:
+            l1 = letras[(letras.index(l1)+1)%26]
+            l2 = "A"
+        nuevo = f"{l1}{l2}0001"
+    with open(archivo, "a") as f:
+        f.write(nuevo + "\n")
+    return nuevo
+
 # — RUTAS —
 @app.route("/", methods=["GET","POST"])
 def login():
@@ -131,9 +161,7 @@ def login():
 
 @app.route("/seleccionar_entidad")
 def seleccionar_entidad():
-    return render_template("seleccionar_entidad.html")
-
-@app.route("/formulario", methods=["GET","POST"])
+    return render_template("seleccionar_entidad.html")@app.route("/formulario", methods=["GET", "POST"])
 def formulario_cdmx():
     if request.method == "POST":
         d = request.form
@@ -148,18 +176,19 @@ def formulario_cdmx():
                        fontsize=coords_cdmx["folio"][2], color=coords_cdmx["folio"][3])
         pg.insert_text(coords_cdmx["fecha"][:2], f_exp,
                        fontsize=coords_cdmx["fecha"][2], color=coords_cdmx["fecha"][3])
-        for k in ["marca","serie","linea","motor","anio"]:
-            x,y,s,col = coords_cdmx[k]
-            pg.insert_text((x,y), d[k], fontsize=s, color=col)
-        x,y,s,col = coords_cdmx["vigencia"]
-        pg.insert_text((x,y), f_ven, fontsize=s, color=col)
-        x,y,s,col = coords_cdmx["nombre"]
-        pg.insert_text((x,y), d["nombre"], fontsize=s, color=col)
-        doc.save(out); doc.close()
+        for k in ["marca", "serie", "linea", "motor", "anio"]:
+            x, y, s, col = coords_cdmx[k]
+            pg.insert_text((x, y), d[k], fontsize=s, color=col)
+        x, y, s, col = coords_cdmx["vigencia"]
+        pg.insert_text((x, y), f_ven, fontsize=s, color=col)
+        x, y, s, col = coords_cdmx["nombre"]
+        pg.insert_text((x, y), d["nombre"], fontsize=s, color=col)
+        doc.save(out)
+        doc.close()
         return render_template("exitoso.html", folio=folio, cdmx=True)
     return render_template("formulario.html")
 
-@app.route("/formulario_edomex", methods=["GET","POST"])
+@app.route("/formulario_edomex", methods=["GET", "POST"])
 def formulario_edomex():
     if request.method == "POST":
         d = request.form
@@ -172,20 +201,19 @@ def formulario_edomex():
         doc = fitz.open("edomex_plantilla_alta_res.pdf"); pg = doc[0]
         pg.insert_text(coords_edomex["folio"][:2], folio,
                        fontsize=coords_edomex["folio"][2], color=coords_edomex["folio"][3])
-        for key in ["marca","linea","anio","motor","serie","color"]:
-            x,y,s,col = coords_edomex[key]
-            pg.insert_text((x,y), d[key], fontsize=s, color=col)
-        x,y,s,col = coords_edomex["fecha_exp"]
-        pg.insert_text((x,y), f_exp, fontsize=s, color=col)
-        x,y,s,col = coords_edomex["fecha_ven"]
-        pg.insert_text((x,y), f_ven, fontsize=s, color=col)
-        x,y,s,col = coords_edomex["nombre"]
-        pg.insert_text((x,y), d["nombre"], fontsize=s, color=col)
-        doc.save(out); doc.close()
+        for key in ["marca", "linea", "anio", "motor", "serie", "color"]:
+            x, y, s, col = coords_edomex[key]
+            pg.insert_text((x, y), d[key], fontsize=s, color=col)
+        x, y, s, col = coords_edomex["fecha_exp"]
+        pg.insert_text((x, y), f_exp, fontsize=s, color=col)
+        x, y, s, col = coords_edomex["fecha_ven"]
+        pg.insert_text((x, y), f_ven, fontsize=s, color=col)
+        x, y, s, col = coords_edomex["nombre"]
+        pg.insert_text((x, y), d["nombre"], fontsize=s, color=col)
+        doc.save(out)
+        doc.close()
         return render_template("exitoso.html", folio=folio, edomex=True)
-    return render_template("formulario_edomex.html")
-
-@app.route("/formulario_morelos", methods=["GET","POST"])
+    return render_template("formulario_edomex.html")@app.route("/formulario_morelos", methods=["GET", "POST"])
 def formulario_morelos():
     if request.method == "POST":
         d = request.form
@@ -194,7 +222,7 @@ def formulario_morelos():
         ahora = datetime.now()
         f_larga = ahora.strftime(f"%d DE {meses_es[ahora.strftime('%B')]} DEL %Y").upper()
         f_corta = ahora.strftime("%d/%m/%Y")
-        f_ven   = (ahora + timedelta(days=30)).strftime("%d/%m/%Y")
+        f_ven = (ahora + timedelta(days=30)).strftime("%d/%m/%Y")
         out = os.path.join(OUTPUT_DIR, f"{folio}_morelos.pdf")
         os.makedirs(OUTPUT_DIR, exist_ok=True)
         doc = fitz.open("morelos_hoja1_imagen.pdf"); pg = doc[0]
@@ -206,19 +234,20 @@ def formulario_morelos():
                        fontsize=coords_morelos["fecha"][2], color=coords_morelos["fecha"][3])
         pg.insert_text(coords_morelos["vigencia"][:2], f_ven,
                        fontsize=coords_morelos["vigencia"][2], color=coords_morelos["vigencia"][3])
-        for key in ["marca","linea","anio","serie","motor","color","tipo"]:
-            x,y,s,col = coords_morelos[key]
-            pg.insert_text((x,y), d[key], fontsize=s, color=col)
-        x,y,s,col = coords_morelos["nombre"]
-        pg.insert_text((x,y), d["nombre"], fontsize=s, color=col)
+        for key in ["marca", "linea", "anio", "serie", "motor", "color", "tipo"]:
+            x, y, s, col = coords_morelos[key]
+            pg.insert_text((x, y), d[key], fontsize=s, color=col)
+        x, y, s, col = coords_morelos["nombre"]
+        pg.insert_text((x, y), d["nombre"], fontsize=s, color=col)
         if len(doc) > 1:
-            x,y,s,col = coords_morelos["fecha_hoja2"]
-            doc[1].insert_text((x,y), f_corta, fontsize=s, color=col)
-        doc.save(out); doc.close()
+            x, y, s, col = coords_morelos["fecha_hoja2"]
+            doc[1].insert_text((x, y), f_corta, fontsize=s, color=col)
+        doc.save(out)
+        doc.close()
         return render_template("exitoso.html", folio=folio, morelos=True)
     return render_template("formulario_morelos.html")
 
-@app.route("/formulario_oaxaca", methods=["GET","POST"])
+@app.route("/formulario_oaxaca", methods=["GET", "POST"])
 def formulario_oaxaca():
     if request.method == "POST":
         d = request.form
@@ -235,18 +264,17 @@ def formulario_oaxaca():
                        fontsize=coords_oaxaca["fecha1"][2], color=coords_oaxaca["fecha1"][3])
         pg.insert_text(coords_oaxaca["fecha2"][:2], f1,
                        fontsize=coords_oaxaca["fecha2"][2], color=coords_oaxaca["fecha2"][3])
-        for key in ["marca","serie","linea","motor","anio","color"]:
-            x,y,s,col = coords_oaxaca[key]
-            pg.insert_text((x,y), d[key], fontsize=s, color=col)
-        x,y,s,col = coords_oaxaca["vigencia"]
-        pg.insert_text((x,y), f_ven, fontsize=s, color=col)
-        x,y,s,col = coords_oaxaca["nombre"]
-        pg.insert_text((x,y), d["nombre"], fontsize=s, color=col)
-        doc.save(out); doc.close()
+        for key in ["marca", "serie", "linea", "motor", "anio", "color"]:
+            x, y, s, col = coords_oaxaca[key]
+            pg.insert_text((x, y), d[key], fontsize=s, color=col)
+        x, y, s, col = coords_oaxaca["vigencia"]
+        pg.insert_text((x, y), f_ven, fontsize=s, color=col)
+        x, y, s, col = coords_oaxaca["nombre"]
+        pg.insert_text((x, y), d["nombre"], fontsize=s, color=col)
+        doc.save(out)
+        doc.close()
         return render_template("exitoso.html", folio=folio, oaxaca=True)
-    return render_template("formulario_oaxaca.html")
-
-@app.route("/formulario_gto", methods=["GET","POST"])
+    return render_template("formulario_oaxaca.html")@app.route("/formulario_gto", methods=["GET", "POST"])
 def formulario_gto():
     if request.method == "POST":
         d = request.form
@@ -261,18 +289,65 @@ def formulario_gto():
                        fontsize=coords_gto["folio"][2], color=coords_gto["folio"][3])
         pg.insert_text(coords_gto["fecha"][:2], f_exp,
                        fontsize=coords_gto["fecha"][2], color=coords_gto["fecha"][3])
-        for key in ["marca","linea","anio","serie","motor","color"]:
-            x,y,s,col = coords_gto[key]
-            pg.insert_text((x,y), d[key], fontsize=s, color=col)
-        x,y,s,col = coords_gto["vigencia"]
-        pg.insert_text((x,y), f_ven, fontsize=s, color=col)
-        x,y,s,col = coords_gto["nombre"]
-        pg.insert_text((x,y), d["nombre"], fontsize=s, color=col)
-        doc.save(out); doc.close()
+        for key in ["marca", "linea", "anio", "serie", "motor", "color"]:
+            x, y, s, col = coords_gto[key]
+            pg.insert_text((x, y), d[key], fontsize=s, color=col)
+        x, y, s, col = coords_gto["vigencia"]
+        pg.insert_text((x, y), f_ven, fontsize=s, color=col)
+        x, y, s, col = coords_gto["nombre"]
+        pg.insert_text((x, y), d["nombre"], fontsize=s, color=col)
+        doc.save(out)
+        doc.close()
         return render_template("exitoso.html", folio=folio, gto=True)
     return render_template("formulario_gto.html")
 
-# — Endpoints para descarga de PDF —
+@app.route("/formulario_guerrero", methods=["GET", "POST"])
+def formulario_guerrero():
+    if request.method == "POST":
+        d = request.form
+        folio = generar_folio_guerrero()
+        ahora = datetime.now()
+        dia = ahora.day
+        mes = meses_es[ahora.strftime("%B")]
+        anio = ahora.year
+        fecha_larga = f"Tlapa de Comonfort, GRO. a {dia} de {mes} de {anio}".upper()
+        fecha_corta = f"{dia} DE {mes} DE {anio}"
+        fecha_30 = (ahora + timedelta(days=30))
+        fecha_30_corta = f"{fecha_30.day} DE {meses_es[fecha_30.strftime('%B')]} DE {fecha_30.year}"
+        vigencia = f"{fecha_corta} AL {fecha_30_corta}"
+        
+        tipo = "CARACTERÍSTICAS DEL AUTOMÓVIL:" if d["tipo_vehiculo"] == "Automóvil" else "CARACTERÍSTICAS DE LA MOTOCICLETA:"
+        
+        out = os.path.join(OUTPUT_DIR, f"{folio}_guerrero.pdf")
+        os.makedirs(OUTPUT_DIR, exist_ok=True)
+        doc = fitz.open("Guerrero.pdf"); pg = doc[0]
+        
+        pg.insert_text(coords_guerrero["folio"][:2], folio,
+                       fontsize=coords_guerrero["folio"][2], color=coords_guerrero["folio"][3])
+        pg.insert_text(coords_guerrero["fecha1"][:2], fecha_larga,
+                       fontsize=coords_guerrero["fecha1"][2], color=coords_guerrero["fecha1"][3])
+        pg.insert_text(coords_guerrero["fecha2"][:2], vigencia,
+                       fontsize=coords_guerrero["fecha2"][2], color=coords_guerrero["fecha2"][3])
+        pg.insert_text(coords_guerrero["tipo"][:2], tipo,
+                       fontsize=coords_guerrero["tipo"][2], color=coords_guerrero["tipo"][3])
+        pg.insert_text(coords_guerrero["serie"][:2], f"NÚMERO DE SERIE: {d['serie']}",
+                       fontsize=coords_guerrero["serie"][2], color=coords_guerrero["serie"][3])
+        pg.insert_text(coords_guerrero["motor"][:2], f"NÚMERO DE MOTOR: {d['motor']}",
+                       fontsize=coords_guerrero["motor"][2], color=coords_guerrero["motor"][3])
+        pg.insert_text(coords_guerrero["marca"][:2], f"MARCA: {d['marca']}",
+                       fontsize=coords_guerrero["marca"][2], color=coords_guerrero["marca"][3])
+        pg.insert_text(coords_guerrero["modelo"][:2], f"MODELO: {d['modelo']}",
+                       fontsize=coords_guerrero["modelo"][2], color=coords_guerrero["modelo"][3])
+        pg.insert_text(coords_guerrero["linea"][:2], f"LINEA: {d['linea']}",
+                       fontsize=coords_guerrero["linea"][2], color=coords_guerrero["linea"][3])
+        pg.insert_text(coords_guerrero["nombre"][:2], f"CONTRIBUYENTE: {d['nombre']}",
+                       fontsize=coords_guerrero["nombre"][2], color=coords_guerrero["nombre"][3])
+
+        doc.save(out)
+        doc.close()
+        
+        return render_template("exitoso.html", folio=folio, guerrero=True)
+    return render_template("formulario_guerrero.html")# — Endpoints para descarga de PDF —
 @app.route("/abrir_pdf/<folio>")
 def abrir_pdf(folio):
     ruta = os.path.join(OUTPUT_DIR, f"{folio}_cdmx.pdf")
@@ -304,6 +379,13 @@ def abrir_pdf_oaxaca(folio):
 @app.route("/abrir_pdf_gto/<folio>")
 def abrir_pdf_gto(folio):
     ruta = os.path.join(OUTPUT_DIR, f"{folio}_gto.pdf")
+    if os.path.exists(ruta):
+        return send_file(ruta, as_attachment=True)
+    return "Archivo no encontrado", 404
+
+@app.route("/abrir_pdf_guerrero/<folio>")
+def abrir_pdf_guerrero(folio):
+    ruta = os.path.join(OUTPUT_DIR, f"{folio}_guerrero.pdf")
     if os.path.exists(ruta):
         return send_file(ruta, as_attachment=True)
     return "Archivo no encontrado", 404
