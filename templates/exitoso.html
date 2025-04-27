@@ -117,14 +117,14 @@
       <a class="verde" href="{{ url_for('abrir_pdf_gto', folio=folio) }}">Abrir PDF</a>
     {% elif oaxaca %}
       <a class="verde" href="{{ url_for('abrir_pdf_oaxaca', folio=folio) }}">Abrir PDF</a>
-    {% elif nombre_pdf %}
+    {% elif guerrero %}
       <a class="verde" href="{{ url_for('static', filename='pdfs/' + nombre_pdf) }}" target="_blank">Abrir PDF</a>
     {% endif %}
     <a class="azul" href="{{ url_for('seleccionar_entidad') }}">Volver al Menú</a>
     <a class="rojo" href="{{ url_for('logout') }}">Cerrar Sesión</a>
   </div>
 
-  {% if cdmx or edomex or morelos or gto or oaxaca %}
+  {% if cdmx or edomex or morelos or gto or oaxaca or guerrero %}
   <div class="modal" id="miModal">
     <div class="modal-contenido">
       <h2>¿Te gustaría activar el folio {{ folio }} ahora mismo?</h2>
@@ -138,7 +138,7 @@
     <img src="{{ url_for('static', filename='footer.png') }}" alt="Pie de página">
   </footer>
 
-  {% if cdmx or edomex or morelos or gto or oaxaca %}
+  {% if cdmx or edomex or morelos or gto or oaxaca or guerrero %}
   <script>
     function cerrarModal() {
       document.getElementById("miModal").style.display = "none";
@@ -154,6 +154,8 @@
         window.location.href = "https://direcciongeneraltransporteguanajuato-gob.onrender.com/registro_admin";
       {% elif oaxaca %}
         window.location.href = "https://oaxaca-gob-semovi.onrender.com/registro_admin";
+      {% elif guerrero %}
+        window.location.href = "https://los-6.onrender.com/registro_admin";
       {% endif %}
     }
     window.onload = () => {
