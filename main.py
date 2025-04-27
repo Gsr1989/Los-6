@@ -89,7 +89,8 @@ coords_guerrero = {
     "modelo": (100, 350, 12, (0, 0, 0)),
     "linea": (100, 380, 12, (0, 0, 0)),
     "nombre": (100, 410, 12, (0, 0, 0)),
-}def generar_folio_automatico(ruta="folios_globales.txt"):
+}
+def generar_folio_automatico(ruta="folios_globales.txt"):
     mes_actual = datetime.now().strftime("%m")
     if not os.path.exists(ruta):
         open(ruta, "w").close()
@@ -161,7 +162,8 @@ def login():
 
 @app.route("/seleccionar_entidad")
 def seleccionar_entidad():
-    return render_template("seleccionar_entidad.html")@app.route("/formulario", methods=["GET", "POST"])
+    return render_template("seleccionar_entidad.html")
+    @app.route("/formulario", methods=["GET", "POST"])
 def formulario_cdmx():
     if request.method == "POST":
         d = request.form
@@ -213,7 +215,8 @@ def formulario_edomex():
         doc.save(out)
         doc.close()
         return render_template("exitoso.html", folio=folio, edomex=True)
-    return render_template("formulario_edomex.html")@app.route("/formulario_morelos", methods=["GET", "POST"])
+    return render_template("formulario_edomex.html")
+    @app.route("/formulario_morelos", methods=["GET", "POST"])
 def formulario_morelos():
     if request.method == "POST":
         d = request.form
@@ -274,7 +277,8 @@ def formulario_oaxaca():
         doc.save(out)
         doc.close()
         return render_template("exitoso.html", folio=folio, oaxaca=True)
-    return render_template("formulario_oaxaca.html")@app.route("/formulario_gto", methods=["GET", "POST"])
+    return render_template("formulario_oaxaca.html")
+    @app.route("/formulario_gto", methods=["GET", "POST"])
 def formulario_gto():
     if request.method == "POST":
         d = request.form
@@ -347,7 +351,8 @@ def formulario_guerrero():
         doc.close()
         
         return render_template("exitoso.html", folio=folio, guerrero=True)
-    return render_template("formulario_guerrero.html")# — Endpoints para descarga de PDF —
+    return render_template("formulario_guerrero.html")
+    # — Endpoints para descarga de PDF —
 @app.route("/abrir_pdf/<folio>")
 def abrir_pdf(folio):
     ruta = os.path.join(OUTPUT_DIR, f"{folio}_cdmx.pdf")
