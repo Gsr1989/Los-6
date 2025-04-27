@@ -54,7 +54,9 @@ coords_morelos = {
     "tipo": (510, 470, 14, (0, 0, 0)),
     "nombre": (150, 370, 14, (0, 0, 0)),
     "fecha_hoja2": (100, 100, 14, (0, 0, 0)),
-}coords_oaxaca = {
+}
+
+coords_oaxaca = {
     "folio": (553, 96, 16, (1, 0, 0)),
     "fecha1": (168, 130, 12, (0, 0, 0)),
     "fecha2": (140, 540, 10, (0, 0, 0)),
@@ -158,6 +160,7 @@ def generar_folio_guerrero():
     with open(archivo, "a") as f:
         f.write(nuevo + "\n")
     return nuevo# — RUTAS —
+    
 @app.route("/", methods=["GET", "POST"])
 def login():
     if request.method == "POST":
