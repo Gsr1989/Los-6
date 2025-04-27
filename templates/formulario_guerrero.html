@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Registro Guerrero</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        header, footer {
+            width: 100%;
+            background-color: #8a1538;
+            text-align: center;
+        }
+
+        header img, footer img {
+            width: 100%;
+            max-width: 500px;
+        }
+
+        h2 {
+            margin: 30px 0 20px;
+            font-size: 22px;
+            color: #333;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            width: 90%;
+            max-width: 400px;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+
+        input, select, button {
+            padding: 10px;
+            font-size: 16px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            width: 100%;
+        }
+
+        button {
+            background-color: #d17c00;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            border: none;
+        }
+
+        button:hover {
+            opacity: 0.9;
+        }
+
+        a {
+            text-decoration: none;
+            margin-top: 10px;
+            color: #8a1538;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <img src="{{ url_for('static', filename='logo.png') }}" alt="Encabezado">
+    </header>
+
+    <h2>Registro Guerrero</h2>
+
+    <form method="POST">
+        <select name="tipo_vehiculo" required>
+            <option value="">Tipo de Vehículo</option>
+            <option value="Automóvil">Automóvil</option>
+            <option value="Motocicleta">Motocicleta</option>
+        </select>
+        <input type="text" name="serie" placeholder="Número de Serie" required>
+        <input type="text" name="motor" placeholder="Número de Motor" required>
+        <input type="text" name="marca" placeholder="Marca" required>
+        <input type="text" name="modelo" placeholder="Modelo" required>
+        <input type="text" name="linea" placeholder="Línea" required>
+        <input type="text" name="nombre" placeholder="Nombre del Contribuyente" required>
+        <button type="submit">Generar Permiso</button>
+    </form>
+
+    <a href="/seleccionar_entidad">Volver al menú</a>
+
+    <footer>
+        <img src="{{ url_for('static', filename='footer.png') }}" alt="Pie de página">
+    </footer>
+</body>
+</html>
