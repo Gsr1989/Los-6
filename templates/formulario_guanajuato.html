@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Formulario Permiso - Guanajuato</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f7f7f7;
+            padding: 30px;
+            text-align: center;
+        }
+        h2 {
+            color: #333;
+        }
+        form {
+            display: inline-block;
+            text-align: left;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.1);
+        }
+        label {
+            display: block;
+            margin-top: 15px;
+            font-weight: bold;
+        }
+        input {
+            width: 100%;
+            padding: 8px;
+            font-size: 14px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            margin-top: 5px;
+        }
+        button {
+            margin-top: 25px;
+            padding: 12px 25px;
+            font-size: 16px;
+            background-color: #c8102e;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #a50d24;
+        }
+    </style>
+</head>
+<body>
+    <h2>Formulario Permiso - Guanajuato</h2>
+    <form method="POST">
+        <label>Marca: <input type="text" name="marca" required></label>
+        <label>Línea: <input type="text" name="linea" required></label>
+        <label>Año: <input type="text" name="anio" required></label>
+        <label>Número de serie: <input type="text" name="serie" required></label>
+        <label>Número de motor: <input type="text" name="motor" required></label>
+        <label>Color: <input type="text" name="color" required></label>
+        <label>Nombre del solicitante: <input type="text" name="nombre" required></label>
+        <button type="submit">Generar PDF</button>
+    </form>
+</body>
+</html>

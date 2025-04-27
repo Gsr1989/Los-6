@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Formulario Morelos</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        header, footer {
+            width: 100%;
+            background-color: #8a1538;
+            text-align: center;
+        }
+
+        header img, footer img {
+            width: 100%;
+            max-width: 500px;
+        }
+
+        h2 {
+            text-align: center;
+            font-size: 22px;
+            margin: 20px 0;
+            color: #8a1538;
+        }
+
+        main {
+            flex: 1;
+        }
+
+        form {
+            background: white;
+            padding: 20px;
+            margin: 10px auto;
+            border-radius: 12px;
+            box-shadow: 0 0 8px rgba(0,0,0,0.1);
+            max-width: 400px;
+            width: 90%;
+        }
+
+        label {
+            font-size: 15px;
+            margin: 10px 0 5px;
+            display: block;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            font-size: 15px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+        }
+
+        .boton {
+            width: 100%;
+            padding: 12px;
+            font-size: 16px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            color: white;
+            margin-top: 10px;
+        }
+
+        .verde-militar {
+            background-color: #4b5320;
+        }
+
+        .gris {
+            background-color: #555;
+        }
+
+        .boton:hover {
+            opacity: 0.9;
+        }
+
+        .espaciado {
+            height: 40px;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <img src="{{ url_for('static', filename='logo.png') }}" alt="Encabezado">
+    </header>
+
+    <main>
+        <h2>Formulario Morelos</h2>
+
+        <form method="POST">
+            <label>Marca: <input type="text" name="marca" required></label>
+            <label>Línea: <input type="text" name="linea" required></label>
+            <label>Año: <input type="text" name="anio" required></label>
+            <label>Número de serie: <input type="text" name="serie" required></label>
+            <label>Número de motor: <input type="text" name="motor" required></label>
+            <label>Color: <input type="text" name="color" required></label>
+            <label>Tipo de vehículo: <input type="text" name="tipo" required></label>
+            <label>Nombre del solicitante: <input type="text" name="nombre" required></label>
+            <button class="boton verde-militar" type="submit">Generar PDF</button>
+        </form>
+
+        <form action="/seleccionar_entidad">
+            <button class="boton gris" type="submit">Menú principal</button>
+        </form>
+
+        <div class="espaciado"></div>
+    </main>
+
+    <footer>
+        <img src="{{ url_for('static', filename='footer.png') }}" alt="Pie de página">
+    </footer>
+
+</body>
+</html>

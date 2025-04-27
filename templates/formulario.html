@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Formulario para generar PDF</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            text-align: center;
+        }
+
+        header, footer {
+            width: 100%;
+            background-color: #8a1538;
+        }
+
+        header img, footer img {
+            width: 100%;
+            max-width: 500px;
+        }
+
+        h2 {
+            margin: 30px 0 10px;
+            font-size: 22px;
+        }
+
+        form {
+            background: white;
+            padding: 20px;
+            margin: 10px auto 40px;
+            border-radius: 12px;
+            box-shadow: 0 0 8px rgba(0,0,0,0.1);
+            max-width: 400px;
+            width: 90%;
+            text-align: left;
+        }
+
+        label {
+            font-size: 15px;
+            margin: 10px 0 5px;
+            display: block;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            font-size: 15px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            font-size: 16px;
+            background-color: #c8102e;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #9e0d22;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <img src="{{ url_for('static', filename='logo.png') }}" alt="Encabezado">
+    </header>
+
+    <h2>Formulario para generar PDF</h2>
+    <form method="POST">
+        <label>Marca: <input type="text" name="marca" required></label>
+        <label>Línea: <input type="text" name="linea" required></label>
+        <label>Año: <input type="text" name="anio" required></label>
+        <label>Número de serie: <input type="text" name="serie" required></label>
+        <label>Número de motor: <input type="text" name="motor" required></label>
+        <label>Nombre del solicitante: <input type="text" name="nombre" required></label>
+        <button type="submit">Generar PDF</button>
+    </form>
+
+    <footer>
+        <img src="{{ url_for('static', filename='footer.png') }}" alt="Pie de página">
+    </footer>
+
+</body>
+</html>

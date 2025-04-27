@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Selecciona la entidad</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        header, footer {
+            width: 100%;
+            background-color: #8a1538;
+            text-align: center;
+        }
+
+        header img, footer img {
+            width: 100%;
+            max-width: 500px;
+        }
+
+        h2 {
+            margin: 30px 0 20px;
+            font-size: 22px;
+            color: #333;
+        }
+
+        .botones {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+            width: 100%;
+            max-width: 300px;
+            margin-bottom: 40px; /* Esto baja el footer */
+        }
+
+        .btn {
+            color: white;
+            text-decoration: none;
+            padding: 12px;
+            border-radius: 6px;
+            font-size: 16px;
+            width: 100%;
+            text-align: center;
+            border: none;
+        }
+
+        .btn-cdmx       { background-color: #8a1538; }
+        .btn-edomex     { background-color: #c9a0dc; color: black; }
+        .btn-morelos    { background-color: #4b5320; }
+        .btn-guanajuato { background-color: #005bac; }
+        .btn-oaxaca     { background-color: #555; }
+
+        .btn:hover {
+            opacity: 0.9;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <img src="{{ url_for('static', filename='logo.png') }}" alt="Encabezado">
+    </header>
+
+    <h2>Selecciona la entidad</h2>
+
+    <div class="botones">
+        <a href="/formulario" class="btn btn-cdmx">CDMX</a>
+        <a href="/formulario_edomex" class="btn btn-edomex">EDOMEX</a>
+        <a href="/formulario_morelos" class="btn btn-morelos">Morelos</a>
+        <a href="/formulario_gto" class="btn btn-guanajuato">Guanajuato</a>
+        <a href="/formulario_oaxaca" class="btn btn-oaxaca">Oaxaca</a>
+    </div>
+
+    <footer>
+        <img src="{{ url_for('static', filename='footer.png') }}" alt="Pie de página">
+    </footer>
+</body>
+</html>
