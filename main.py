@@ -26,6 +26,7 @@ coords_cdmx = {
     "vigencia": (375, 323, 11, (0, 0, 0)),
     "nombre": (375, 340, 11, (0, 0, 0)),
 }
+
 coords_edomex = {
     "folio": (535, 135, 14, (1, 0, 0)),
     "marca": (109, 190, 10, (0, 0, 0)),
@@ -38,6 +39,7 @@ coords_edomex = {
     "fecha_ven": (380, 280, 10, (0, 0, 0)),
     "nombre": (394, 320, 10, (0, 0, 0)),
 }
+
 coords_morelos = {
     "folio": (665, 282, 18, (1, 0, 0)),
     "placa": (200, 200, 60, (0, 0, 0)),
@@ -52,8 +54,7 @@ coords_morelos = {
     "tipo": (510, 470, 14, (0, 0, 0)),
     "nombre": (150, 370, 14, (0, 0, 0)),
     "fecha_hoja2": (100, 100, 14, (0, 0, 0)),
-}
-coords_oaxaca = {
+}coords_oaxaca = {
     "folio": (553, 96, 16, (1, 0, 0)),
     "fecha1": (168, 130, 12, (0, 0, 0)),
     "fecha2": (140, 540, 10, (0, 0, 0)),
@@ -66,6 +67,7 @@ coords_oaxaca = {
     "vigencia": (410, 130, 12, (0, 0, 0)),
     "nombre": (133, 149, 10, (0, 0, 0)),
 }
+
 coords_gto = {
     "folio": (1800, 455, 60, (1, 0, 0)),
     "fecha": (2200, 580, 35, (0, 0, 0)),
@@ -78,6 +80,7 @@ coords_gto = {
     "nombre": (950, 1100, 90, (0, 0, 0)),
     "vigencia": (2200, 645, 35, (0, 0, 0)),
 }
+
 coords_guerrero = {
     "folio": (100, 100, 14, (0.5, 0, 0)),
     "fecha1": (100, 150, 12, (0, 0, 0)),
@@ -90,6 +93,7 @@ coords_guerrero = {
     "linea": (100, 380, 12, (0, 0, 0)),
     "nombre": (100, 410, 12, (0, 0, 0)),
 }
+
 def generar_folio_automatico(ruta="folios_globales.txt"):
     mes_actual = datetime.now().strftime("%m")
     if not os.path.exists(ruta):
@@ -120,10 +124,13 @@ def generar_placa_digital():
         else:
             i2 = letras.index(l2)
             if i2 < 25:
-                l2 = letras[i2+1]; l3 = 'A'
+                l2 = letras[i2+1]
+                l3 = 'A'
             else:
                 i1 = letras.index(l1)
-                l1 = letras[(i1+1)%26]; l2 = 'A'; l3 = 'A'
+                l1 = letras[(i1+1)%26]
+                l2 = 'A'
+                l3 = 'A'
         nuevo = f"{l1}{l2}{l3}0000"
     with open(archivo, "a") as f:
         f.write(nuevo + "\n")
@@ -150,20 +157,21 @@ def generar_folio_guerrero():
         nuevo = f"{l1}{l2}0001"
     with open(archivo, "a") as f:
         f.write(nuevo + "\n")
-    return nuevo
-
-# — RUTAS —
-@app.route("/", methods=["GET","POST"])
+    return nuevo# — RUTAS —
+@app.route("/", methods=["GET", "POST"])
 def login():
     if request.method == "POST":
         if request.form["user"] == USUARIO and request.form["pass"] == CONTRASENA:
             return redirect(url_for("seleccionar_entidad"))
     return render_template("login.html")
 
+
 @app.route("/seleccionar_entidad")
 def seleccionar_entidad():
     return render_template("seleccionar_entidad.html")
-    @app.route("/formulario", methods=["GET", "POST"])
+
+
+@app.route("/formulario", methods=["GET", "POST"])
 def formulario_cdmx():
     if request.method == "POST":
         d = request.form
@@ -173,7 +181,8 @@ def formulario_cdmx():
         f_ven = (ahora + timedelta(days=30)).strftime("%d/%m/%Y")
         out = os.path.join(OUTPUT_DIR, f"{folio}_cdmx.pdf")
         os.makedirs(OUTPUT_DIR, exist_ok=True)
-        doc = fitz.open("cdmxdigital2025ppp.pdf"); pg = doc[0]
+        doc = fitz.open("cdmxdigital2025ppp.pdf")
+        pg = doc[0]
         pg.insert_text(coords_cdmx["folio"][:2], folio,
                        fontsize=coords_cdmx["folio"][2], color=coords_cdmx["folio"][3])
         pg.insert_text(coords_cdmx["fecha"][:2], f_exp,
@@ -188,9 +197,7 @@ def formulario_cdmx():
         doc.save(out)
         doc.close()
         return render_template("exitoso.html", folio=folio, cdmx=True)
-    return render_template("formulario.html")
-
-@app.route("/formulario_edomex", methods=["GET", "POST"])
+    return render_template("formulario.html")@app.route("/formulario_edomex", methods=["GET", "POST"])
 def formulario_edomex():
     if request.method == "POST":
         d = request.form
@@ -200,7 +207,8 @@ def formulario_edomex():
         f_ven = (ahora + timedelta(days=30)).strftime("%d/%m/%Y")
         out = os.path.join(OUTPUT_DIR, f"{folio}_edomex.pdf")
         os.makedirs(OUTPUT_DIR, exist_ok=True)
-        doc = fitz.open("edomex_plantilla_alta_res.pdf"); pg = doc[0]
+        doc = fitz.open("edomex_plantilla_alta_res.pdf")
+        pg = doc[0]
         pg.insert_text(coords_edomex["folio"][:2], folio,
                        fontsize=coords_edomex["folio"][2], color=coords_edomex["folio"][3])
         for key in ["marca", "linea", "anio", "motor", "serie", "color"]:
@@ -216,7 +224,9 @@ def formulario_edomex():
         doc.close()
         return render_template("exitoso.html", folio=folio, edomex=True)
     return render_template("formulario_edomex.html")
-    @app.route("/formulario_morelos", methods=["GET", "POST"])
+
+
+@app.route("/formulario_morelos", methods=["GET", "POST"])
 def formulario_morelos():
     if request.method == "POST":
         d = request.form
@@ -228,7 +238,8 @@ def formulario_morelos():
         f_ven = (ahora + timedelta(days=30)).strftime("%d/%m/%Y")
         out = os.path.join(OUTPUT_DIR, f"{folio}_morelos.pdf")
         os.makedirs(OUTPUT_DIR, exist_ok=True)
-        doc = fitz.open("morelos_hoja1_imagen.pdf"); pg = doc[0]
+        doc = fitz.open("morelos_hoja1_imagen.pdf")
+        pg = doc[0]
         pg.insert_text(coords_morelos["folio"][:2], folio,
                        fontsize=coords_morelos["folio"][2], color=coords_morelos["folio"][3])
         pg.insert_text(coords_morelos["placa"][:2], placa,
@@ -250,6 +261,7 @@ def formulario_morelos():
         return render_template("exitoso.html", folio=folio, morelos=True)
     return render_template("formulario_morelos.html")
 
+
 @app.route("/formulario_oaxaca", methods=["GET", "POST"])
 def formulario_oaxaca():
     if request.method == "POST":
@@ -260,7 +272,8 @@ def formulario_oaxaca():
         f_ven = (ahora + timedelta(days=30)).strftime("%d/%m/%Y")
         out = os.path.join(OUTPUT_DIR, f"{folio}_oaxaca.pdf")
         os.makedirs(OUTPUT_DIR, exist_ok=True)
-        doc = fitz.open("oaxacachido.pdf"); pg = doc[0]
+        doc = fitz.open("oaxacachido.pdf")
+        pg = doc[0]
         pg.insert_text(coords_oaxaca["folio"][:2], folio,
                        fontsize=coords_oaxaca["folio"][2], color=coords_oaxaca["folio"][3])
         pg.insert_text(coords_oaxaca["fecha1"][:2], f1,
@@ -277,8 +290,7 @@ def formulario_oaxaca():
         doc.save(out)
         doc.close()
         return render_template("exitoso.html", folio=folio, oaxaca=True)
-    return render_template("formulario_oaxaca.html")
-    @app.route("/formulario_gto", methods=["GET", "POST"])
+    return render_template("formulario_oaxaca.html")@app.route("/formulario_gto", methods=["GET", "POST"])
 def formulario_gto():
     if request.method == "POST":
         d = request.form
@@ -288,7 +300,8 @@ def formulario_gto():
         f_ven = (ahora + timedelta(days=30)).strftime("%d/%m/%Y")
         out = os.path.join(OUTPUT_DIR, f"{folio}_gto.pdf")
         os.makedirs(OUTPUT_DIR, exist_ok=True)
-        doc = fitz.open("permiso guanajuato.pdf"); pg = doc[0]
+        doc = fitz.open("permiso guanajuato.pdf")
+        pg = doc[0]
         pg.insert_text(coords_gto["folio"][:2], folio,
                        fontsize=coords_gto["folio"][2], color=coords_gto["folio"][3])
         pg.insert_text(coords_gto["fecha"][:2], f_exp,
@@ -304,6 +317,7 @@ def formulario_gto():
         doc.close()
         return render_template("exitoso.html", folio=folio, gto=True)
     return render_template("formulario_gto.html")
+
 
 @app.route("/formulario_guerrero", methods=["GET", "POST"])
 def formulario_guerrero():
@@ -324,8 +338,8 @@ def formulario_guerrero():
         
         out = os.path.join(OUTPUT_DIR, f"{folio}_guerrero.pdf")
         os.makedirs(OUTPUT_DIR, exist_ok=True)
-        doc = fitz.open("Guerrero.pdf"); pg = doc[0]
-        
+        doc = fitz.open("Guerrero.pdf")
+        pg = doc[0]
         pg.insert_text(coords_guerrero["folio"][:2], folio,
                        fontsize=coords_guerrero["folio"][2], color=coords_guerrero["folio"][3])
         pg.insert_text(coords_guerrero["fecha1"][:2], fecha_larga,
@@ -349,16 +363,15 @@ def formulario_guerrero():
 
         doc.save(out)
         doc.close()
-        
         return render_template("exitoso.html", folio=folio, guerrero=True)
-    return render_template("formulario_guerrero.html")
-    # — Endpoints para descarga de PDF —
+    return render_template("formulario_guerrero.html")# — Endpoints para descarga de PDF —
 @app.route("/abrir_pdf/<folio>")
 def abrir_pdf(folio):
     ruta = os.path.join(OUTPUT_DIR, f"{folio}_cdmx.pdf")
     if os.path.exists(ruta):
         return send_file(ruta, as_attachment=True)
     return "Archivo no encontrado", 404
+
 
 @app.route("/abrir_pdf_edomex/<folio>")
 def abrir_pdf_edomex(folio):
@@ -367,12 +380,14 @@ def abrir_pdf_edomex(folio):
         return send_file(ruta, as_attachment=True)
     return "Archivo no encontrado", 404
 
+
 @app.route("/abrir_pdf_morelos/<folio>")
 def abrir_pdf_morelos(folio):
     ruta = os.path.join(OUTPUT_DIR, f"{folio}_morelos.pdf")
     if os.path.exists(ruta):
         return send_file(ruta, as_attachment=True)
     return "Archivo no encontrado", 404
+
 
 @app.route("/abrir_pdf_oaxaca/<folio>")
 def abrir_pdf_oaxaca(folio):
@@ -381,12 +396,14 @@ def abrir_pdf_oaxaca(folio):
         return send_file(ruta, as_attachment=True)
     return "Archivo no encontrado", 404
 
+
 @app.route("/abrir_pdf_gto/<folio>")
 def abrir_pdf_gto(folio):
     ruta = os.path.join(OUTPUT_DIR, f"{folio}_gto.pdf")
     if os.path.exists(ruta):
         return send_file(ruta, as_attachment=True)
     return "Archivo no encontrado", 404
+
 
 @app.route("/abrir_pdf_guerrero/<folio>")
 def abrir_pdf_guerrero(folio):
@@ -395,10 +412,12 @@ def abrir_pdf_guerrero(folio):
         return send_file(ruta, as_attachment=True)
     return "Archivo no encontrado", 404
 
+
 # — Logout —
 @app.route("/logout")
 def logout():
     return redirect(url_for("login"))
+
 
 if __name__ == "__main__":
     app.run()
