@@ -117,6 +117,8 @@
       <a class="verde" href="{{ url_for('abrir_pdf_gto', folio=folio) }}">Abrir PDF</a>
     {% elif oaxaca %}
       <a class="verde" href="{{ url_for('abrir_pdf_oaxaca', folio=folio) }}">Abrir PDF</a>
+    {% elif nombre_pdf %}
+      <a class="verde" href="{{ url_for('static', filename='pdfs/' + nombre_pdf) }}" target="_blank">Abrir PDF</a>
     {% endif %}
     <a class="azul" href="{{ url_for('seleccionar_entidad') }}">Volver al Menú</a>
     <a class="rojo" href="{{ url_for('logout') }}">Cerrar Sesión</a>
