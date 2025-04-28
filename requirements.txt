@@ -1,5 +1,5 @@
 Flask
-python-dotenv
-pytz
+gunicorn
 PyMuPDF
 supabase
+python-dotenv
