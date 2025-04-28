@@ -70,17 +70,17 @@ def formulario():
         page = doc[0]
 
         # Insertar datos en coordenadas (ajústalas si quieres)
-        page.insert_text((1800, 800), f"Folio: {folio_generado}", fontsize=27, color=(1, 0, 0))
-        page.insert_text((900, 500), f"Fecha expedición: {fecha_expedicion}", fontsize=45)
-        page.insert_text((900, 800), f"Fecha vencimiento: {fecha_vencimiento}", fontsize=20)
-        page.insert_text((900, 830), f"Tipo: {tipo_vehiculo}", fontsize=20)
-        page.insert_text((900, 860), f"Marca: {marca}", fontsize=20)
-        page.insert_text((900, 890), f"Línea: {linea}", fontsize=20)
-        page.insert_text((900, 910), f"Año: {año}", fontsize=20)
-        page.insert_text((900, 940), f"Serie: {serie}", fontsize=20)
-        page.insert_text((900, 970), f"Motor: {motor}", fontsize=20)
-        page.insert_text((900, 1000), f"Color: {color}", fontsize=20)
-        page.insert_text((900, 1030), f"Contribuyente: {contribuyente}", fontsize=20)
+        page.insert_text((1700, 500), f"Folio: {folio_generado}", fontsize=50, color=(1, 0, 0))
+        page.insert_text((900, 1700), f"Fecha expedición: {fecha_expedicion}", fontsize=45)
+        page.insert_text((900, 1600), f"Fecha vencimiento: {fecha_vencimiento}", fontsize=20)
+        page.insert_text((300, 1830), f"Tipo: {tipo_vehiculo}", fontsize=20)
+        page.insert_text((300, 1860), f"Marca: {marca}", fontsize=20)
+        page.insert_text((300, 1890), f"Línea: {linea}", fontsize=20)
+        page.insert_text((300, 1910), f"Año: {año}", fontsize=20)
+        page.insert_text((300, 1940), f"Serie: {serie}", fontsize=20)
+        page.insert_text((300, 1970), f"Motor: {motor}", fontsize=20)
+        page.insert_text((300, 2000), f"Color: {color}", fontsize=20)
+        page.insert_text((300, 2030), f"Contribuyente: {contribuyente}", fontsize=20)
 
         # Guardar el nuevo PDF
         if not os.path.exists(PDF_OUTPUT_FOLDER):
