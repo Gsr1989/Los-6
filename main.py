@@ -1,9 +1,16 @@
-from flask import Flask, render_template, request, redirect, url_for, send_file
+from flask import Flask, render_template, request, redirect, url_for, send_file, flash
 from datetime import datetime, timedelta
+from supabase import create_client, Client
 import fitz  # PyMuPDF
 import os
 
 app = Flask(__name__)
+app.secret_key = "secreto_perro"
+
+# Conexión a Supabase
+SUPABASE_URL = "https://iuwsippnvyynwnxanwnv.supabase.co"
+SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml1d3NpcHBudnl5bndueGFud252Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDU2NDU3MDcsImV4cCI6MjA2MTIyMTcwN30.bm7J6b3k_F0JxPFFRTklBDOgHRJTvEa1s-uwvSwVxTs"
+supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 
 PDF_OUTPUT_FOLDER = 'static/pdfs'
 PLANTILLA_PDF = 'Guerrero.pdf'
@@ -67,6 +74,46 @@ def obtener_texto_caracteristicas(tipo):
     else:
         return tipo
 
+def guardar_en_supabase(folio, tipo, marca, linea, año, serie, motor, color, contribuyente, fecha):
+    data = {
+        "folio": folio,
+        "tipo_vehiculo": tipo,
+        "marca": marca,
+        "linea": linea,
+        "año": año,
+        "serie": serie,
+        "motor": motor,
+        "color": color,
+        "contribuyente": contribuyente,
+        "fecha_expedicion": fecha
+    }
+    supabase.table("registros").insert(data).execute()
+
+def generar_pdf(folio, tipo_vehiculo, marca, linea, año, serie, motor, color, contribuyente, fecha_expedicion, fecha_vencimiento):
+    tipo_texto = obtener_texto_caracteristicas(tipo_vehiculo)
+
+    doc = fitz.open(PLANTILLA_PDF)
+    page = doc[0]
+
+    page.insert_text((1700, 500), f"{folio}", fontsize=55, color=(1, 0, 0))
+    page.insert_text((1325, 555), f"TLAPA DE COMONFORT, GRO. A {fecha_expedicion}", fontsize=38)
+    page.insert_text((400, 1240), f"{fecha_expedicion} AL {fecha_vencimiento}", fontsize=60)
+    page.insert_text((255, 1550), f"CARACTERÍSTICAS {tipo_texto}:", fontsize=75)
+
+    page.insert_text((400, 1700), f"NÚMERO DE SERIE: {serie}", fontsize=35)
+    page.insert_text((375, 1745), f"NÚMERO DE MOTOR: {motor}", fontsize=35)
+    page.insert_text((602, 1790), f"MARCA: {marca}", fontsize=35)
+    page.insert_text((575, 1835), f"MODELO: {linea}", fontsize=35)
+    page.insert_text((652, 1880), f"AÑO: {año}", fontsize=35)
+    page.insert_text((602, 1925), f"COLOR: {color}", fontsize=35)
+    page.insert_text((426, 1970), f"CONTRIBUYENTE: {contribuyente}", fontsize=35)
+
+    if not os.path.exists(PDF_OUTPUT_FOLDER):
+        os.makedirs(PDF_OUTPUT_FOLDER)
+    output_path = os.path.join(PDF_OUTPUT_FOLDER, f"{folio}.pdf")
+    doc.save(output_path)
+    doc.close()
+
 @app.route('/', methods=['GET', 'POST'])
 def formulario():
     if request.method == 'POST':
@@ -85,34 +132,9 @@ def formulario():
         fecha_actual = datetime.now()
         fecha_expedicion = formatear_fecha(fecha_actual)
         fecha_vencimiento = formatear_fecha(fecha_actual + timedelta(days=30))
-        vigencia_texto = f"{fecha_expedicion} AL {fecha_vencimiento}"
 
-        tipo_texto = obtener_texto_caracteristicas(tipo_vehiculo)
-
-        # Cargar plantilla
-        doc = fitz.open(PLANTILLA_PDF)
-        page = doc[0]
-
-        # Insertar texto
-        page.insert_text((1700, 500), f"{folio_generado}", fontsize=55, color=(1, 0, 0))
-        page.insert_text((1325, 555), f"TLAPA DE COMONFORT, GRO. A {fecha_expedicion}", fontsize=38)
-        page.insert_text((400, 1240), vigencia_texto, fontsize=60)
-        page.insert_text((255, 1550), f"CARACTERÍSTICAS {tipo_texto}:", fontsize=75)
-
-        page.insert_text((400, 1700), f"NÚMERO DE SERIE: {serie}", fontsize=35)
-        page.insert_text((375, 1745), f"NÚMERO DE MOTOR: {motor}", fontsize=35)
-        page.insert_text((602, 1790), f"MARCA: {marca}", fontsize=35)
-        page.insert_text((575, 1835), f"MODELO: {linea}", fontsize=35)
-        page.insert_text((652, 1880), f"AÑO: {año}", fontsize=35)
-        page.insert_text((602, 1925), f"COLOR: {color}", fontsize=35)
-        page.insert_text((426, 1970), f"CONTRIBUYENTE: {contribuyente}", fontsize=35)
-
-        # Guardar el nuevo PDF
-        if not os.path.exists(PDF_OUTPUT_FOLDER):
-            os.makedirs(PDF_OUTPUT_FOLDER)
-        output_path = os.path.join(PDF_OUTPUT_FOLDER, f"{folio_generado}.pdf")
-        doc.save(output_path)
-        doc.close()
+        guardar_en_supabase(folio_generado, tipo_vehiculo, marca, linea, año, serie, motor, color, contribuyente, fecha_expedicion)
+        generar_pdf(folio_generado, tipo_vehiculo, marca, linea, año, serie, motor, color, contribuyente, fecha_expedicion, fecha_vencimiento)
 
         return render_template('exito.html', folio=folio_generado)
 
