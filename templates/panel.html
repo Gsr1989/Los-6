@@ -2,75 +2,34 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Panel de Permisos</title>
+    <title>Panel de Registros</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            padding: 20px;
-        }
-        h2 {
-            text-align: center;
-            color: #8a1538;
-        }
-        form {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-        input[type="text"] {
-            padding: 8px;
-            width: 300px;
-            margin-right: 10px;
-        }
-        button, a.button {
-            padding: 8px 15px;
-            text-decoration: none;
-            background-color: #8a1538;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            font-weight: bold;
-            margin: 3px;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 10px;
-        }
-        th, td {
-            border: 1px solid #ddd;
-            padding: 8px;
-            text-align: center;
-        }
-        th {
-            background-color: #8a1538;
-            color: white;
-        }
-        tr:nth-child(even) {
-            background-color: #f9f9f9;
-        }
-        .acciones a {
-            margin: 2px;
-            display: inline-block;
-        }
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: center; }
+        th { background-color: #4CAF50; color: white; }
+        a.boton { text-decoration: none; padding: 6px 12px; border-radius: 5px; margin: 2px; }
+        .editar { background-color: #2196F3; color: white; }
+        .eliminar { background-color: #f44336; color: white; }
+        .reimprimir { background-color: #4CAF50; color: white; }
+        .buscar { margin-bottom: 15px; }
     </style>
 </head>
 <body>
+    <h2>Panel de Registros</h2>
 
-    <h2>Panel de Permisos Guerrero</h2>
-
-    <form method="GET" action="/panel">
-        <input type="text" name="buscar" placeholder="Buscar por número de serie" value="{{ request.args.get('buscar', '') }}">
+    <form method="GET" action="{{ url_for('panel') }}" class="buscar">
+        <input type="text" name="buscar" placeholder="Buscar por número de serie" autocomplete="off">
         <button type="submit">Buscar</button>
-        <a href="/" class="button">Registrar Nuevo</a>
+        <a href="{{ url_for('panel') }}">Mostrar Todos</a>
     </form>
 
-    {% if registros %}
     <table>
         <thead>
             <tr>
                 <th>Folio</th>
-                <th>Tipo</th>
+                <th>Tipo Vehículo</th>
                 <th>Marca</th>
                 <th>Línea</th>
                 <th>Año</th>
@@ -82,29 +41,25 @@
             </tr>
         </thead>
         <tbody>
-            {% for reg in registros %}
+            {% for registro in registros %}
             <tr>
-                <td>{{ reg['folio'] }}</td>
-                <td>{{ reg['tipo_vehiculo'] }}</td>
-                <td>{{ reg['marca'] }}</td>
-                <td>{{ reg['linea'] }}</td>
-                <td>{{ reg['año'] }}</td>
-                <td>{{ reg['serie'] }}</td>
-                <td>{{ reg['motor'] }}</td>
-                <td>{{ reg['color'] }}</td>
-                <td>{{ reg['contribuyente'] }}</td>
-                <td class="acciones">
-                    <a href="{{ url_for('editar', folio=reg['folio']) }}" class="button" style="background-color: #007BFF;">Editar</a>
-                    <a href="{{ url_for('eliminar', folio=reg['folio']) }}" class="button" style="background-color: #dc3545;">Eliminar</a>
-                    <a href="{{ url_for('regenerar_pdf', folio=reg['folio']) }}" class="button" style="background-color: #28a745;">Reimprimir PDF</a>
+                <td>{{ registro.folio }}</td>
+                <td>{{ registro.tipo_vehiculo }}</td>
+                <td>{{ registro.marca }}</td>
+                <td>{{ registro.linea }}</td>
+                <td>{{ registro.año }}</td>
+                <td>{{ registro.serie }}</td>
+                <td>{{ registro.motor }}</td>
+                <td>{{ registro.color }}</td>
+                <td>{{ registro.contribuyente }}</td>
+                <td>
+                    <a href="{{ url_for('editar', folio=registro.folio) }}" class="boton editar">Editar</a>
+                    <a href="{{ url_for('eliminar', folio=registro.folio) }}" class="boton eliminar" onclick="return confirm('¿Estás seguro de eliminar este registro?')">Eliminar</a>
+                    <a href="{{ url_for('regenerar_pdf', folio=registro.folio) }}" class="boton reimprimir">Reimprimir PDF</a>
                 </td>
             </tr>
             {% endfor %}
         </tbody>
     </table>
-    {% else %}
-    <p style="text-align:center;">No hay registros encontrados.</p>
-    {% endif %}
-
 </body>
 </html>
