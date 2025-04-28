@@ -44,7 +44,6 @@ def incrementar_letras(letras):
             letra1 = 'A'
     return letra1 + letra2
 
-# Función para dar formato bonito a las fechas
 def formatear_fecha_normal(fecha):
     meses = {
         "January": "enero", "February": "febrero", "March": "marzo", "April": "abril",
@@ -88,25 +87,25 @@ def formulario():
         fecha_vencimiento = formatear_fecha_mayus(fecha_actual + timedelta(days=30))
         fecha_vigencia = f"{formatear_fecha_mayus(fecha_actual)} AL {fecha_vencimiento}"
 
-        # Cargar plantilla
+        # Cargar plantilla (solo imagen de fondo)
         doc = fitz.open(PLANTILLA_PDF)
         page = doc[0]
 
-        # Insertar datos en coordenadas
-        page.insert_text((1700, 500), folio_generado, fontsize=50, color=(1, 0, 0), fontname="helv", render_mode=3)
-        page.insert_text((1600, 530), f"TLAPA DE COMONFORT, GRO. A {fecha_expedicion.upper()}", fontsize=45, fontname="helv", render_mode=3)
-        page.insert_text((900, 1600), fecha_vigencia, fontsize=20, fontname="helv", render_mode=3)
+        # Insertar texto sobre la imagen de fondo
+        page.insert_textbox(fitz.Rect(400, 80, 600, 130), folio_generado, fontsize=16, fontname="helv", color=(1, 0, 0), render_mode=3, align=1)
+        page.insert_textbox(fitz.Rect(150, 150, 600, 180), f"TLAPA DE COMONFORT, GRO. A {fecha_expedicion.upper()}", fontsize=12, fontname="helv", render_mode=3)
+        page.insert_textbox(fitz.Rect(150, 220, 600, 260), fecha_vigencia, fontsize=14, fontname="helv", render_mode=3, align=1)
 
         caracteristicas_titulo = f"CARACTERÍSTICAS DEL {tipo_vehiculo}:"
-        page.insert_text((300, 1230), caracteristicas_titulo, fontsize=20, fontname="helv", render_mode=3)
+        page.insert_textbox(fitz.Rect(150, 300, 600, 340), caracteristicas_titulo, fontsize=12, fontname="helv", render_mode=3)
 
-        page.insert_text((300, 1860), f"MARCA: {marca}", fontsize=20, fontname="helv", render_mode=3)
-        page.insert_text((300, 1890), f"LÍNEA: {linea}", fontsize=20, fontname="helv", render_mode=3)
-        page.insert_text((300, 1910), f"AÑO: {año}", fontsize=20, fontname="helv", render_mode=3)
-        page.insert_text((300, 1940), f"NÚMERO DE SERIE: {serie}", fontsize=20, fontname="helv", render_mode=3)
-        page.insert_text((300, 1970), f"NÚMERO DE MOTOR: {motor}", fontsize=20, fontname="helv", render_mode=3)
-        page.insert_text((300, 2000), f"COLOR: {color}", fontsize=20, fontname="helv", render_mode=3)
-        page.insert_text((300, 2030), f"CONTRIBUYENTE: {contribuyente}", fontsize=20, fontname="helv", render_mode=3)
+        page.insert_textbox(fitz.Rect(150, 350, 600, 370), f"NÚMERO DE SERIE: {serie}", fontsize=10, fontname="helv", render_mode=3)
+        page.insert_textbox(fitz.Rect(150, 370, 600, 390), f"NÚMERO DE MOTOR: {motor}", fontsize=10, fontname="helv", render_mode=3)
+        page.insert_textbox(fitz.Rect(150, 390, 600, 410), f"MARCA: {marca}", fontsize=10, fontname="helv", render_mode=3)
+        page.insert_textbox(fitz.Rect(150, 410, 600, 430), f"MODELO: {linea}", fontsize=10, fontname="helv", render_mode=3)
+        page.insert_textbox(fitz.Rect(150, 430, 600, 450), f"AÑO: {año}", fontsize=10, fontname="helv", render_mode=3)
+        page.insert_textbox(fitz.Rect(150, 450, 600, 470), f"COLOR: {color}", fontsize=10, fontname="helv", render_mode=3)
+        page.insert_textbox(fitz.Rect(150, 470, 600, 490), f"CONTRIBUYENTE: {contribuyente}", fontsize=10, fontname="helv", render_mode=3)
 
         # Guardar PDF
         if not os.path.exists(PDF_OUTPUT_FOLDER):
@@ -119,7 +118,6 @@ def formulario():
 
     return render_template('formulario.html')
 
-# Ruta para descargar PDF
 @app.route('/descargar/<folio>')
 def descargar(folio):
     path = os.path.join(PDF_OUTPUT_FOLDER, f"{folio}.pdf")
