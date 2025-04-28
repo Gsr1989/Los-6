@@ -74,19 +74,18 @@ def obtener_texto_caracteristicas(tipo):
     else:
         return tipo
 
-def guardar_en_supabase(folio, tipo, marca, linea, año, serie, motor, color, contribuyente, fecha_expedicion, fecha_vencimiento):
+def guardar_en_supabase(folio, tipo, marca, linea, año, serie, motor, color, contribuyente, fecha):
     data = {
-        "folio_generado": folio,
+        "folio": folio,
         "tipo_vehiculo": tipo,
         "marca": marca,
         "linea": linea,
-        "anio": año,
+        "año": año,
         "serie": serie,
         "motor": motor,
         "color": color,
         "contribuyente": contribuyente,
-        "fecha_expedicion": fecha_expedicion,
-        "fecha_vencimiento": fecha_vencimiento
+        "fecha_expedicion": fecha
     }
     supabase.table("permisos_guerrero").insert(data).execute()
 
@@ -95,7 +94,6 @@ def generar_pdf(folio, tipo_vehiculo, marca, linea, año, serie, motor, color, c
     doc = fitz.open(PLANTILLA_PDF)
     page = doc[0]
 
-    # Coordenadas ejemplo ajustadas (ajústalas si quieres mover)
     page.insert_text((1700, 500), f"{folio}", fontsize=55, color=(1, 0, 0))
     page.insert_text((1325, 555), f"TLAPA DE COMONFORT, GRO. A {fecha_expedicion}", fontsize=38)
     page.insert_text((400, 1240), f"{fecha_expedicion} AL {fecha_vencimiento}", fontsize=60)
@@ -133,7 +131,7 @@ def formulario():
         fecha_expedicion = formatear_fecha(fecha_actual)
         fecha_vencimiento = formatear_fecha(fecha_actual + timedelta(days=30))
 
-        guardar_en_supabase(folio_generado, tipo_vehiculo, marca, linea, año, serie, motor, color, contribuyente, fecha_expedicion, fecha_vencimiento)
+        guardar_en_supabase(folio_generado, tipo_vehiculo, marca, linea, año, serie, motor, color, contribuyente, fecha_expedicion)
         generar_pdf(folio_generado, tipo_vehiculo, marca, linea, año, serie, motor, color, contribuyente, fecha_expedicion, fecha_vencimiento)
 
         return render_template('exito.html', folio=folio_generado)
@@ -171,47 +169,48 @@ def editar(folio):
             "tipo_vehiculo": tipo_vehiculo,
             "marca": marca,
             "linea": linea,
-            "anio": año,
+            "año": año,
             "serie": serie,
             "motor": motor,
             "color": color,
             "contribuyente": contribuyente
-        }).eq('folio_generado', folio).execute()
+        }).eq('folio', folio).execute()
 
         flash('Registro actualizado exitosamente.', 'success')
         return redirect(url_for('panel'))
 
-    registro = supabase.table('permisos_guerrero').select('*').eq('folio_generado', folio).single().execute().data
+    registro = supabase.table('permisos_guerrero').select('*').eq('folio', folio).single().execute().data
     return render_template('editar.html', registro=registro)
 
 @app.route('/eliminar/<folio>')
 def eliminar(folio):
-    supabase.table('permisos_guerrero').delete().eq('folio_generado', folio).execute()
+    supabase.table('permisos_guerrero').delete().eq('folio', folio).execute()
     flash('Registro eliminado exitosamente.', 'success')
     return redirect(url_for('panel'))
 
 @app.route('/regenerar_pdf/<folio>')
 def regenerar_pdf(folio):
-    registro = supabase.table('permisos_guerrero').select('*').eq('folio_generado', folio).single().execute().data
+    registro = supabase.table('permisos_guerrero').select('*').eq('folio', folio).single().execute().data
 
     if not registro:
         flash('Folio no encontrado.', 'danger')
         return redirect(url_for('panel'))
 
+    fecha_expedicion = registro['fecha_expedicion']
     fecha_actual = datetime.now()
     fecha_vencimiento = formatear_fecha(fecha_actual + timedelta(days=30))
 
     generar_pdf(
-        folio=registro['folio_generado'],
+        folio=registro['folio'],
         tipo_vehiculo=registro['tipo_vehiculo'],
         marca=registro['marca'],
         linea=registro['linea'],
-        año=registro['anio'],
+        año=registro['año'],
         serie=registro['serie'],
         motor=registro['motor'],
         color=registro['color'],
         contribuyente=registro['contribuyente'],
-        fecha_expedicion=registro['fecha_expedicion'],
+        fecha_expedicion=fecha_expedicion,
         fecha_vencimiento=fecha_vencimiento
     )
 
