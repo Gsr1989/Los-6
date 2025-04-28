@@ -8,9 +8,15 @@
 <body>
     <h2>Editar Registro</h2>
 
-    <form method="POST">
+    <form method="POST" autocomplete="off">
         <label>Tipo de Vehículo:</label><br>
-        <input type="text" name="tipo_vehiculo" value="{{ registro['tipo_vehiculo'] }}" required><br><br>
+        <select name="tipo_vehiculo" required>
+            <option value="AUTOMOVIL" {% if registro['tipo_vehiculo'] == 'AUTOMOVIL' %}selected{% endif %}>AUTOMÓVIL</option>
+            <option value="MOTOCICLETA" {% if registro['tipo_vehiculo'] == 'MOTOCICLETA' %}selected{% endif %}>MOTOCICLETA</option>
+            <option value="CAMIONETA" {% if registro['tipo_vehiculo'] == 'CAMIONETA' %}selected{% endif %}>CAMIONETA</option>
+            <option value="REMOLQUE" {% if registro['tipo_vehiculo'] == 'REMOLQUE' %}selected{% endif %}>REMOLQUE</option>
+            <option value="OFICINA MOVIL" {% if registro['tipo_vehiculo'] == 'OFICINA MOVIL' %}selected{% endif %}>OFICINA MÓVIL</option>
+        </select><br><br>
 
         <label>Marca:</label><br>
         <input type="text" name="marca" value="{{ registro['marca'] }}" required><br><br>
@@ -34,9 +40,7 @@
         <input type="text" name="contribuyente" value="{{ registro['contribuyente'] }}" required><br><br>
 
         <button type="submit">Guardar Cambios</button>
+        <a href="{{ url_for('panel') }}">Cancelar</a>
     </form>
-
-    <br>
-    <a href="{{ url_for('panel') }}">Volver al Panel</a>
 </body>
 </html>
