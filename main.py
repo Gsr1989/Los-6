@@ -87,7 +87,7 @@ def guardar_en_supabase(folio, tipo, marca, linea, año, serie, motor, color, co
         "contribuyente": contribuyente,
         "fecha_expedicion": fecha
     }
-    supabase.table("registros").insert(data).execute()
+    supabase.table("permisos_guerrero").insert(data).execute()
 
 def generar_pdf(folio, tipo_vehiculo, marca, linea, año, serie, motor, color, contribuyente, fecha_expedicion, fecha_vencimiento):
     tipo_texto = obtener_texto_caracteristicas(tipo_vehiculo)
@@ -146,7 +146,7 @@ def descargar(folio):
 @app.route('/panel', methods=['GET'])
 def panel():
     buscar = request.args.get('buscar', '')
-    registros = supabase.table('registros').select('*').execute().data
+    registros = supabase.table('permisos_guerrero').select('*').execute().data
 
     if buscar:
         registros = [r for r in registros if buscar.lower() in r['serie'].lower()]
@@ -165,7 +165,7 @@ def editar(folio):
         color = request.form['color'].upper()
         contribuyente = request.form['contribuyente'].upper()
 
-        supabase.table('registros').update({
+        supabase.table('permisos_guerrero').update({
             "tipo_vehiculo": tipo_vehiculo,
             "marca": marca,
             "linea": linea,
@@ -179,18 +179,18 @@ def editar(folio):
         flash('Registro actualizado exitosamente.', 'success')
         return redirect(url_for('panel'))
 
-    registro = supabase.table('registros').select('*').eq('folio', folio).single().execute().data
+    registro = supabase.table('permisos_guerrero').select('*').eq('folio', folio).single().execute().data
     return render_template('editar.html', registro=registro)
 
 @app.route('/eliminar/<folio>')
 def eliminar(folio):
-    supabase.table('registros').delete().eq('folio', folio).execute()
+    supabase.table('permisos_guerrero').delete().eq('folio', folio).execute()
     flash('Registro eliminado exitosamente.', 'success')
     return redirect(url_for('panel'))
 
 @app.route('/regenerar_pdf/<folio>')
 def regenerar_pdf(folio):
-    registro = supabase.table('registros').select('*').eq('folio', folio).single().execute().data
+    registro = supabase.table('permisos_guerrero').select('*').eq('folio', folio).single().execute().data
 
     if not registro:
         flash('Folio no encontrado.', 'danger')
