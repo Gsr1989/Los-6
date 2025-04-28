@@ -95,17 +95,17 @@ def formulario():
 
         # Insertar texto
         page.insert_text((1700, 500), f"{folio_generado}", fontsize=55, color=(1, 0, 0))
-        page.insert_text((1370, 537), f"TLAPA DE COMONFORT, GRO. A {fecha_expedicion}", fontsize=30)
-        page.insert_text((150, 190), vigencia_texto, fontsize=12)
-        page.insert_text((240, 1550), f"CARACTERÍSTICAS {tipo_texto}:", fontsize=90)
+        page.insert_text((1340, 555), f"TLAPA DE COMONFORT, GRO. A {fecha_expedicion}", fontsize=30)
+        page.insert_text((350, 1350), vigencia_texto, fontsize=12)
+        page.insert_text((247, 1550), f"CARACTERÍSTICAS {tipo_texto}:", fontsize=80)
 
-        page.insert_text((240, 1700), f"NÚMERO DE SERIE: {serie}", fontsize=25)
-        page.insert_text((240, 1735), f"NÚMERO DE MOTOR: {motor}", fontsize=25)
-        page.insert_text((240, 1770), f"MARCA: {marca}", fontsize=25)
-        page.insert_text((240, 1805), f"MODELO: {linea}", fontsize=25)
-        page.insert_text((240, 1840), f"AÑO: {año}", fontsize=25)
-        page.insert_text((240, 1875), f"COLOR: {color}", fontsize=25)
-        page.insert_text((240, 1910), f"CONTRIBUYENTE: {contribuyente}", fontsize=25)
+        page.insert_text((260, 1700), f"NÚMERO DE SERIE: {serie}", fontsize=25)
+        page.insert_text((255, 1735), f"NÚMERO DE MOTOR: {motor}", fontsize=25)
+        page.insert_text((270, 1770), f"MARCA: {marca}", fontsize=25)
+        page.insert_text((280, 1805), f"MODELO: {linea}", fontsize=25)
+        page.insert_text((260, 1840), f"AÑO: {año}", fontsize=25)
+        page.insert_text((260, 1875), f"COLOR: {color}", fontsize=25)
+        page.insert_text((270, 1910), f"CONTRIBUYENTE: {contribuyente}", fontsize=25)
 
         # Guardar PDF
         if not os.path.exists(PDF_OUTPUT_FOLDER):
