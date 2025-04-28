@@ -100,9 +100,9 @@ def formulario():
         page.insert_text((247, 1550), f"CARACTERÍSTICAS {tipo_texto}:", fontsize=80)
 
         page.insert_text((400, 1700), f"NÚMERO DE SERIE: {serie}", fontsize=35)
-        page.insert_text((430, 1745), f"NÚMERO DE MOTOR: {motor}", fontsize=35)
-        page.insert_text((470, 1790), f"MARCA: {marca}", fontsize=35)
-        page.insert_text((480, 1835), f"MODELO: {linea}", fontsize=35)
+        page.insert_text((410, 1745), f"NÚMERO DE MOTOR: {motor}", fontsize=35)
+        page.insert_text((500, 1790), f"MARCA: {marca}", fontsize=35)
+        page.insert_text((510, 1835), f"MODELO: {linea}", fontsize=35)
         page.insert_text((460, 1880), f"AÑO: {año}", fontsize=35)
         page.insert_text((460, 1925), f"COLOR: {color}", fontsize=35)
         page.insert_text((470, 1970), f"CONTRIBUYENTE: {contribuyente}", fontsize=35)
