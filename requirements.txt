@@ -1,5 +1,5 @@
-Flask
+Flask>=2.3.0
 gunicorn
 PyMuPDF
-supabase-py==0.2.5
+supabase>=1.0.3
 python-dotenv
