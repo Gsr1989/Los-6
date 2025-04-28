@@ -1,0 +1,9 @@
+services:
+  - type: web
+    name: los-6
+    env: python
+    buildCommand: ""
+    startCommand: gunicorn main:app
+    plan: free
+    branch: main
+    healthCheckPath: /
