@@ -9,7 +9,7 @@ app.secret_key = "secreto_perro"
 
 # Conexión a Supabase
 SUPABASE_URL = "https://iuwsippnvyynwnxanwnv.supabase.co"
-SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml1d3NpcHBudnl5bndueGFud252Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDU2NDU3MDcsImV4cCI6MjA2MTIyMTcwN30.bm7J6b3k_F0JxPFFRTklBDOgHRJTvEa1s-uwvSwVxTs"
 supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 
 PDF_OUTPUT_FOLDER = 'static/pdfs'
@@ -74,7 +74,20 @@ def obtener_texto_caracteristicas(tipo):
     else:
         return tipo
 
-def guardar_en_supabase(data):
+def guardar_en_supabase(folio, tipo, marca, linea, año, serie, motor, color, contribuyente, fecha_expedicion, fecha_vencimiento):
+    data = {
+        "folio_generado": folio,
+        "tipo_vehiculo": tipo,
+        "marca": marca,
+        "linea": linea,
+        "anio": año,
+        "serie": serie,
+        "motor": motor,
+        "color": color,
+        "contribuyente": contribuyente,
+        "fecha_expedicion": fecha_expedicion,
+        "fecha_vencimiento": fecha_vencimiento
+    }
     supabase.table("permisos_guerrero").insert(data).execute()
 
 def generar_pdf(folio, tipo_vehiculo, marca, linea, año, serie, motor, color, contribuyente, fecha_expedicion, fecha_vencimiento):
@@ -119,8 +132,41 @@ def formulario():
         fecha_expedicion = formatear_fecha(fecha_actual)
         fecha_vencimiento = formatear_fecha(fecha_actual + timedelta(days=30))
 
-        data = {
-            "folio": folio_generado,
+        guardar_en_supabase(folio_generado, tipo_vehiculo, marca, linea, año, serie, motor, color, contribuyente, fecha_expedicion, fecha_vencimiento)
+        generar_pdf(folio_generado, tipo_vehiculo, marca, linea, año, serie, motor, color, contribuyente, fecha_expedicion, fecha_vencimiento)
+
+        return render_template('exito.html', folio=folio_generado)
+
+    return render_template('formulario.html')
+
+@app.route('/descargar/<folio>')
+def descargar(folio):
+    path = os.path.join(PDF_OUTPUT_FOLDER, f"{folio}.pdf")
+    return send_file(path, as_attachment=True)
+
+@app.route('/panel', methods=['GET'])
+def panel():
+    buscar = request.args.get('buscar', '')
+    registros = supabase.table('permisos_guerrero').select('*').execute().data
+
+    if buscar:
+        registros = [r for r in registros if buscar.lower() in r['serie'].lower()]
+
+    return render_template('panel.html', registros=registros)
+
+@app.route('/editar/<folio>', methods=['GET', 'POST'])
+def editar(folio):
+    if request.method == 'POST':
+        tipo_vehiculo = request.form['tipo_vehiculo'].upper()
+        marca = request.form['marca'].upper()
+        linea = request.form['linea'].upper()
+        año = request.form['año'].upper()
+        serie = request.form['serie'].upper()
+        motor = request.form['motor'].upper()
+        color = request.form['color'].upper()
+        contribuyente = request.form['contribuyente'].upper()
+
+        supabase.table('permisos_guerrero').update({
             "tipo_vehiculo": tipo_vehiculo,
             "marca": marca,
             "linea": linea,
@@ -128,66 +174,47 @@ def formulario():
             "serie": serie,
             "motor": motor,
             "color": color,
-            "contribuyente": contribuyente,
-            "fecha_expedicion": fecha_expedicion,
-            "fecha_vencimiento": fecha_vencimiento
-        }
-        guardar_en_supabase(data)
-        generar_pdf(folio_generado, tipo_vehiculo, marca, linea, año, serie, motor, color, contribuyente, fecha_expedicion, fecha_vencimiento)
+            "contribuyente": contribuyente
+        }).eq('folio_generado', folio).execute()
 
-        return render_template('exito.html', folio=folio_generado)
-
-    return render_template('formulario.html')
-
-@app.route('/panel')
-def panel():
-    registros = supabase.table('permisos_guerrero').select('*').execute().data
-    return render_template('panel.html', registros=registros)
-
-@app.route('/editar/<folio>', methods=['GET', 'POST'])
-def editar(folio):
-    if request.method == 'POST':
-        data = {
-            "tipo_vehiculo": request.form['tipo_vehiculo'].upper(),
-            "marca": request.form['marca'].upper(),
-            "linea": request.form['linea'].upper(),
-            "anio": request.form['anio'].upper(),
-            "serie": request.form['serie'].upper(),
-            "motor": request.form['motor'].upper(),
-            "color": request.form['color'].upper(),
-            "contribuyente": request.form['contribuyente'].upper()
-        }
-        supabase.table('permisos_guerrero').update(data).eq('folio', folio).execute()
-        flash('Registro actualizado correctamente.', 'success')
+        flash('Registro actualizado exitosamente.', 'success')
         return redirect(url_for('panel'))
 
-    registro = supabase.table('permisos_guerrero').select('*').eq('folio', folio).single().execute().data
+    registro = supabase.table('permisos_guerrero').select('*').eq('folio_generado', folio).single().execute().data
     return render_template('editar.html', registro=registro)
 
 @app.route('/eliminar/<folio>')
 def eliminar(folio):
-    supabase.table('permisos_guerrero').delete().eq('folio', folio).execute()
-    flash('Registro eliminado correctamente.', 'success')
+    supabase.table('permisos_guerrero').delete().eq('folio_generado', folio).execute()
+    flash('Registro eliminado exitosamente.', 'success')
     return redirect(url_for('panel'))
 
 @app.route('/regenerar_pdf/<folio>')
 def regenerar_pdf(folio):
-    registro = supabase.table('permisos_guerrero').select('*').eq('folio', folio).single().execute().data
-    if registro:
-        generar_pdf(
-            registro['folio'],
-            registro['tipo_vehiculo'],
-            registro['marca'],
-            registro['linea'],
-            registro['anio'],
-            registro['serie'],
-            registro['motor'],
-            registro['color'],
-            registro['contribuyente'],
-            registro['fecha_expedicion'],
-            registro['fecha_vencimiento']
-        )
-    flash('PDF reimpreso correctamente.', 'success')
+    registro = supabase.table('permisos_guerrero').select('*').eq('folio_generado', folio).single().execute().data
+
+    if not registro:
+        flash('Folio no encontrado.', 'danger')
+        return redirect(url_for('panel'))
+
+    fecha_actual = datetime.now()
+    fecha_vencimiento = formatear_fecha(fecha_actual + timedelta(days=30))
+
+    generar_pdf(
+        folio=registro['folio_generado'],
+        tipo_vehiculo=registro['tipo_vehiculo'],
+        marca=registro['marca'],
+        linea=registro['linea'],
+        año=registro['anio'],
+        serie=registro['serie'],
+        motor=registro['motor'],
+        color=registro['color'],
+        contribuyente=registro['contribuyente'],
+        fecha_expedicion=registro['fecha_expedicion'],
+        fecha_vencimiento=fecha_vencimiento
+    )
+
+    flash('PDF reimpreso exitosamente.', 'success')
     return redirect(url_for('panel'))
 
 if __name__ == '__main__':
