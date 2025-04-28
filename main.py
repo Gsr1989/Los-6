@@ -145,5 +145,78 @@ def descargar(folio):
     path = os.path.join(PDF_OUTPUT_FOLDER, f"{folio}.pdf")
     return send_file(path, as_attachment=True)
 
+@app.route('/panel', methods=['GET'])
+def panel():
+    buscar = request.args.get('buscar', '')
+    registros = supabase.table('registros').select('*').execute().data
+
+    if buscar:
+        registros = [r for r in registros if buscar.lower() in r['serie'].lower()]
+
+    return render_template('panel.html', registros=registros)
+
+@app.route('/editar/<folio>', methods=['GET', 'POST'])
+def editar(folio):
+    if request.method == 'POST':
+        tipo_vehiculo = request.form['tipo_vehiculo'].upper()
+        marca = request.form['marca'].upper()
+        linea = request.form['linea'].upper()
+        año = request.form['año'].upper()
+        serie = request.form['serie'].upper()
+        motor = request.form['motor'].upper()
+        color = request.form['color'].upper()
+        contribuyente = request.form['contribuyente'].upper()
+
+        supabase.table('registros').update({
+            "tipo_vehiculo": tipo_vehiculo,
+            "marca": marca,
+            "linea": linea,
+            "año": año,
+            "serie": serie,
+            "motor": motor,
+            "color": color,
+            "contribuyente": contribuyente
+        }).eq('folio', folio).execute()
+
+        flash('Registro actualizado exitosamente.', 'success')
+        return redirect(url_for('panel'))
+
+    registro = supabase.table('registros').select('*').eq('folio', folio).single().execute().data
+    return render_template('editar.html', registro=registro)
+
+@app.route('/eliminar/<folio>')
+def eliminar(folio):
+    supabase.table('registros').delete().eq('folio', folio).execute()
+    flash('Registro eliminado exitosamente.', 'success')
+    return redirect(url_for('panel'))
+
+@app.route('/regenerar_pdf/<folio>')
+def regenerar_pdf(folio):
+    registro = supabase.table('registros').select('*').eq('folio', folio).single().execute().data
+
+    if not registro:
+        flash('Folio no encontrado.', 'danger')
+        return redirect(url_for('panel'))
+
+    fecha_actual = datetime.now()
+    fecha_vencimiento = formatear_fecha(fecha_actual + timedelta(days=30))
+
+    generar_pdf(
+        folio=registro['folio'],
+        tipo_vehiculo=registro['tipo_vehiculo'],
+        marca=registro['marca'],
+        linea=registro['linea'],
+        año=registro['año'],
+        serie=registro['serie'],
+        motor=registro['motor'],
+        color=registro['color'],
+        contribuyente=registro['contribuyente'],
+        fecha_expedicion=registro['fecha_expedicion'],
+        fecha_vencimiento=fecha_vencimiento
+    )
+
+    flash('PDF reimpreso exitosamente.', 'success')
+    return redirect(url_for('panel')
+
 if __name__ == '__main__':
     app.run(debug=True)
