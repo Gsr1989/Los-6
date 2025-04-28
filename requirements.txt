@@ -1,3 +1,8 @@
-flask
-PyMuPDF
+Flask
 gunicorn
+supabase
+PyMuPDF
+requests
+python-dotenv
+pytz
+qrcode
