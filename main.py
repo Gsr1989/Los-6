@@ -183,38 +183,10 @@ def editar(folio):
     registro = supabase.table('permisos_guerrero').select('*').eq('folio_generado', folio).single().execute().data
     return render_template('editar.html', registro=registro)
 
-@app.route('/eliminar/<folio>')
+@app.route('/eliminar/<folio>', methods=['POST'])
 def eliminar(folio):
     supabase.table('permisos_guerrero').delete().eq('folio_generado', folio).execute()
     flash('Registro eliminado exitosamente.', 'success')
-    return redirect(url_for('panel'))
-
-@app.route('/regenerar_pdf/<folio>')
-def regenerar_pdf(folio):
-    registro = supabase.table('permisos_guerrero').select('*').eq('folio_generado', folio).single().execute().data
-
-    if not registro:
-        flash('Folio no encontrado.', 'danger')
-        return redirect(url_for('panel'))
-
-    fecha_actual = datetime.now()
-    fecha_vencimiento = formatear_fecha(fecha_actual + timedelta(days=30))
-
-    generar_pdf(
-        folio=registro['folio_generado'],
-        tipo_vehiculo=registro['tipo_vehiculo'],
-        marca=registro['marca'],
-        linea=registro['linea'],
-        año=registro['anio'],
-        serie=registro['serie'],
-        motor=registro['motor'],
-        color=registro['color'],
-        contribuyente=registro['contribuyente'],
-        fecha_expedicion=registro['fecha_expedicion'],
-        fecha_vencimiento=fecha_vencimiento
-    )
-
-    flash('PDF reimpreso exitosamente.', 'success')
     return redirect(url_for('panel'))
 
 if __name__ == '__main__':
