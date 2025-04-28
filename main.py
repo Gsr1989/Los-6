@@ -91,20 +91,20 @@ def formulario():
         page = doc[0]
 
         # Insertar datos en coordenadas
-        page.insert_text((1700, 500), folio_generado, fontsize=50, color=(1, 0, 0), fontname="helv", render_mode=3)
-        page.insert_text((1600, 530), f"TLAPA DE COMONFORT, GRO. A {fecha_expedicion.upper()}", fontsize=45, fontname="helv", render_mode=3)
-        page.insert_text((900, 1600), fecha_vigencia, fontsize=30, fontname="helv", render_mode=3)
+        page.insert_text((100, 100), folio_generado, fontsize=50, color=(1, 0, 0), fontname="helv", render_mode=3)
+        page.insert_text((100, 130), f"TLAPA DE COMONFORT, GRO. A {fecha_expedicion.upper()}", fontsize=45, fontname="helv", render_mode=3)
+        page.insert_text((100, 160), fecha_vigencia, fontsize=30, fontname="helv", render_mode=3)
         
         caracteristicas_titulo = f"CARACTERÍSTICAS DEL {tipo_vehiculo}:"
-        page.insert_text((300, 1230), caracteristicas_titulo, fontsize=30, fontname="helv", render_mode=3)
+        page.insert_text((100, 190), caracteristicas_titulo, fontsize=30, fontname="helv", render_mode=3)
         
-        page.insert_text((300, 1860), f"NÚMERO DE SERIE: {serie}", fontsize=20, fontname="helv", render_mode=3)
-        page.insert_text((300, 1890), f"NÚMERO DE MOTOR: {motor}", fontsize=20, fontname="helv", render_mode=3)
-        page.insert_text((300, 1910), f"MARCA: {marca}", fontsize=20, fontname="helv", render_mode=3)
-        page.insert_text((300, 1940), f"MODELO: {linea}", fontsize=20, fontname="helv", render_mode=3)
-        page.insert_text((300, 1970), f"AÑO: {año}", fontsize=20, fontname="helv", render_mode=3)
-        page.insert_text((300, 2000), f"COLOR: {color}", fontsize=20, fontname="helv", render_mode=3)
-        page.insert_text((300, 2030), f"CONTRIBUYENTE: {contribuyente}", fontsize=20, fontname="helv", render_mode=3)
+        page.insert_text((100, 220), f"NÚMERO DE SERIE: {serie}", fontsize=20, fontname="helv", render_mode=3)
+        page.insert_text((100, 250), f"NÚMERO DE MOTOR: {motor}", fontsize=20, fontname="helv", render_mode=3)
+        page.insert_text((100, 280), f"MARCA: {marca}", fontsize=20, fontname="helv", render_mode=3)
+        page.insert_text((100, 310), f"MODELO: {linea}", fontsize=20, fontname="helv", render_mode=3)
+        page.insert_text((100, 340), f"AÑO: {año}", fontsize=20, fontname="helv", render_mode=3)
+        page.insert_text((100, 370), f"COLOR: {color}", fontsize=20, fontname="helv", render_mode=3)
+        page.insert_text((100, 400), f"CONTRIBUYENTE: {contribuyente}", fontsize=20, fontname="helv", render_mode=3)
 
         if not os.path.exists(PDF_OUTPUT_FOLDER):
             os.makedirs(PDF_OUTPUT_FOLDER)
