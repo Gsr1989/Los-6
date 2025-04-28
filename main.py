@@ -1,60 +1,127 @@
-from flask import Flask, render_template, request, redirect, url_for, send_file from datetime import datetime, timedelta import fitz  # PyMuPDF import os
+from flask import Flask, render_template, request, redirect, url_for, send_file
+from datetime import datetime, timedelta
+import fitz  # PyMuPDF
+import os
 
-app = Flask(name)
+app = Flask(__name__)
 
-PDF_OUTPUT_FOLDER = 'static/pdfs' PLANTILLA_PDF = 'Guerrero.pdf' FOLIO_FILE = 'folio_actual.txt'
+PDF_OUTPUT_FOLDER = 'static/pdfs'
+PLANTILLA_PDF = 'Guerrero.pdf'
+FOLIO_FILE = 'folio_actual.txt'
 
-def cargar_folio(): if not os.path.exists(FOLIO_FILE): with open(FOLIO_FILE, 'w') as f: f.write('AC0000') with open(FOLIO_FILE, 'r') as f: return f.read().strip()
+def cargar_folio():
+    if not os.path.exists(FOLIO_FILE):
+        with open(FOLIO_FILE, 'w') as f:
+            f.write('AC0000')
+    with open(FOLIO_FILE, 'r') as f:
+        return f.read().strip()
 
-def siguiente_folio(folio_actual): letras = folio_actual[:2] numeros = int(folio_actual[2:]) if numeros < 9999: numeros += 1 else: letras = incrementar_letras(letras) numeros = 1 nuevo_folio = f"{letras}{numeros:04d}" with open(FOLIO_FILE, 'w') as f: f.write(nuevo_folio) return nuevo_folio
+def siguiente_folio(folio_actual):
+    letras = folio_actual[:2]
+    numeros = int(folio_actual[2:])
+    if numeros < 9999:
+        numeros += 1
+    else:
+        letras = incrementar_letras(letras)
+        numeros = 1
+    nuevo_folio = f"{letras}{numeros:04d}"
+    with open(FOLIO_FILE, 'w') as f:
+        f.write(nuevo_folio)
+    return nuevo_folio
 
-def incrementar_letras(letras): letra1, letra2 = letras if letra2 != 'Z': letra2 = chr(ord(letra2) + 1) else: letra2 = 'A' if letra1 != 'Z': letra1 = chr(ord(letra1) + 1) else: letra1 = 'A' return letra1 + letra2
+def incrementar_letras(letras):
+    letra1, letra2 = letras
+    if letra2 != 'Z':
+        letra2 = chr(ord(letra2) + 1)
+    else:
+        letra2 = 'A'
+        if letra1 != 'Z':
+            letra1 = chr(ord(letra1) + 1)
+        else:
+            letra1 = 'A'
+    return letra1 + letra2
 
-def formatear_fecha(fecha): meses = { "January": "ENERO", "February": "FEBRERO", "March": "MARZO", "April": "ABRIL", "May": "MAYO", "June": "JUNIO", "July": "JULIO", "August": "AGOSTO", "September": "SEPTIEMBRE", "October": "OCTUBRE", "November": "NOVIEMBRE", "December": "DICIEMBRE" } dia = fecha.day mes = meses[fecha.strftime('%B')] año = fecha.year return f"{dia} DE {mes} DE {año}"
+def formatear_fecha(fecha):
+    meses = {
+        "January": "ENERO", "February": "FEBRERO", "March": "MARZO", "April": "ABRIL",
+        "May": "MAYO", "June": "JUNIO", "July": "JULIO", "August": "AGOSTO",
+        "September": "SEPTIEMBRE", "October": "OCTUBRE", "November": "NOVIEMBRE", "December": "DICIEMBRE"
+    }
+    dia = fecha.day
+    mes = meses[fecha.strftime('%B')]
+    año = fecha.year
+    return f"{dia} DE {mes} DE {año}"
 
-def obtener_texto_caracteristicas(tipo): tipo = tipo.upper() if tipo == "AUTOMOVIL": return "DEL AUTOMÓVIL" elif tipo == "MOTOCICLETA": return "DE LA MOTOCICLETA" elif tipo == "CAMIONETA": return "DE LA CAMIONETA" elif tipo == "OFICINA MOVIL": return "DE LA OFICINA MÓVIL" elif tipo == "REMOLQUE": return "DEL REMOLQUE" else: return tipo
+def obtener_texto_caracteristicas(tipo):
+    tipo = tipo.upper()
+    if tipo == "AUTOMOVIL":
+        return "DEL AUTOMÓVIL"
+    elif tipo == "MOTOCICLETA":
+        return "DE LA MOTOCICLETA"
+    elif tipo == "CAMIONETA":
+        return "DE LA CAMIONETA"
+    elif tipo == "OFICINA MOVIL":
+        return "DE LA OFICINA MÓVIL"
+    elif tipo == "REMOLQUE":
+        return "DEL REMOLQUE"
+    else:
+        return tipo
 
-@app.route('/', methods=['GET', 'POST']) def formulario(): if request.method == 'POST': tipo_vehiculo = request.form['tipo_vehiculo'].upper() marca = request.form['marca'].upper() linea = request.form['linea'].upper() año = request.form['año'].upper() serie = request.form['serie'].upper() motor = request.form['motor'].upper() color = request.form['color'].upper() contribuyente = request.form['contribuyente'].upper()
+@app.route('/', methods=['GET', 'POST'])
+def formulario():
+    if request.method == 'POST':
+        tipo_vehiculo = request.form['tipo_vehiculo'].upper()
+        marca = request.form['marca'].upper()
+        linea = request.form['linea'].upper()
+        año = request.form['año'].upper()
+        serie = request.form['serie'].upper()
+        motor = request.form['motor'].upper()
+        color = request.form['color'].upper()
+        contribuyente = request.form['contribuyente'].upper()
 
-folio_actual = cargar_folio()
-    folio_generado = siguiente_folio(folio_actual)
+        folio_actual = cargar_folio()
+        folio_generado = siguiente_folio(folio_actual)
 
-    fecha_actual = datetime.now()
-    fecha_expedicion = formatear_fecha(fecha_actual)
-    fecha_vencimiento = formatear_fecha(fecha_actual + timedelta(days=30))
-    vigencia_texto = f"{fecha_expedicion} AL {fecha_vencimiento}"
+        fecha_actual = datetime.now()
+        fecha_expedicion = formatear_fecha(fecha_actual)
+        fecha_vencimiento = formatear_fecha(fecha_actual + timedelta(days=30))
+        vigencia_texto = f"{fecha_expedicion} AL {fecha_vencimiento}"
 
-    tipo_texto = obtener_texto_caracteristicas(tipo_vehiculo)
+        tipo_texto = obtener_texto_caracteristicas(tipo_vehiculo)
 
-    # Cargar plantilla
-    doc = fitz.open(PLANTILLA_PDF)
-    page = doc[0]
+        # Cargar plantilla
+        doc = fitz.open(PLANTILLA_PDF)
+        page = doc[0]
 
-    # Insertar texto
-    page.insert_text((1700, 500), f"{folio_generado}", fontsize=55, color=(1, 0, 0))
-    page.insert_text((1325, 555), f"TLAPA DE COMONFORT, GRO. A {fecha_expedicion}", fontsize=38)
-    page.insert_text((400, 1340), vigencia_texto, fontsize=60)
-    page.insert_text((247, 1550), f"CARACTERÍSTICAS {tipo_texto}:", fontsize=75)
+        # Insertar texto EN NEGRITAS con fontname explícito
+        page.insert_text((1700, 500), f"{folio_generado}", fontsize=55, fontname="helv", color=(1, 0, 0), render_mode=3)
+        page.insert_text((1325, 555), f"TLAPA DE COMONFORT, GRO. A {fecha_expedicion}", fontsize=38, fontname="helv", render_mode=3)
+        page.insert_text((400, 1340), vigencia_texto, fontsize=60, fontname="helv", render_mode=3)
+        page.insert_text((247, 1550), f"CARACTERÍSTICAS {tipo_texto}:", fontsize=75, fontname="helv", render_mode=3)
 
-    page.insert_text((400, 1700), f"NÚMERO DE SERIE: {serie}", fontsize=35)
-    page.insert_text((375, 1745), f"NÚMERO DE MOTOR: {motor}", fontsize=35)
-    page.insert_text((602, 1790), f"MARCA: {marca}", fontsize=35)
-    page.insert_text((575, 1835), f"MODELO: {linea}", fontsize=35)
-    page.insert_text((652, 1880), f"AÑO: {año}", fontsize=35)
-    page.insert_text((602, 1925), f"COLOR: {color}", fontsize=35)
-    page.insert_text((426, 1970), f"CONTRIBUYENTE: {contribuyente}", fontsize=35)
+        page.insert_text((400, 1700), f"NÚMERO DE SERIE: {serie}", fontsize=35, fontname="helv", render_mode=3)
+        page.insert_text((375, 1745), f"NÚMERO DE MOTOR: {motor}", fontsize=35, fontname="helv", render_mode=3)
+        page.insert_text((602, 1790), f"MARCA: {marca}", fontsize=35, fontname="helv", render_mode=3)
+        page.insert_text((575, 1835), f"MODELO: {linea}", fontsize=35, fontname="helv", render_mode=3)
+        page.insert_text((652, 1880), f"AÑO: {año}", fontsize=35, fontname="helv", render_mode=3)
+        page.insert_text((602, 1925), f"COLOR: {color}", fontsize=35, fontname="helv", render_mode=3)
+        page.insert_text((426, 1970), f"CONTRIBUYENTE: {contribuyente}", fontsize=35, fontname="helv", render_mode=3)
 
-    # Guardar PDF
-    if not os.path.exists(PDF_OUTPUT_FOLDER):
-        os.makedirs(PDF_OUTPUT_FOLDER)
-    output_path = os.path.join(PDF_OUTPUT_FOLDER, f"{folio_generado}.pdf")
-    doc.save(output_path)
-    doc.close()
+        # Guardar PDF
+        if not os.path.exists(PDF_OUTPUT_FOLDER):
+            os.makedirs(PDF_OUTPUT_FOLDER)
+        output_path = os.path.join(PDF_OUTPUT_FOLDER, f"{folio_generado}.pdf")
+        doc.save(output_path)
+        doc.close()
 
-    return render_template('exito.html', folio=folio_generado)
+        return render_template('exito.html', folio=folio_generado)
 
-return render_template('formulario.html')
+    return render_template('formulario.html')
 
-@app.route('/descargar/<folio>') def descargar(folio): path = os.path.join(PDF_OUTPUT_FOLDER, f"{folio}.pdf") return send_file(path, as_attachment=True)
+@app.route('/descargar/<folio>')
+def descargar(folio):
+    path = os.path.join(PDF_OUTPUT_FOLDER, f"{folio}.pdf")
+    return send_file(path, as_attachment=True)
 
-if name == 'main': app.run(debug=True)
+if __name__ == '__main__':
+    app.run(debug=True)
