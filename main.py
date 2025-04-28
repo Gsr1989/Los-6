@@ -7,7 +7,6 @@ import os
 app = Flask(__name__)
 app.secret_key = "secreto_perro"
 
-# Conexión a Supabase
 SUPABASE_URL = "https://iuwsippnvyynwnxanwnv.supabase.co"
 SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml1d3NpcHBudnl5bndueGFud252Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDU2NDU3MDcsImV4cCI6MjA2MTIyMTcwN30.bm7J6b3k_F0JxPFFRTklBDOgHRJTvEa1s-uwvSwVxTs"
 supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
@@ -139,11 +138,6 @@ def formulario():
 
     return render_template('formulario.html')
 
-@app.route('/descargar/<folio>')
-def descargar(folio):
-    path = os.path.join(PDF_OUTPUT_FOLDER, f"{folio}.pdf")
-    return send_file(path, as_attachment=True)
-
 @app.route('/panel', methods=['GET'])
 def panel():
     buscar = request.args.get('buscar', '')
@@ -188,6 +182,15 @@ def eliminar(folio):
     supabase.table('permisos_guerrero').delete().eq('folio_generado', folio).execute()
     flash('Registro eliminado exitosamente.', 'success')
     return redirect(url_for('panel'))
+
+@app.route('/descargar/<folio>')
+def descargar(folio):
+    path = os.path.join(PDF_OUTPUT_FOLDER, f"{folio}.pdf")
+    if os.path.exists(path):
+        return send_file(path, as_attachment=True)
+    else:
+        flash('El PDF no existe.', 'danger')
+        return redirect(url_for('panel'))
 
 if __name__ == '__main__':
     app.run(debug=True)
