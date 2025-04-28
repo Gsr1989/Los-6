@@ -90,21 +90,21 @@ def formulario():
         doc = fitz.open(PLANTILLA_PDF)
         page = doc[0]
 
-        # Insertar datos en coordenadas
-        page.insert_text((100, 100), folio_generado, fontsize=50, color=(1, 0, 0), fontname="helv", render_mode=3)
-        page.insert_text((100, 130), f"TLAPA DE COMONFORT, GRO. A {fecha_expedicion.upper()}", fontsize=45, fontname="helv", render_mode=3)
-        page.insert_text((100, 160), fecha_vigencia, fontsize=30, fontname="helv", render_mode=3)
-        
+        # Insertar datos usando insert_textbox
+        page.insert_textbox(fitz.Rect(125, 480, 500, 550), folio_generado, fontsize=14, fontname="helv", color=(1, 0, 0), render_mode=3, align=1)
+        page.insert_textbox(fitz.Rect(320, 510, 1200, 580), f"TLAPA DE COMONFORT, GRO. A {fecha_expedicion.upper()}", fontsize=12, fontname="helv", color=(0, 0, 0), render_mode=3, align=0)
+        page.insert_textbox(fitz.Rect(100, 620, 1200, 700), fecha_vigencia, fontsize=14, fontname="helv", color=(0, 0, 0), render_mode=3, align=1)
+
         caracteristicas_titulo = f"CARACTERÍSTICAS DEL {tipo_vehiculo}:"
-        page.insert_text((100, 190), caracteristicas_titulo, fontsize=30, fontname="helv", render_mode=3)
-        
-        page.insert_text((100, 220), f"NÚMERO DE SERIE: {serie}", fontsize=20, fontname="helv", render_mode=3)
-        page.insert_text((100, 250), f"NÚMERO DE MOTOR: {motor}", fontsize=20, fontname="helv", render_mode=3)
-        page.insert_text((100, 280), f"MARCA: {marca}", fontsize=20, fontname="helv", render_mode=3)
-        page.insert_text((100, 310), f"MODELO: {linea}", fontsize=20, fontname="helv", render_mode=3)
-        page.insert_text((100, 340), f"AÑO: {año}", fontsize=20, fontname="helv", render_mode=3)
-        page.insert_text((100, 370), f"COLOR: {color}", fontsize=20, fontname="helv", render_mode=3)
-        page.insert_text((100, 400), f"CONTRIBUYENTE: {contribuyente}", fontsize=20, fontname="helv", render_mode=3)
+        page.insert_textbox(fitz.Rect(100, 730, 1200, 780), caracteristicas_titulo, fontsize=12, fontname="helv", color=(0, 0, 0), render_mode=3, align=0)
+
+        page.insert_textbox(fitz.Rect(100, 770, 1200, 800), f"NÚMERO DE SERIE: {serie}", fontsize=10, fontname="helv", color=(0, 0, 0), render_mode=3)
+        page.insert_textbox(fitz.Rect(100, 800, 1200, 830), f"NÚMERO DE MOTOR: {motor}", fontsize=10, fontname="helv", color=(0, 0, 0), render_mode=3)
+        page.insert_textbox(fitz.Rect(100, 830, 1200, 860), f"MARCA: {marca}", fontsize=10, fontname="helv", color=(0, 0, 0), render_mode=3)
+        page.insert_textbox(fitz.Rect(100, 860, 1200, 890), f"MODELO: {linea}", fontsize=10, fontname="helv", color=(0, 0, 0), render_mode=3)
+        page.insert_textbox(fitz.Rect(100, 890, 1200, 920), f"AÑO: {año}", fontsize=10, fontname="helv", color=(0, 0, 0), render_mode=3)
+        page.insert_textbox(fitz.Rect(100, 920, 1200, 950), f"COLOR: {color}", fontsize=10, fontname="helv", color=(0, 0, 0), render_mode=3)
+        page.insert_textbox(fitz.Rect(100, 950, 1200, 980), f"CONTRIBUYENTE: {contribuyente}", fontsize=10, fontname="helv", color=(0, 0, 0), render_mode=3)
 
         if not os.path.exists(PDF_OUTPUT_FOLDER):
             os.makedirs(PDF_OUTPUT_FOLDER)
