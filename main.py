@@ -102,10 +102,10 @@ def formulario():
         page.insert_text((400, 1700), f"NÚMERO DE SERIE: {serie}", fontsize=35)
         page.insert_text((375, 1745), f"NÚMERO DE MOTOR: {motor}", fontsize=35)
         page.insert_text((600, 1790), f"MARCA: {marca}", fontsize=35)
-        page.insert_text((550, 1835), f"MODELO: {linea}", fontsize=35)
-        page.insert_text((460, 1880), f"AÑO: {año}", fontsize=35)
-        page.insert_text((460, 1925), f"COLOR: {color}", fontsize=35)
-        page.insert_text((470, 1970), f"CONTRIBUYENTE: {contribuyente}", fontsize=35)
+        page.insert_text((570, 1835), f"MODELO: {linea}", fontsize=35)
+        page.insert_text((600, 1880), f"AÑO: {año}", fontsize=35)
+        page.insert_text((660, 1925), f"COLOR: {color}", fontsize=35)
+        page.insert_text((450, 1970), f"CONTRIBUYENTE: {contribuyente}", fontsize=35)
 
         # Guardar PDF
         if not os.path.exists(PDF_OUTPUT_FOLDER):
