@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Panel de Permisos</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+            padding: 20px;
+        }
+        h2 {
+            text-align: center;
+        }
+        form {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        input[type="text"] {
+            padding: 8px;
+            width: 300px;
+            margin-right: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+        button {
+            padding: 8px 20px;
+            background-color: #8a1538;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        button:hover {
+            background-color: #70122d;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background-color: white;
+        }
+        th, td {
+            border: 1px solid #ccc;
+            padding: 10px;
+            text-align: center;
+        }
+        th {
+            background-color: #8a1538;
+            color: white;
+        }
+        a {
+            color: #8a1538;
+            font-weight: bold;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <h2>Panel de Permisos</h2>
+
+    <form method="GET">
+        <input type="text" name="buscar" placeholder="Buscar por número de serie">
+        <button type="submit">Buscar</button>
+    </form>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Folio</th>
+                <th>Serie</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for registro in registros %}
+            <tr>
+                <td>{{ registro.folio }}</td>
+                <td>{{ registro.serie }}</td>
+                <td>
+                    <a href="{{ url_for('descargar', folio=registro.folio) }}">Descargar PDF</a> |
+                    <a href="{{ url_for('editar', folio=registro.folio) }}">Editar</a> |
+                    <a href="{{ url_for('eliminar', folio=registro.folio) }}" onclick="return confirm('¿Seguro que deseas eliminar este registro?')">Eliminar</a> |
+                    <a href="{{ url_for('regenerar_pdf', folio=registro.folio) }}">Reimprimir PDF</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>
