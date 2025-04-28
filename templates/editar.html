@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Editar Registro</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f9f9f9;
+            padding: 20px;
+        }
+        h2 {
+            text-align: center;
+            color: #8a1538;
+        }
+        form {
+            max-width: 500px;
+            margin: 20px auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #8a1538;
+            color: white;
+            border: none;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+        a {
+            display: block;
+            text-align: center;
+            margin-top: 15px;
+            text-decoration: none;
+            color: #8a1538;
+        }
+    </style>
+</head>
+<body>
+    <h2>Editar Registro</h2>
+
+    <form method="POST">
+        <label>Tipo de Vehículo:</label>
+        <input type="text" name="tipo_vehiculo" value="{{ registro['tipo_vehiculo'] }}" required>
+
+        <label>Marca:</label>
+        <input type="text" name="marca" value="{{ registro['marca'] }}" required>
+
+        <label>Línea:</label>
+        <input type="text" name="linea" value="{{ registro['linea'] }}" required>
+
+        <label>Año:</label>
+        <input type="text" name="año" value="{{ registro['año'] }}" required>
+
+        <label>Número de Serie:</label>
+        <input type="text" name="serie" value="{{ registro['serie'] }}" required>
+
+        <label>Número de Motor:</label>
+        <input type="text" name="motor" value="{{ registro['motor'] }}" required>
+
+        <label>Color:</label>
+        <input type="text" name="color" value="{{ registro['color'] }}" required>
+
+        <label>Contribuyente:</label>
+        <input type="text" name="contribuyente" value="{{ registro['contribuyente'] }}" required>
+
+        <button type="submit">Guardar Cambios</button>
+    </form>
+
+    <a href="{{ url_for('panel') }}">Volver al Panel</a>
+</body>
+  </html>
