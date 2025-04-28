@@ -38,9 +38,11 @@
                 <td>{{ r['contribuyente'] }}</td>
                 <td>
                     <a href="{{ url_for('editar', folio=r['folio_generado']) }}">Editar</a> |
-                    <form action="{{ url_for('eliminar', folio=r['folio_generado']) }}" method="post" style="display:inline;">
-                        <button type="submit" onclick="return confirm('¿Estás seguro que quieres eliminar este registro?');">Eliminar</button>
+
+                    <form method="POST" action="{{ url_for('eliminar', folio=r['folio_generado']) }}" style="display:inline;">
+                        <button type="submit" onclick="return confirm('¿Seguro que quieres eliminar este registro?');">Eliminar</button>
                     </form> |
+
                     <a href="{{ url_for('descargar', folio=r['folio_generado']) }}">Descargar PDF</a>
                 </td>
             </tr>
