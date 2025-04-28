@@ -6,34 +6,37 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 <body>
-    <h2>Registrar Automóvil o Motocicleta</h2>
-    <form method="POST">
+    <h2>Registrar Vehículo</h2>
+    <form method="POST" autocomplete="off">
         <label>Tipo de Vehículo:</label>
         <select name="tipo_vehiculo" required>
-            <option value="Automóvil">Automóvil</option>
-            <option value="Motocicleta">Motocicleta</option>
+            <option value="AUTOMÓVIL">AUTOMÓVIL</option>
+            <option value="MOTOCICLETA">MOTOCICLETA</option>
+            <option value="CAMIONETA">CAMIONETA</option>
+            <option value="REMOLQUE">REMOLQUE</option>
+            <option value="OFICINA MÓVIL">OFICINA MÓVIL</option>
         </select><br><br>
 
         <label>Marca:</label><br>
-        <input type="text" name="marca" required><br><br>
+        <input type="text" name="marca" required autocomplete="off"><br><br>
 
         <label>Línea:</label><br>
-        <input type="text" name="linea" required><br><br>
+        <input type="text" name="linea" required autocomplete="off"><br><br>
 
         <label>Año:</label><br>
-        <input type="text" name="año" required><br><br>
+        <input type="text" name="año" required autocomplete="off"><br><br>
 
         <label>Número de Serie:</label><br>
-        <input type="text" name="serie" required><br><br>
+        <input type="text" name="serie" required autocomplete="off"><br><br>
 
         <label>Número de Motor:</label><br>
-        <input type="text" name="motor" required><br><br>
+        <input type="text" name="motor" required autocomplete="off"><br><br>
 
         <label>Color:</label><br>
-        <input type="text" name="color" required><br><br>
+        <input type="text" name="color" required autocomplete="off"><br><br>
 
         <label>Nombre del Contribuyente:</label><br>
-        <input type="text" name="contribuyente" required><br><br>
+        <input type="text" name="contribuyente" required autocomplete="off"><br><br>
 
         <button type="submit">Generar PDF</button>
     </form>
