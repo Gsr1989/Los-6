@@ -22,13 +22,11 @@ def cargar_folio():
 def siguiente_folio(folio_actual):
     letras = folio_actual[:2]
     numeros = int(folio_actual[2:])
-
     if numeros < 9999:
         numeros += 1
     else:
         letras = incrementar_letras(letras)
         numeros = 1
-
     nuevo_folio = f"{letras}{numeros:04d}"
     with open(FOLIO_FILE, 'w') as f:
         f.write(nuevo_folio)
@@ -46,41 +44,56 @@ def incrementar_letras(letras):
             letra1 = 'A'
     return letra1 + letra2
 
+# Función para formatear fechas
+def formatear_fecha(fecha):
+    meses = {
+        "January": "ENERO", "February": "FEBRERO", "March": "MARZO", "April": "ABRIL",
+        "May": "MAYO", "June": "JUNIO", "July": "JULIO", "August": "AGOSTO",
+        "September": "SEPTIEMBRE", "October": "OCTUBRE", "November": "NOVIEMBRE", "December": "DICIEMBRE"
+    }
+    dia = fecha.day
+    mes = meses[fecha.strftime('%B')]
+    año = fecha.year
+    return f"{dia} DE {mes} DE {año}"
+
 # Ruta formulario
 @app.route('/', methods=['GET', 'POST'])
 def formulario():
     if request.method == 'POST':
-        tipo_vehiculo = request.form['tipo_vehiculo']
-        marca = request.form['marca']
-        linea = request.form['linea']
-        año = request.form['año']
-        serie = request.form['serie']
-        motor = request.form['motor']
-        color = request.form['color']
-        contribuyente = request.form['contribuyente']
+        tipo_vehiculo = request.form['tipo_vehiculo'].upper()
+        marca = request.form['marca'].upper()
+        linea = request.form['linea'].upper()
+        año = request.form['año'].upper()
+        serie = request.form['serie'].upper()
+        motor = request.form['motor'].upper()
+        color = request.form['color'].upper()
+        contribuyente = request.form['contribuyente'].upper()
 
         folio_actual = cargar_folio()
         folio_generado = siguiente_folio(folio_actual)
 
-        fecha_expedicion = datetime.now().strftime('%d/%m/%Y')
-        fecha_vencimiento = (datetime.now() + timedelta(days=30)).strftime('%d/%m/%Y')
+        fecha_actual = datetime.now()
+        fecha_expedicion = formatear_fecha(fecha_actual)
+        fecha_vencimiento = formatear_fecha(fecha_actual + timedelta(days=30))
+        vigencia_texto = f"{fecha_expedicion} AL {fecha_vencimiento}"
 
         # Cargar plantilla
         doc = fitz.open(PLANTILLA_PDF)
         page = doc[0]
 
-        # Insertar datos en coordenadas (ajústalas si quieres)
-        page.insert_text((100, 100), f"Folio: {folio_generado}", fontsize=12, color=(1, 0, 0))
-        page.insert_text((100, 130), f"Fecha expedición: {fecha_expedicion}", fontsize=12)
-        page.insert_text((100, 160), f"Fecha vencimiento: {fecha_vencimiento}", fontsize=12)
-        page.insert_text((100, 190), f"Tipo: {tipo_vehiculo}", fontsize=12)
-        page.insert_text((100, 220), f"Marca: {marca}", fontsize=12)
-        page.insert_text((100, 250), f"Línea: {linea}", fontsize=12)
-        page.insert_text((100, 280), f"Año: {año}", fontsize=12)
-        page.insert_text((100, 310), f"Serie: {serie}", fontsize=12)
-        page.insert_text((100, 340), f"Motor: {motor}", fontsize=12)
-        page.insert_text((100, 370), f"Color: {color}", fontsize=12)
-        page.insert_text((100, 400), f"Contribuyente: {contribuyente}", fontsize=12)
+        # Insertar datos en coordenadas más centradas
+        page.insert_text((250, 100), f"{folio_generado}", fontsize=14, color=(1, 0, 0))
+        page.insert_text((150, 150), f"TLAPA DE COMONFORT, GRO. A {fecha_expedicion}", fontsize=12)
+        page.insert_text((150, 190), vigencia_texto, fontsize=12)
+        page.insert_text((150, 240), f"CARACTERÍSTICAS DEL {tipo_vehiculo}:", fontsize=13)
+
+        page.insert_text((150, 280), f"NÚMERO DE SERIE: {serie}", fontsize=11)
+        page.insert_text((150, 310), f"NÚMERO DE MOTOR: {motor}", fontsize=11)
+        page.insert_text((150, 340), f"MARCA: {marca}", fontsize=11)
+        page.insert_text((150, 370), f"MODELO: {linea}", fontsize=11)
+        page.insert_text((150, 400), f"AÑO: {año}", fontsize=11)
+        page.insert_text((150, 430), f"COLOR: {color}", fontsize=11)
+        page.insert_text((150, 460), f"CONTRIBUYENTE: {contribuyente}", fontsize=11)
 
         # Guardar el nuevo PDF
         if not os.path.exists(PDF_OUTPUT_FOLDER):
