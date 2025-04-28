@@ -2,18 +2,16 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Generación Exitosa</title>
+    <title>Registro Exitoso</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 <body>
-    <h2>El PDF {{ folio }} se creó con éxito</h2>
+    <h2>Registro Exitoso</h2>
 
-    <a href="{{ url_for('descargar', folio=folio) }}">
-        <button>Descargar PDF</button>
-    </a>
-    <br><br>
-    <a href="{{ url_for('formulario') }}">
-        <button>Generar Otro</button>
-    </a>
+    <p>Folio generado: <strong>{{ folio }}</strong></p>
+
+    <a href="{{ url_for('descargar', folio=folio) }}">Descargar PDF</a> |
+    <a href="{{ url_for('formulario') }}">Registrar otro vehículo</a> |
+    <a href="{{ url_for('panel') }}">Volver al Panel</a>
 </body>
 </html>
