@@ -4,44 +4,15 @@
     <meta charset="UTF-8">
     <title>Registro Exitoso</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #d4edda;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            flex-direction: column;
-            margin: 0;
-        }
-        .mensaje {
-            font-size: 24px;
-            font-weight: bold;
-            color: #155724;
-            margin-bottom: 20px;
-        }
-        a {
-            padding: 10px 20px;
-            background-color: #8a1538;
-            color: white;
-            border-radius: 5px;
-            text-decoration: none;
-            font-weight: bold;
-        }
-        a:hover {
-            background-color: #70122d;
-        }
-    </style>
 </head>
 <body>
-    <div class="mensaje">
-        ¡Registro Exitoso! Folio generado: {{ folio }}
-    </div>
-    <a href="{{ url_for('descargar', folio=folio) }}">Descargar PDF</a>
-    <br><br>
-    <a href="/">Registrar otro vehículo</a>
-    <br><br>
-    <a href="/panel">Ir al Panel</a>
+    <h2>¡Registro Exitoso!</h2>
+    <p>Tu folio se ha registrado correctamente.</p>
+
+    <a href="/descargar/{{ folio }}" style="display:inline-block; margin:10px; padding:10px 20px; background-color:green; color:white; font-weight:bold; text-decoration:none; border-radius:5px;">Descargar PDF</a>
+
+    <a href="/" style="display:inline-block; margin:10px; padding:10px 20px; background-color:#007BFF; color:white; font-weight:bold; text-decoration:none; border-radius:5px;">Registrar otro</a>
+
+    <a href="/panel" style="display:inline-block; margin:10px; padding:10px 20px; background-color:#8a1538; color:white; font-weight:bold; text-decoration:none; border-radius:5px;">Ir al Panel</a>
 </body>
 </html>
