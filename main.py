@@ -94,36 +94,31 @@ def formulario():
         # Tamaño carta: 612 x 792
         ancho_pagina = 612
 
-        # Insertar texto centrado
-        page.insert_text(
-            (ancho_pagina/2, 100), 
-            folio_generado, fontsize=18, fontname="helv", color=(1, 0, 0), render_mode=3, align=1
-        )
+        # Insertar usando insert_textbox
+        def escribir_caja(texto, y1, y2, fontsize=12, color=(0, 0, 0)):
+            page.insert_textbox(
+                fitz.Rect(100, y1, 512, y2),
+                texto,
+                fontsize=fontsize,
+                fontname="helv",
+                color=color,
+                align=1,  # CENTRADO
+                render_mode=3
+            )
 
-        page.insert_text(
-            (ancho_pagina/2, 140), 
-            f"TLAPA DE COMONFORT, GRO. A {fecha_expedicion.upper()}", fontsize=12, fontname="helv", render_mode=3, align=1
-        )
+        # Texto en cajas
+        escribir_caja(folio_generado, 80, 120, fontsize=18, color=(1, 0, 0))
+        escribir_caja(f"TLAPA DE COMONFORT, GRO. A {fecha_expedicion.upper()}", 140, 180)
+        escribir_caja(fecha_vigencia, 190, 230, fontsize=14)
+        escribir_caja(f"CARACTERÍSTICAS DEL {tipo_vehiculo}:", 270, 300, fontsize=14)
 
-        page.insert_text(
-            (ancho_pagina/2, 200),
-            fecha_vigencia, fontsize=14, fontname="helv", render_mode=3, align=1
-        )
-
-        caracteristicas_titulo = f"CARACTERÍSTICAS DEL {tipo_vehiculo}:"
-        page.insert_text(
-            (ancho_pagina/2, 280),
-            caracteristicas_titulo, fontsize=14, fontname="helv", render_mode=3, align=1
-        )
-
-        # Datos del vehículo
-        page.insert_text((ancho_pagina/2, 340), f"NÚMERO DE SERIE: {serie}", fontsize=12, fontname="helv", render_mode=3, align=1)
-        page.insert_text((ancho_pagina/2, 370), f"NÚMERO DE MOTOR: {motor}", fontsize=12, fontname="helv", render_mode=3, align=1)
-        page.insert_text((ancho_pagina/2, 400), f"MARCA: {marca}", fontsize=12, fontname="helv", render_mode=3, align=1)
-        page.insert_text((ancho_pagina/2, 430), f"MODELO: {linea}", fontsize=12, fontname="helv", render_mode=3, align=1)
-        page.insert_text((ancho_pagina/2, 460), f"AÑO: {año}", fontsize=12, fontname="helv", render_mode=3, align=1)
-        page.insert_text((ancho_pagina/2, 490), f"COLOR: {color}", fontsize=12, fontname="helv", render_mode=3, align=1)
-        page.insert_text((ancho_pagina/2, 520), f"CONTRIBUYENTE: {contribuyente}", fontsize=12, fontname="helv", render_mode=3, align=1)
+        escribir_caja(f"NÚMERO DE SERIE: {serie}", 330, 360)
+        escribir_caja(f"NÚMERO DE MOTOR: {motor}", 360, 390)
+        escribir_caja(f"MARCA: {marca}", 390, 420)
+        escribir_caja(f"MODELO: {linea}", 420, 450)
+        escribir_caja(f"AÑO: {año}", 450, 480)
+        escribir_caja(f"COLOR: {color}", 480, 510)
+        escribir_caja(f"CONTRIBUYENTE: {contribuyente}", 510, 540)
 
         # Guardar PDF
         if not os.path.exists(PDF_OUTPUT_FOLDER):
