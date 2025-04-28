@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Registro Exitoso</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #d4edda;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            flex-direction: column;
+            margin: 0;
+        }
+        .mensaje {
+            font-size: 24px;
+            font-weight: bold;
+            color: #155724;
+            margin-bottom: 20px;
+        }
+        a {
+            padding: 10px 20px;
+            background-color: #8a1538;
+            color: white;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        a:hover {
+            background-color: #70122d;
+        }
+    </style>
+</head>
+<body>
+    <div class="mensaje">
+        ¡Registro Exitoso! Folio generado: {{ folio }}
+    </div>
+    <a href="{{ url_for('descargar', folio=folio) }}">Descargar PDF</a>
+    <br><br>
+    <a href="/">Registrar otro vehículo</a>
+    <br><br>
+    <a href="/panel">Ir al Panel</a>
+</body>
+</html>
