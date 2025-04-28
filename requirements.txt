@@ -1,6 +1,5 @@
 Flask
-gunicorn
-PyMuPDF
 python-dotenv
-supabase-py
-requests
+pytz
+PyMuPDF
+supabase
