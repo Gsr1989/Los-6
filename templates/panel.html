@@ -4,58 +4,43 @@
     <meta charset="UTF-8">
     <title>Panel de Registros</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <style>
-        body { font-family: Arial, sans-serif; margin: 20px; }
-        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-        th, td { border: 1px solid #ddd; padding: 8px; text-align: center; }
-        th { background-color: #4CAF50; color: white; }
-        a.boton { text-decoration: none; padding: 6px 12px; border-radius: 5px; margin: 2px; }
-        .editar { background-color: #2196F3; color: white; }
-        .eliminar { background-color: #f44336; color: white; }
-        .reimprimir { background-color: #4CAF50; color: white; }
-        .buscar { margin-bottom: 15px; }
-    </style>
 </head>
 <body>
-    <h2>Panel de Registros</h2>
+    <h2>Registros</h2>
 
-    <form method="GET" action="{{ url_for('panel') }}" class="buscar">
+    <form method="GET" action="{{ url_for('panel') }}">
         <input type="text" name="buscar" placeholder="Buscar por número de serie" autocomplete="off">
         <button type="submit">Buscar</button>
-        <a href="{{ url_for('panel') }}">Mostrar Todos</a>
     </form>
 
-    <table>
+    <table border="1" cellpadding="8" cellspacing="0">
         <thead>
             <tr>
                 <th>Folio</th>
-                <th>Tipo Vehículo</th>
                 <th>Marca</th>
                 <th>Línea</th>
                 <th>Año</th>
                 <th>Serie</th>
-                <th>Motor</th>
                 <th>Color</th>
                 <th>Contribuyente</th>
-                <th>Acciones</th>
+                <th>Opciones</th>
             </tr>
         </thead>
         <tbody>
-            {% for registro in registros %}
+            {% for r in registros %}
             <tr>
-                <td>{{ registro.folio }}</td>
-                <td>{{ registro.tipo_vehiculo }}</td>
-                <td>{{ registro.marca }}</td>
-                <td>{{ registro.linea }}</td>
-                <td>{{ registro.año }}</td>
-                <td>{{ registro.serie }}</td>
-                <td>{{ registro.motor }}</td>
-                <td>{{ registro.color }}</td>
-                <td>{{ registro.contribuyente }}</td>
+                <td>{{ r['folio_generado'] }}</td>
+                <td>{{ r['marca'] }}</td>
+                <td>{{ r['linea'] }}</td>
+                <td>{{ r['anio'] }}</td>
+                <td>{{ r['serie'] }}</td>
+                <td>{{ r['color'] }}</td>
+                <td>{{ r['contribuyente'] }}</td>
                 <td>
-                    <a href="{{ url_for('editar', folio=registro.folio) }}" class="boton editar">Editar</a>
-                    <a href="{{ url_for('eliminar', folio=registro.folio) }}" class="boton eliminar" onclick="return confirm('¿Estás seguro de eliminar este registro?')">Eliminar</a>
-                    <a href="{{ url_for('regenerar_pdf', folio=registro.folio) }}" class="boton reimprimir">Reimprimir PDF</a>
+                    <a href="{{ url_for('editar', folio=r['folio_generado']) }}">Editar</a> |
+                    <a href="{{ url_for('eliminar', folio=r['folio_generado']) }}">Eliminar</a> |
+                    <a href="{{ url_for('regenerar_pdf', folio=r['folio_generado']) }}">Reimprimir PDF</a> |
+                    <a href="{{ url_for('descargar', folio=r['folio_generado']) }}">Descargar PDF</a>
                 </td>
             </tr>
             {% endfor %}
