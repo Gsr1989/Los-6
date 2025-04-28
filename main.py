@@ -93,19 +93,19 @@ def formulario():
         doc = fitz.open(PLANTILLA_PDF)
         page = doc[0]
 
-        # Insertar texto TODO en NEGRITAS (render_mode=3)
+        # Insertar texto (TODO EN NEGRITAS: render_mode=3)
         page.insert_text((1700, 500), f"{folio_generado}", fontsize=55, color=(1, 0, 0), render_mode=3)
         page.insert_text((1325, 555), f"TLAPA DE COMONFORT, GRO. A {fecha_expedicion}", fontsize=38, render_mode=3)
-        page.insert_text((420, 1340), vigencia_texto, fontsize=60, render_mode=3)
+        page.insert_text((400, 1340), vigencia_texto, fontsize=60, render_mode=3)
         page.insert_text((247, 1550), f"CARACTERÍSTICAS {tipo_texto}:", fontsize=75, render_mode=3)
 
-        page.insert_text((400, 1680), f"NÚMERO DE SERIE: {serie}", fontsize=35, render_mode=3)
-        page.insert_text((375, 1725), f"NÚMERO DE MOTOR: {motor}", fontsize=35, render_mode=3)
-        page.insert_text((602, 1770), f"MARCA: {marca}", fontsize=35, render_mode=3)
-        page.insert_text((575, 1815), f"MODELO: {linea}", fontsize=35, render_mode=3)
-        page.insert_text((652, 1870), f"AÑO: {año}", fontsize=35, render_mode=3)
-        page.insert_text((602, 1905), f"COLOR: {color}", fontsize=35, render_mode=3)
-        page.insert_text((426, 1950), f"CONTRIBUYENTE: {contribuyente}", fontsize=35, render_mode=3)
+        page.insert_text((400, 1700), f"NÚMERO DE SERIE: {serie}", fontsize=35, render_mode=3)
+        page.insert_text((375, 1745), f"NÚMERO DE MOTOR: {motor}", fontsize=35, render_mode=3)
+        page.insert_text((602, 1790), f"MARCA: {marca}", fontsize=35, render_mode=3)
+        page.insert_text((575, 1835), f"MODELO: {linea}", fontsize=35, render_mode=3)
+        page.insert_text((652, 1880), f"AÑO: {año}", fontsize=35, render_mode=3)
+        page.insert_text((602, 1925), f"COLOR: {color}", fontsize=35, render_mode=3)
+        page.insert_text((426, 1970), f"CONTRIBUYENTE: {contribuyente}", fontsize=35, render_mode=3)
 
         # Guardar PDF
         if not os.path.exists(PDF_OUTPUT_FOLDER):
