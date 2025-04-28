@@ -2,8 +2,6 @@ services:
   - type: web
     name: los-6
     env: python
-    buildCommand: ""
-    startCommand: gunicorn main:app
     plan: free
-    branch: main
-    healthCheckPath: /
+    buildCommand: "pip install -r requirements.txt"
+    startCommand: "gunicorn main:app"
