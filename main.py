@@ -5,12 +5,10 @@ import os
 
 app = Flask(__name__)
 
-# Carpetas
 PDF_OUTPUT_FOLDER = 'static/pdfs'
 PLANTILLA_PDF = 'Guerrero.pdf'
 FOLIO_FILE = 'folio_actual.txt'
 
-# Función para cargar o inicializar folio
 def cargar_folio():
     if not os.path.exists(FOLIO_FILE):
         with open(FOLIO_FILE, 'w') as f:
@@ -18,7 +16,6 @@ def cargar_folio():
     with open(FOLIO_FILE, 'r') as f:
         return f.read().strip()
 
-# Función para actualizar folio
 def siguiente_folio(folio_actual):
     letras = folio_actual[:2]
     numeros = int(folio_actual[2:])
@@ -44,7 +41,6 @@ def incrementar_letras(letras):
             letra1 = 'A'
     return letra1 + letra2
 
-# Función para formatear fechas
 def formatear_fecha(fecha):
     meses = {
         "January": "ENERO", "February": "FEBRERO", "March": "MARZO", "April": "ABRIL",
@@ -56,7 +52,21 @@ def formatear_fecha(fecha):
     año = fecha.year
     return f"{dia} DE {mes} DE {año}"
 
-# Ruta formulario
+def obtener_texto_caracteristicas(tipo):
+    tipo = tipo.upper()
+    if tipo == "AUTOMOVIL":
+        return "DEL AUTOMÓVIL"
+    elif tipo == "MOTOCICLETA":
+        return "DE LA MOTOCICLETA"
+    elif tipo == "CAMIONETA":
+        return "DE LA CAMIONETA"
+    elif tipo == "OFICINA MOVIL":
+        return "DE LA OFICINA MÓVIL"
+    elif tipo == "REMOLQUE":
+        return "DEL REMOLQUE"
+    else:
+        return tipo
+
 @app.route('/', methods=['GET', 'POST'])
 def formulario():
     if request.method == 'POST':
@@ -77,15 +87,17 @@ def formulario():
         fecha_vencimiento = formatear_fecha(fecha_actual + timedelta(days=30))
         vigencia_texto = f"{fecha_expedicion} AL {fecha_vencimiento}"
 
+        tipo_texto = obtener_texto_caracteristicas(tipo_vehiculo)
+
         # Cargar plantilla
         doc = fitz.open(PLANTILLA_PDF)
         page = doc[0]
 
-        # Insertar datos en coordenadas más centradas
+        # Insertar texto
         page.insert_text((250, 100), f"{folio_generado}", fontsize=14, color=(1, 0, 0))
         page.insert_text((150, 150), f"TLAPA DE COMONFORT, GRO. A {fecha_expedicion}", fontsize=12)
         page.insert_text((150, 190), vigencia_texto, fontsize=12)
-        page.insert_text((150, 240), f"CARACTERÍSTICAS DEL {tipo_vehiculo}:", fontsize=13)
+        page.insert_text((150, 240), f"CARACTERÍSTICAS {tipo_texto}:", fontsize=13)
 
         page.insert_text((150, 280), f"NÚMERO DE SERIE: {serie}", fontsize=11)
         page.insert_text((150, 310), f"NÚMERO DE MOTOR: {motor}", fontsize=11)
@@ -95,7 +107,7 @@ def formulario():
         page.insert_text((150, 430), f"COLOR: {color}", fontsize=11)
         page.insert_text((150, 460), f"CONTRIBUYENTE: {contribuyente}", fontsize=11)
 
-        # Guardar el nuevo PDF
+        # Guardar PDF
         if not os.path.exists(PDF_OUTPUT_FOLDER):
             os.makedirs(PDF_OUTPUT_FOLDER)
         output_path = os.path.join(PDF_OUTPUT_FOLDER, f"{folio_generado}.pdf")
@@ -106,7 +118,6 @@ def formulario():
 
     return render_template('formulario.html')
 
-# Ruta para descargar PDF
 @app.route('/descargar/<folio>')
 def descargar(folio):
     path = os.path.join(PDF_OUTPUT_FOLDER, f"{folio}.pdf")
