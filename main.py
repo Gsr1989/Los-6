@@ -71,9 +71,9 @@ def formulario():
 
         # Insertar datos en coordenadas (ajústalas si quieres)
         page.insert_text((1700, 500), f"Folio: {folio_generado}", fontsize=50, color=(1, 0, 0))
-        page.insert_text((900, 1700), f"Fecha expedición: {fecha_expedicion}", fontsize=45)
+        page.insert_text((1600, 530), f"Fecha expedición: {fecha_expedicion}", fontsize=45)
         page.insert_text((900, 1600), f"Fecha vencimiento: {fecha_vencimiento}", fontsize=20)
-        page.insert_text((300, 1830), f"Tipo: {tipo_vehiculo}", fontsize=20)
+        page.insert_text((300, 1230), f"Tipo: {tipo_vehiculo}", fontsize=80)
         page.insert_text((300, 1860), f"Marca: {marca}", fontsize=20)
         page.insert_text((300, 1890), f"Línea: {linea}", fontsize=20)
         page.insert_text((300, 1910), f"Año: {año}", fontsize=20)
