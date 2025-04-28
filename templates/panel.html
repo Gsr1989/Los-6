@@ -4,40 +4,8 @@
     <meta charset="UTF-8">
     <title>Panel de Registros</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            padding: 20px;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 15px;
-        }
-        th, td {
-            border: 1px solid #333;
-            padding: 10px;
-            text-align: center;
-        }
-        form {
-            margin-bottom: 20px;
-        }
-        button, a {
-            padding: 6px 10px;
-            text-decoration: none;
-            background-color: #007BFF;
-            color: white;
-            border-radius: 5px;
-            border: none;
-            cursor: pointer;
-        }
-        a {
-            display: inline-block;
-        }
-    </style>
 </head>
 <body>
-
     <h2>Registros</h2>
 
     <form method="GET" action="{{ url_for('panel') }}">
@@ -45,7 +13,7 @@
         <button type="submit">Buscar</button>
     </form>
 
-    <table>
+    <table border="1" cellpadding="8" cellspacing="0">
         <thead>
             <tr>
                 <th>Folio</th>
@@ -69,14 +37,15 @@
                 <td>{{ r['color'] }}</td>
                 <td>{{ r['contribuyente'] }}</td>
                 <td>
-                    <a href="{{ url_for('editar', folio=r['folio_generado']) }}">Editar</a>
-                    <a href="{{ url_for('eliminar', folio=r['folio_generado']) }}" onclick="return confirm('¿Estás seguro que quieres eliminar este registro?')">Eliminar</a>
+                    <a href="{{ url_for('editar', folio=r['folio_generado']) }}">Editar</a> |
+                    <form action="{{ url_for('eliminar', folio=r['folio_generado']) }}" method="post" style="display:inline;">
+                        <button type="submit" onclick="return confirm('¿Estás seguro que quieres eliminar este registro?');">Eliminar</button>
+                    </form> |
                     <a href="{{ url_for('descargar', folio=r['folio_generado']) }}">Descargar PDF</a>
                 </td>
             </tr>
             {% endfor %}
         </tbody>
     </table>
-
 </body>
 </html>
