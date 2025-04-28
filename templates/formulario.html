@@ -4,40 +4,77 @@
     <meta charset="UTF-8">
     <title>Registrar Vehículo</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+            padding: 20px;
+        }
+        h2 {
+            text-align: center;
+        }
+        form {
+            max-width: 500px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        label {
+            font-weight: bold;
+        }
+        input, select, button {
+            width: 100%;
+            padding: 10px;
+            margin-top: 8px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+        button {
+            background-color: #8a1538;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #70122d;
+        }
+    </style>
 </head>
 <body>
     <h2>Registrar Vehículo</h2>
     <form method="POST" autocomplete="off">
-        <label>Tipo de Vehículo:</label><br>
-        <select name="tipo_vehiculo" required autocomplete="off">
+        <label>Tipo de Vehículo:</label>
+        <select name="tipo_vehiculo" required>
             <option value="">-- Selecciona el tipo de vehículo --</option>
             <option value="AUTOMOVIL">AUTOMÓVIL</option>
             <option value="MOTOCICLETA">MOTOCICLETA</option>
             <option value="CAMIONETA">CAMIONETA</option>
             <option value="REMOLQUE">REMOLQUE</option>
             <option value="OFICINA MOVIL">OFICINA MÓVIL</option>
-        </select><br><br>
+        </select>
 
-        <label>Marca:</label><br>
-        <input type="text" name="marca" required autocomplete="off"><br><br>
+        <label>Marca:</label>
+        <input type="text" name="marca" required autocomplete="off">
 
-        <label>Línea:</label><br>
-        <input type="text" name="linea" required autocomplete="off"><br><br>
+        <label>Línea:</label>
+        <input type="text" name="linea" required autocomplete="off">
 
-        <label>Año:</label><br>
-        <input type="text" name="año" required autocomplete="off"><br><br>
+        <label>Año:</label>
+        <input type="text" name="año" required autocomplete="off">
 
-        <label>Número de Serie:</label><br>
-        <input type="text" name="serie" required autocomplete="off"><br><br>
+        <label>Número de Serie:</label>
+        <input type="text" name="serie" required autocomplete="off">
 
-        <label>Número de Motor:</label><br>
-        <input type="text" name="motor" required autocomplete="off"><br><br>
+        <label>Número de Motor:</label>
+        <input type="text" name="motor" required autocomplete="off">
 
-        <label>Color:</label><br>
-        <input type="text" name="color" required autocomplete="off"><br><br>
+        <label>Color:</label>
+        <input type="text" name="color" required autocomplete="off">
 
-        <label>Nombre del Contribuyente:</label><br>
-        <input type="text" name="contribuyente" required autocomplete="off"><br><br>
+        <label>Nombre del Contribuyente:</label>
+        <input type="text" name="contribuyente" required autocomplete="off">
 
         <button type="submit">Generar PDF</button>
     </form>
