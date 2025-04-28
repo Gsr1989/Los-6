@@ -94,8 +94,8 @@ def formulario():
         page = doc[0]
 
         # Insertar texto
-        page.insert_text((1600, 500), f"{folio_generado}", fontsize=55, color=(1, 0, 0))
-        page.insert_text((1400, 537), f"TLAPA DE COMONFORT, GRO. A {fecha_expedicion}", fontsize=30)
+        page.insert_text((1700, 500), f"{folio_generado}", fontsize=55, color=(1, 0, 0))
+        page.insert_text((1350, 537), f"TLAPA DE COMONFORT, GRO. A {fecha_expedicion}", fontsize=30)
         page.insert_text((150, 190), vigencia_texto, fontsize=12)
         page.insert_text((150, 240), f"CARACTERÍSTICAS {tipo_texto}:", fontsize=13)
 
