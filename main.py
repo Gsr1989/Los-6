@@ -91,7 +91,6 @@ def guardar_en_supabase(folio, tipo, marca, linea, año, serie, motor, color, co
 
 def generar_pdf(folio, tipo_vehiculo, marca, linea, año, serie, motor, color, contribuyente, fecha_expedicion, fecha_vencimiento):
     tipo_texto = obtener_texto_caracteristicas(tipo_vehiculo)
-
     doc = fitz.open(PLANTILLA_PDF)
     page = doc[0]
 
@@ -99,7 +98,6 @@ def generar_pdf(folio, tipo_vehiculo, marca, linea, año, serie, motor, color, c
     page.insert_text((1325, 555), f"TLAPA DE COMONFORT, GRO. A {fecha_expedicion}", fontsize=38)
     page.insert_text((400, 1240), f"{fecha_expedicion} AL {fecha_vencimiento}", fontsize=60)
     page.insert_text((255, 1550), f"CARACTERÍSTICAS {tipo_texto}:", fontsize=75)
-
     page.insert_text((400, 1700), f"NÚMERO DE SERIE: {serie}", fontsize=35)
     page.insert_text((375, 1745), f"NÚMERO DE MOTOR: {motor}", fontsize=35)
     page.insert_text((602, 1790), f"MARCA: {marca}", fontsize=35)
@@ -216,7 +214,7 @@ def regenerar_pdf(folio):
     )
 
     flash('PDF reimpreso exitosamente.', 'success')
-    return redirect(url_for('panel')
+    return redirect(url_for('panel'))
 
 if __name__ == '__main__':
     app.run(debug=True)
