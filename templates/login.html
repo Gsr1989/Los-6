@@ -2,71 +2,60 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Iniciar Sesión</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Acceso</title>
     <style>
         body {
-            background-color: #e8f0fe;
+            background-color: #0a3d62;
+            color: #fff;
             font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 20px;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             height: 100vh;
+            margin: 0;
         }
-        h2 {
-            color: #1a73e8;
+        h1 {
             margin-bottom: 20px;
+            font-size: 28px;
+            text-align: center;
         }
         form {
-            background: #ffffff;
+            background: #145374;
             padding: 20px;
-            border-radius: 12px;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
-            width: 100%;
-            max-width: 350px;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 300px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
             display: flex;
             flex-direction: column;
         }
-        label {
-            margin-top: 10px;
-            font-size: 14px;
-            color: #333;
-        }
-        input, button {
-            margin-top: 5px;
+        input {
+            margin-bottom: 15px;
             padding: 10px;
-            font-size: 14px;
-            border: 1px solid #ccc;
-            border-radius: 8px;
-            width: 100%;
-            box-sizing: border-box;
+            border: none;
+            border-radius: 5px;
         }
         button {
-            background-color: #1a73e8;
-            color: white;
+            background: #1b6ca8;
+            color: #fff;
             border: none;
-            margin-top: 20px;
+            padding: 10px;
+            border-radius: 5px;
+            font-size: 16px;
             cursor: pointer;
-            transition: background 0.3s;
         }
         button:hover {
-            background-color: #1558b0;
+            background: #145374;
         }
     </style>
 </head>
 <body>
-    <h2>Acceso</h2>
-
-    <form method="POST" autocomplete="off">
-        <label>Usuario:</label>
-        <input type="text" name="usuario" required>
-
-        <label>Contraseña:</label>
-        <input type="password" name="contraseña" required>
-
+    <h1>Inicio de Sesión</h1>
+    <form method="POST">
+        <input type="text" name="usuario" placeholder="Usuario" required>
+        <input type="password" name="contraseña" placeholder="Contraseña" required>
         <button type="submit">Entrar</button>
     </form>
 </body>
