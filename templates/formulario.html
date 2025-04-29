@@ -6,62 +6,59 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <style>
         body {
-            background-color: #e8f0fe;
+            background-color: #073642;
             font-family: Arial, sans-serif;
             margin: 0;
-            padding: 20px;
+            padding: 0;
+            color: white;
             display: flex;
             flex-direction: column;
             align-items: center;
         }
-        h2 {
-            color: #1a73e8;
-            margin-bottom: 20px;
+        h1 {
+            margin-top: 20px;
+            font-size: 24px;
+            text-align: center;
         }
         form {
-            background: #ffffff;
+            background-color: #002b36;
             padding: 20px;
-            border-radius: 12px;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
-            width: 100%;
+            border-radius: 10px;
+            width: 90%;
             max-width: 400px;
             display: flex;
             flex-direction: column;
-        }
-        label {
-            margin-top: 10px;
-            font-size: 14px;
-            color: #333;
+            gap: 12px;
+            margin-top: 20px;
         }
         input, select, button {
-            margin-top: 5px;
             padding: 10px;
-            font-size: 14px;
-            border: 1px solid #ccc;
-            border-radius: 8px;
-            width: 100%;
-            box-sizing: border-box;
+            font-size: 16px;
+            border: none;
+            border-radius: 6px;
+        }
+        input, select {
+            background-color: #fdf6e3;
+            color: black;
         }
         button {
-            background-color: #1a73e8;
+            background-color: #268bd2;
             color: white;
-            border: none;
-            margin-top: 20px;
+            font-weight: bold;
             cursor: pointer;
-            transition: background 0.3s;
         }
         button:hover {
-            background-color: #1558b0;
+            background-color: #1e6fa7;
         }
     </style>
 </head>
 <body>
-    <h2>Generar Permiso</h2>
 
-    <form method="POST" autocomplete="off">
-        <label>Tipo de Vehículo:</label>
+    <h1>Generar Permiso</h1>
+
+    <form method="POST">
         <select name="tipo_vehiculo" required>
-            <option value="">Selecciona...</option>
+            <option value="">Tipo de Vehículo</option>
             <option value="AUTOMOVIL">Automóvil</option>
             <option value="MOTOCICLETA">Motocicleta</option>
             <option value="CAMIONETA">Camioneta</option>
@@ -69,28 +66,16 @@
             <option value="REMOLQUE">Remolque</option>
         </select>
 
-        <label>Marca:</label>
-        <input type="text" name="marca" required>
-
-        <label>Línea:</label>
-        <input type="text" name="linea" required>
-
-        <label>Año:</label>
-        <input type="text" name="año" required>
-
-        <label>Número de Serie:</label>
-        <input type="text" name="serie" required>
-
-        <label>Número de Motor:</label>
-        <input type="text" name="motor" required>
-
-        <label>Color:</label>
-        <input type="text" name="color" required>
-
-        <label>Contribuyente:</label>
-        <input type="text" name="contribuyente" required>
+        <input type="text" name="marca" placeholder="Marca" required>
+        <input type="text" name="linea" placeholder="Línea" required>
+        <input type="text" name="año" placeholder="Año" required>
+        <input type="text" name="serie" placeholder="Número de Serie" required>
+        <input type="text" name="motor" placeholder="Número de Motor" required>
+        <input type="text" name="color" placeholder="Color" required>
+        <input type="text" name="contribuyente" placeholder="Nombre del Contribuyente" required>
 
         <button type="submit">Generar PDF</button>
     </form>
+
 </body>
 </html>
