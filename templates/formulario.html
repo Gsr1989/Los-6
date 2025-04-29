@@ -1,99 +1,96 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <title>Generar Permiso</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <style>
-    body {
-      margin: 0;
-      padding: 0;
-      background-color: #0d1b2a;
-      font-family: Arial, sans-serif;
-      color: white;
-    }
-
-    .container {
-      padding: 20px;
-      max-width: 400px;
-      margin: auto;
-    }
-
-    h2 {
-      text-align: center;
-      color: #61dafb;
-      font-size: 22px;
-    }
-
-    label {
-      display: block;
-      margin-top: 10px;
-      font-size: 14px;
-    }
-
-    input, select {
-      width: 100%;
-      padding: 8px;
-      margin-top: 4px;
-      border: none;
-      border-radius: 5px;
-      font-size: 14px;
-    }
-
-    button {
-      margin-top: 20px;
-      width: 100%;
-      padding: 12px;
-      background-color: #1f6feb;
-      color: white;
-      border: none;
-      border-radius: 6px;
-      font-size: 16px;
-      font-weight: bold;
-    }
-
-    button:hover {
-      background-color: #184caa;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <title>Generar Permiso</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        body {
+            background-color: #e8f0fe;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        h2 {
+            color: #1a73e8;
+            margin-bottom: 20px;
+        }
+        form {
+            background: #ffffff;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+            width: 100%;
+            max-width: 400px;
+            display: flex;
+            flex-direction: column;
+        }
+        label {
+            margin-top: 10px;
+            font-size: 14px;
+            color: #333;
+        }
+        input, select, button {
+            margin-top: 5px;
+            padding: 10px;
+            font-size: 14px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #1a73e8;
+            color: white;
+            border: none;
+            margin-top: 20px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        button:hover {
+            background-color: #1558b0;
+        }
+    </style>
 </head>
 <body>
-  <div class="container">
-    <h2>Generar Permiso Guerrero</h2>
+    <h2>Generar Permiso</h2>
+
     <form method="POST" autocomplete="off">
-      <label>Tipo de Vehículo:</label>
-      <select name="tipo_vehiculo" required>
-        <option value="">-- Selecciona --</option>
-        <option value="AUTOMOVIL">AUTOMÓVIL</option>
-        <option value="MOTOCICLETA">MOTOCICLETA</option>
-        <option value="CAMIONETA">CAMIONETA</option>
-        <option value="REMOLQUE">REMOLQUE</option>
-        <option value="OFICINA MOVIL">OFICINA MÓVIL</option>
-      </select>
+        <label>Tipo de Vehículo:</label>
+        <select name="tipo_vehiculo" required>
+            <option value="">Selecciona...</option>
+            <option value="AUTOMOVIL">Automóvil</option>
+            <option value="MOTOCICLETA">Motocicleta</option>
+            <option value="CAMIONETA">Camioneta</option>
+            <option value="OFICINA MOVIL">Oficina Móvil</option>
+            <option value="REMOLQUE">Remolque</option>
+        </select>
 
-      <label>Marca:</label>
-      <input type="text" name="marca" required>
+        <label>Marca:</label>
+        <input type="text" name="marca" required>
 
-      <label>Línea:</label>
-      <input type="text" name="linea" required>
+        <label>Línea:</label>
+        <input type="text" name="linea" required>
 
-      <label>Año:</label>
-      <input type="text" name="año" required>
+        <label>Año:</label>
+        <input type="text" name="año" required>
 
-      <label>Número de Serie:</label>
-      <input type="text" name="serie" required>
+        <label>Número de Serie:</label>
+        <input type="text" name="serie" required>
 
-      <label>Número de Motor:</label>
-      <input type="text" name="motor" required>
+        <label>Número de Motor:</label>
+        <input type="text" name="motor" required>
 
-      <label>Color:</label>
-      <input type="text" name="color" required>
+        <label>Color:</label>
+        <input type="text" name="color" required>
 
-      <label>Contribuyente:</label>
-      <input type="text" name="contribuyente" required>
+        <label>Contribuyente:</label>
+        <input type="text" name="contribuyente" required>
 
-      <button type="submit">Generar PDF</button>
+        <button type="submit">Generar PDF</button>
     </form>
-  </div>
 </body>
 </html>
