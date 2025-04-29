@@ -101,7 +101,7 @@ def generar_pdf(folio, tipo_vehiculo, marca, linea, año, serie, motor, color, c
 
     page.insert_text((1700, 500), f"{folio}", fontsize=55, color=(1, 0, 0))
     page.insert_text((1325, 555), f"TLAPA DE COMONFORT, GRO. A {fecha_expedicion}", fontsize=38)
-    page.insert_text((495, 1290), f"{fecha_expedicion} AL {fecha_vencimiento}", fontsize=60)
+    page.insert_text((570, 1290), f"{fecha_expedicion} AL {fecha_vencimiento}", fontsize=60)
     page.insert_text((265, 1550), f"CARACTERÍSTICAS {tipo_texto}:", fontsize=75)
     page.insert_text((400, 1700), f"NÚMERO DE SERIE: {serie}", fontsize=35)
     page.insert_text((375, 1743), f"NÚMERO DE MOTOR: {motor}", fontsize=35)
