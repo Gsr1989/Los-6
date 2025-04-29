@@ -7,14 +7,16 @@ import os
 app = Flask(__name__)
 app.secret_key = "secreto_perro"
 
+# Conexión a Supabase
 SUPABASE_URL = "https://iuwsippnvyynwnxanwnv.supabase.co"
-SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."  # Tu llave completa aquí
+SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml1d3NpcHBudnl5bndueGFud252Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDU2NDU3MDcsImV4cCI6MjA2MTIyMTcwN30.bm7J6b3k_F0JxPFFRTklBDOgHRJTvEa1s-uwvSwVxTs"
 supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 
 PDF_OUTPUT_FOLDER = 'static/pdfs'
 PLANTILLA_PDF = 'Guerrero.pdf'
 FOLIO_FILE = 'folio_actual.txt'
 
+# Cargar folio desde archivo
 def cargar_folio():
     if not os.path.exists(FOLIO_FILE):
         with open(FOLIO_FILE, 'w') as f:
@@ -22,6 +24,7 @@ def cargar_folio():
     with open(FOLIO_FILE, 'r') as f:
         return f.read().strip()
 
+# Guardar siguiente folio
 def siguiente_folio(folio_actual):
     letras = folio_actual[:2]
     numeros = int(folio_actual[2:])
@@ -35,6 +38,7 @@ def siguiente_folio(folio_actual):
         f.write(nuevo_folio)
     return nuevo_folio
 
+# Incrementar letras
 def incrementar_letras(letras):
     letra1, letra2 = letras
     if letra2 != 'Z':
@@ -47,6 +51,7 @@ def incrementar_letras(letras):
             letra1 = 'A'
     return letra1 + letra2
 
+# Formato de fecha
 def formatear_fecha(fecha):
     meses = {
         "January": "ENERO", "February": "FEBRERO", "March": "MARZO", "April": "ABRIL",
@@ -58,6 +63,7 @@ def formatear_fecha(fecha):
     año = fecha.year
     return f"{dia} DE {mes} DE {año}"
 
+# Texto para el tipo de vehículo
 def obtener_texto_caracteristicas(tipo):
     tipo = tipo.upper()
     if tipo == "AUTOMOVIL":
@@ -73,6 +79,7 @@ def obtener_texto_caracteristicas(tipo):
     else:
         return tipo
 
+# Guardar registro en Supabase
 def guardar_en_supabase(folio, tipo, marca, linea, año, serie, motor, color, contribuyente, fecha_expedicion, fecha_vencimiento):
     data = {
         "folio_generado": folio,
@@ -89,6 +96,7 @@ def guardar_en_supabase(folio, tipo, marca, linea, año, serie, motor, color, co
     }
     supabase.table("permisos_guerrero").insert(data).execute()
 
+# Generar el PDF
 def generar_pdf(folio, tipo_vehiculo, marca, linea, año, serie, motor, color, contribuyente, fecha_expedicion, fecha_vencimiento):
     tipo_texto = obtener_texto_caracteristicas(tipo_vehiculo)
     doc = fitz.open(PLANTILLA_PDF)
@@ -111,6 +119,8 @@ def generar_pdf(folio, tipo_vehiculo, marca, linea, año, serie, motor, color, c
     output_path = os.path.join(PDF_OUTPUT_FOLDER, f"{folio}.pdf")
     doc.save(output_path)
     doc.close()
+
+# Rutas
 
 @app.route('/', methods=['GET', 'POST'])
 def formulario():
@@ -141,11 +151,7 @@ def formulario():
 @app.route('/descargar/<folio>')
 def descargar(folio):
     path = os.path.join(PDF_OUTPUT_FOLDER, f"{folio}.pdf")
-    if os.path.exists(path):
-        return send_file(path, as_attachment=True)
-    else:
-        flash('Archivo PDF no encontrado.', 'danger')
-        return redirect(url_for('panel'))
+    return send_file(path, as_attachment=True)
 
 @app.route('/panel', methods=['GET'])
 def panel():
