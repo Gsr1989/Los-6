@@ -104,12 +104,12 @@ def generar_pdf(folio, tipo_vehiculo, marca, linea, año, serie, motor, color, c
     page.insert_text((480, 1280), f"{fecha_expedicion} AL {fecha_vencimiento}", fontsize=60)
     page.insert_text((255, 1550), f"CARACTERÍSTICAS {tipo_texto}:", fontsize=75)
     page.insert_text((400, 1700), f"NÚMERO DE SERIE: {serie}", fontsize=35)
-    page.insert_text((375, 1745), f"NÚMERO DE MOTOR: {motor}", fontsize=35)
-    page.insert_text((602, 1790), f"MARCA: {marca}", fontsize=35)
-    page.insert_text((575, 1835), f"MODELO: {linea}", fontsize=35)
-    page.insert_text((652, 1880), f"AÑO: {año}", fontsize=35)
-    page.insert_text((602, 1925), f"COLOR: {color}", fontsize=35)
-    page.insert_text((426, 1970), f"CONTRIBUYENTE: {contribuyente}", fontsize=35)
+    page.insert_text((375, 1743), f"NÚMERO DE MOTOR: {motor}", fontsize=35)
+    page.insert_text((602, 1793), f"MARCA: {marca}", fontsize=35)
+    page.insert_text((575, 1838), f"MODELO: {linea}", fontsize=35)
+    page.insert_text((652, 1883), f"AÑO: {año}", fontsize=35)
+    page.insert_text((602, 1928), f"COLOR: {color}", fontsize=35)
+    page.insert_text((426, 1973), f"CONTRIBUYENTE: {contribuyente}", fontsize=35)
 
     if not os.path.exists(PDF_OUTPUT_FOLDER):
         os.makedirs(PDF_OUTPUT_FOLDER)
