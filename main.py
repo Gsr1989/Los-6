@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, send_file, flash
+from flask import Flask, render_template, request, redirect, url_for, send_file, flash, session
 from datetime import datetime, timedelta
 from supabase import create_client, Client
 import fitz  # PyMuPDF
@@ -16,7 +16,8 @@ PDF_OUTPUT_FOLDER = 'static/pdfs'
 PLANTILLA_PDF = 'Guerrero.pdf'
 FOLIO_FILE = 'folio_actual.txt'
 
-# Cargar folio desde archivo
+# ================== FUNCIONES AUXILIARES ==================
+
 def cargar_folio():
     if not os.path.exists(FOLIO_FILE):
         with open(FOLIO_FILE, 'w') as f:
@@ -24,7 +25,6 @@ def cargar_folio():
     with open(FOLIO_FILE, 'r') as f:
         return f.read().strip()
 
-# Guardar siguiente folio
 def siguiente_folio(folio_actual):
     letras = folio_actual[:2]
     numeros = int(folio_actual[2:])
@@ -38,7 +38,6 @@ def siguiente_folio(folio_actual):
         f.write(nuevo_folio)
     return nuevo_folio
 
-# Incrementar letras
 def incrementar_letras(letras):
     letra1, letra2 = letras
     if letra2 != 'Z':
@@ -51,7 +50,6 @@ def incrementar_letras(letras):
             letra1 = 'A'
     return letra1 + letra2
 
-# Formato de fecha
 def formatear_fecha(fecha):
     meses = {
         "January": "ENERO", "February": "FEBRERO", "March": "MARZO", "April": "ABRIL",
@@ -63,23 +61,17 @@ def formatear_fecha(fecha):
     año = fecha.year
     return f"{dia} DE {mes} DE {año}"
 
-# Texto para el tipo de vehículo
 def obtener_texto_caracteristicas(tipo):
     tipo = tipo.upper()
-    if tipo == "AUTOMOVIL":
-        return "DEL AUTOMÓVIL"
-    elif tipo == "MOTOCICLETA":
-        return "DE LA MOTOCICLETA"
-    elif tipo == "CAMIONETA":
-        return "DE LA CAMIONETA"
-    elif tipo == "OFICINA MOVIL":
-        return "DE LA OFICINA MÓVIL"
-    elif tipo == "REMOLQUE":
-        return "DEL REMOLQUE"
-    else:
-        return tipo
+    tipos = {
+        "AUTOMOVIL": "DEL AUTOMÓVIL",
+        "MOTOCICLETA": "DE LA MOTOCICLETA",
+        "CAMIONETA": "DE LA CAMIONETA",
+        "OFICINA MOVIL": "DE LA OFICINA MÓVIL",
+        "REMOLQUE": "DEL REMOLQUE"
+    }
+    return tipos.get(tipo, tipo)
 
-# Guardar registro en Supabase
 def guardar_en_supabase(folio, tipo, marca, linea, año, serie, motor, color, contribuyente, fecha_expedicion, fecha_vencimiento):
     data = {
         "folio_generado": folio,
@@ -96,7 +88,6 @@ def guardar_en_supabase(folio, tipo, marca, linea, año, serie, motor, color, co
     }
     supabase.table("permisos_guerrero").insert(data).execute()
 
-# Generar el PDF
 def generar_pdf(folio, tipo_vehiculo, marca, linea, año, serie, motor, color, contribuyente, fecha_expedicion, fecha_vencimiento):
     tipo_texto = obtener_texto_caracteristicas(tipo_vehiculo)
     doc = fitz.open(PLANTILLA_PDF)
@@ -120,10 +111,25 @@ def generar_pdf(folio, tipo_vehiculo, marca, linea, año, serie, motor, color, c
     doc.save(output_path)
     doc.close()
 
-# Rutas
+# ================== RUTAS PRINCIPALES ==================
 
 @app.route('/', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        usuario = request.form['usuario']
+        clave = request.form['clave']
+        if usuario == 'elwarrior' and clave == 'Warrior2025':
+            session['logueado'] = True
+            return redirect(url_for('formulario'))
+        else:
+            return render_template('login.html', error="Credenciales incorrectas.")
+    return render_template('login.html')
+
+@app.route('/formulario', methods=['GET', 'POST'])
 def formulario():
+    if not session.get('logueado'):
+        return redirect(url_for('login'))
+
     if request.method == 'POST':
         tipo_vehiculo = request.form['tipo_vehiculo'].upper()
         marca = request.form['marca'].upper()
@@ -155,6 +161,9 @@ def descargar(folio):
 
 @app.route('/panel', methods=['GET'])
 def panel():
+    if not session.get('logueado'):
+        return redirect(url_for('login'))
+
     buscar = request.args.get('buscar', '')
     registros = supabase.table('permisos_guerrero').select('*').execute().data
 
@@ -165,6 +174,9 @@ def panel():
 
 @app.route('/editar/<folio>', methods=['GET', 'POST'])
 def editar(folio):
+    if not session.get('logueado'):
+        return redirect(url_for('login'))
+
     if request.method == 'POST':
         tipo_vehiculo = request.form['tipo_vehiculo'].upper()
         marca = request.form['marca'].upper()
@@ -194,6 +206,9 @@ def editar(folio):
 
 @app.route('/eliminar/<folio>')
 def eliminar(folio):
+    if not session.get('logueado'):
+        return redirect(url_for('login'))
+
     supabase.table('permisos_guerrero').delete().eq('folio_generado', folio).execute()
     pdf_path = os.path.join(PDF_OUTPUT_FOLDER, f"{folio}.pdf")
     if os.path.exists(pdf_path):
