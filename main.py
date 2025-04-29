@@ -16,8 +16,10 @@ PDF_OUTPUT_FOLDER = 'static/pdfs'
 PLANTILLA_PDF = 'Guerrero.pdf'
 FOLIO_FILE = 'folio_actual.txt'
 
-# ================== FUNCIONES AUXILIARES ==================
+USUARIO_VALIDO = "elwarrior"
+CONTRASENA_VALIDA = "Warrior2025"
 
+# Cargar folio desde archivo
 def cargar_folio():
     if not os.path.exists(FOLIO_FILE):
         with open(FOLIO_FILE, 'w') as f:
@@ -63,14 +65,18 @@ def formatear_fecha(fecha):
 
 def obtener_texto_caracteristicas(tipo):
     tipo = tipo.upper()
-    tipos = {
-        "AUTOMOVIL": "DEL AUTOMÓVIL",
-        "MOTOCICLETA": "DE LA MOTOCICLETA",
-        "CAMIONETA": "DE LA CAMIONETA",
-        "OFICINA MOVIL": "DE LA OFICINA MÓVIL",
-        "REMOLQUE": "DEL REMOLQUE"
-    }
-    return tipos.get(tipo, tipo)
+    if tipo == "AUTOMOVIL":
+        return "DEL AUTOMÓVIL"
+    elif tipo == "MOTOCICLETA":
+        return "DE LA MOTOCICLETA"
+    elif tipo == "CAMIONETA":
+        return "DE LA CAMIONETA"
+    elif tipo == "OFICINA MOVIL":
+        return "DE LA OFICINA MÓVIL"
+    elif tipo == "REMOLQUE":
+        return "DEL REMOLQUE"
+    else:
+        return tipo
 
 def guardar_en_supabase(folio, tipo, marca, linea, año, serie, motor, color, contribuyente, fecha_expedicion, fecha_vencimiento):
     data = {
@@ -111,23 +117,24 @@ def generar_pdf(folio, tipo_vehiculo, marca, linea, año, serie, motor, color, c
     doc.save(output_path)
     doc.close()
 
-# ================== RUTAS PRINCIPALES ==================
+# Rutas
 
 @app.route('/', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
         usuario = request.form['usuario']
-        clave = request.form['clave']
-        if usuario == 'elwarrior' and clave == 'Warrior2025':
-            session['logueado'] = True
+        contraseña = request.form['contraseña']
+        if usuario == USUARIO_VALIDO and contraseña == CONTRASENA_VALIDA:
+            session['usuario'] = usuario
             return redirect(url_for('formulario'))
         else:
-            return render_template('login.html', error="Credenciales incorrectas.")
+            flash('Credenciales incorrectas', 'danger')
+            return redirect(url_for('login'))
     return render_template('login.html')
 
 @app.route('/formulario', methods=['GET', 'POST'])
 def formulario():
-    if not session.get('logueado'):
+    if 'usuario' not in session:
         return redirect(url_for('login'))
 
     if request.method == 'POST':
@@ -159,62 +166,10 @@ def descargar(folio):
     path = os.path.join(PDF_OUTPUT_FOLDER, f"{folio}.pdf")
     return send_file(path, as_attachment=True)
 
-@app.route('/panel', methods=['GET'])
-def panel():
-    if not session.get('logueado'):
-        return redirect(url_for('login'))
-
-    buscar = request.args.get('buscar', '')
-    registros = supabase.table('permisos_guerrero').select('*').execute().data
-
-    if buscar:
-        registros = [r for r in registros if buscar.lower() in r['serie'].lower()]
-
-    return render_template('panel.html', registros=registros)
-
-@app.route('/editar/<folio>', methods=['GET', 'POST'])
-def editar(folio):
-    if not session.get('logueado'):
-        return redirect(url_for('login'))
-
-    if request.method == 'POST':
-        tipo_vehiculo = request.form['tipo_vehiculo'].upper()
-        marca = request.form['marca'].upper()
-        linea = request.form['linea'].upper()
-        año = request.form['año'].upper()
-        serie = request.form['serie'].upper()
-        motor = request.form['motor'].upper()
-        color = request.form['color'].upper()
-        contribuyente = request.form['contribuyente'].upper()
-
-        supabase.table('permisos_guerrero').update({
-            "tipo_vehiculo": tipo_vehiculo,
-            "marca": marca,
-            "linea": linea,
-            "anio": año,
-            "serie": serie,
-            "motor": motor,
-            "color": color,
-            "contribuyente": contribuyente
-        }).eq('folio_generado', folio).execute()
-
-        flash('Registro actualizado exitosamente.', 'success')
-        return redirect(url_for('panel'))
-
-    registro = supabase.table('permisos_guerrero').select('*').eq('folio_generado', folio).single().execute().data
-    return render_template('editar.html', registro=registro)
-
-@app.route('/eliminar/<folio>')
-def eliminar(folio):
-    if not session.get('logueado'):
-        return redirect(url_for('login'))
-
-    supabase.table('permisos_guerrero').delete().eq('folio_generado', folio).execute()
-    pdf_path = os.path.join(PDF_OUTPUT_FOLDER, f"{folio}.pdf")
-    if os.path.exists(pdf_path):
-        os.remove(pdf_path)
-    flash('Registro y PDF eliminados exitosamente.', 'success')
-    return redirect(url_for('panel'))
+@app.route('/logout')
+def logout():
+    session.clear()
+    return redirect(url_for('login'))
 
 if __name__ == '__main__':
     app.run(debug=True)
