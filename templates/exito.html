@@ -2,16 +2,57 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Registro Exitoso</title>
+    <title>¡Registro Exitoso!</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        body {
+            background-color: #e8f0fe;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            text-align: center;
+        }
+        h2 {
+            color: #1a73e8;
+            margin-bottom: 20px;
+        }
+        p {
+            font-size: 16px;
+            color: #333;
+            margin-bottom: 30px;
+        }
+        a, button {
+            background-color: #1a73e8;
+            color: white;
+            padding: 12px 20px;
+            text-decoration: none;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            cursor: pointer;
+            display: block;
+            width: 100%;
+            max-width: 300px;
+            margin: 10px 0;
+            transition: background 0.3s;
+        }
+        a:hover, button:hover {
+            background-color: #1558b0;
+        }
+    </style>
 </head>
 <body>
-    <h2>Registro Exitoso</h2>
 
-    <p>Folio generado: <strong>{{ folio }}</strong></p>
+    <h2>¡Permiso generado correctamente!</h2>
+    <p>Folio: <strong>{{ folio }}</strong></p>
 
-    <a href="{{ url_for('descargar', folio=folio) }}">Descargar PDF</a> |
-    <a href="{{ url_for('formulario') }}">Registrar otro vehículo</a> |
-    <a href="{{ url_for('panel') }}">Volver al Panel</a>
+    <a href="{{ url_for('descargar', folio=folio) }}">Descargar PDF</a>
+    <a href="{{ url_for('formulario') }}">Registrar otro vehículo</a>
+
 </body>
 </html>
