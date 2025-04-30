@@ -82,11 +82,11 @@ def generar_pdf(folio, tipo_vehiculo, marca, linea, año, serie, motor, color, c
     page = doc[0]
 
     # Coordenadas centradas para tamaño carta (aproximadas)
-    page.insert_text((397, 122), f"{folio}", fontsize=14, color=(1, 0, 0))
+    page.insert_text((402, 122), f"{folio}", fontsize=14, color=(1, 0, 0))
     page.insert_text((290, 137), f"TLAPA DE COMONFORT, GRO. A {fecha_expedicion}", fontsize=12)
-    page.insert_text((110, 324), f"{fecha_expedicion} AL {fecha_vencimiento}", fontsize=14)
+    page.insert_text((110, 316), f"{fecha_expedicion} AL {fecha_vencimiento}", fontsize=14)
 
-    page.insert_text((80, 370), f"CARACTERÍSTICAS {tipo_texto}:", fontsize=20)
+    page.insert_text((73, 370), f"CARACTERÍSTICAS {tipo_texto}:", fontsize=20)
     page.insert_text((180, 320), f"NÚMERO DE SERIE: {serie}", fontsize=14)
     page.insert_text((180, 345), f"NÚMERO DE MOTOR: {motor}", fontsize=14)
     page.insert_text((180, 370), f"MARCA: {marca}", fontsize=14)
