@@ -81,17 +81,20 @@ def generar_pdf(folio, tipo_vehiculo, marca, linea, año, serie, motor, color, c
     doc = fitz.open(PLANTILLA_PDF)
     page = doc[0]
 
-    page.insert_text((1700, 500), f"{folio}", fontsize=55, color=(1, 0, 0))
-    page.insert_text((1325, 555), f"TLAPA DE COMONFORT, GRO. A {fecha_expedicion}", fontsize=38)
-    page.insert_text((570, 1290), f"{fecha_expedicion} AL {fecha_vencimiento}", fontsize=60)
-    page.insert_text((265, 1550), f"CARACTERÍSTICAS {tipo_texto}:", fontsize=75)
-    page.insert_text((400, 1700), f"NÚMERO DE SERIE: {serie}", fontsize=35)
-    page.insert_text((375, 1743), f"NÚMERO DE MOTOR: {motor}", fontsize=35)
-    page.insert_text((602, 1793), f"MARCA: {marca}", fontsize=35)
-    page.insert_text((575, 1838), f"MODELO: {linea}", fontsize=35)
-    page.insert_text((652, 1883), f"AÑO: {año}", fontsize=35)
-    page.insert_text((602, 1928), f"COLOR: {color}", fontsize=35)
-    page.insert_text((426, 1973), f"CONTRIBUYENTE: {contribuyente}", fontsize=35)
+    # Coordenadas centradas para tamaño carta (aproximadas)
+    page.insert_text((250, 150), f"FOLIO: {folio}", fontsize=24, color=(1, 0, 0))
+    page.insert_text((180, 200), f"TLAPA DE COMONFORT, GRO. A {fecha_expedicion}", fontsize=16)
+    page.insert_text((180, 230), f"VIGENCIA: {fecha_expedicion} AL {fecha_vencimiento}", fontsize=16)
+
+    page.insert_text((180, 280), f"CARACTERÍSTICAS {tipo_texto}:", fontsize=20)
+
+    page.insert_text((180, 320), f"NÚMERO DE SERIE: {serie}", fontsize=14)
+    page.insert_text((180, 345), f"NÚMERO DE MOTOR: {motor}", fontsize=14)
+    page.insert_text((180, 370), f"MARCA: {marca}", fontsize=14)
+    page.insert_text((180, 395), f"MODELO: {linea}", fontsize=14)
+    page.insert_text((180, 420), f"AÑO: {año}", fontsize=14)
+    page.insert_text((180, 445), f"COLOR: {color}", fontsize=14)
+    page.insert_text((180, 470), f"CONTRIBUYENTE: {contribuyente}", fontsize=14)
 
     if not os.path.exists(PDF_OUTPUT_FOLDER):
         os.makedirs(PDF_OUTPUT_FOLDER)
