@@ -87,13 +87,13 @@ def generar_pdf(folio, tipo_vehiculo, marca, linea, año, serie, motor, color, c
     page.insert_text((110, 316), f"{fecha_expedicion} AL {fecha_vencimiento}", fontsize=18)
 
     page.insert_text((69, 370), f"CARACTERÍSTICAS {tipo_texto}:", fontsize=14)
-    page.insert_text((83, 392), f"NÚMERO DE SERIE: {serie}", fontsize=8)
-    page.insert_text((77, 402), f"NÚMERO DE MOTOR: {motor}", fontsize=8)
-    page.insert_text((129, 412), f"MARCA: {marca}", fontsize=8)
-    page.insert_text((123, 422), f"MODELO: {linea}", fontsize=8)
-    page.insert_text((140, 432), f"AÑO: {año}", fontsize=8)
-    page.insert_text((129, 442), f"COLOR: {color}", fontsize=8)
-    page.insert_text((89, 452), f"CONTRIBUYENTE: {contribuyente}", fontsize=8)
+    page.insert_text((83, 395), f"NÚMERO DE SERIE: {serie}", fontsize=8)
+    page.insert_text((77, 403), f"NÚMERO DE MOTOR: {motor}", fontsize=8)
+    page.insert_text((129, 413), f"MARCA: {marca}", fontsize=8)
+    page.insert_text((123, 423), f"MODELO: {linea}", fontsize=8)
+    page.insert_text((140, 433), f"AÑO: {año}", fontsize=8)
+    page.insert_text((129, 443), f"COLOR: {color}", fontsize=8)
+    page.insert_text((89, 453), f"CONTRIBUYENTE: {contribuyente}", fontsize=8)
 
     if not os.path.exists(PDF_OUTPUT_FOLDER):
         os.makedirs(PDF_OUTPUT_FOLDER)
