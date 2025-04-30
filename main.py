@@ -1,29 +1,23 @@
 from flask import Flask, render_template, request, redirect, url_for, send_file, flash, session
 from datetime import datetime, timedelta
-from supabase import create_client, Client
 import fitz  # PyMuPDF
 import os
 
 app = Flask(__name__)
 app.secret_key = "secreto_perro"
 
-# Conexión a Supabase
-SUPABASE_URL = "https://iuwsippnvyynwnxanwnv.supabase.co"
-SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml1d3NpcHBudnl5bndueGFud252Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDU2NDU3MDcsImV4cCI6MjA2MTIyMTcwN30.bm7J6b3k_F0JxPFFRTklBDOgHRJTvEa1s-uwvSwVxTs"
-supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
-
 PDF_OUTPUT_FOLDER = 'static/pdfs'
 PLANTILLA_PDF = 'Guerrero.pdf'
 FOLIO_FILE = 'folio_actual.txt'
+REGISTRO_FILE = 'registros.txt'
 
 USUARIO_VALIDO = "elwarrior"
 CONTRASENA_VALIDA = "Warrior2025"
 
-# Cargar folio desde archivo
 def cargar_folio():
     if not os.path.exists(FOLIO_FILE):
         with open(FOLIO_FILE, 'w') as f:
-            f.write('AC0000')
+            f.write('AA0000')
     with open(FOLIO_FILE, 'r') as f:
         return f.read().strip()
 
@@ -78,21 +72,9 @@ def obtener_texto_caracteristicas(tipo):
     else:
         return tipo
 
-def guardar_en_supabase(folio, tipo, marca, linea, año, serie, motor, color, contribuyente, fecha_expedicion, fecha_vencimiento):
-    data = {
-        "folio_generado": folio,
-        "tipo_vehiculo": tipo,
-        "marca": marca,
-        "linea": linea,
-        "anio": año,
-        "serie": serie,
-        "motor": motor,
-        "color": color,
-        "contribuyente": contribuyente,
-        "fecha_expedicion": fecha_expedicion,
-        "fecha_vencimiento": fecha_vencimiento
-    }
-    supabase.table("permisos_guerrero").insert(data).execute()
+def guardar_en_txt(folio, tipo, marca, linea, año, serie, motor, color, contribuyente, fecha_expedicion, fecha_vencimiento):
+    with open(REGISTRO_FILE, 'a') as f:
+        f.write(f"{folio}|{tipo}|{marca}|{linea}|{año}|{serie}|{motor}|{color}|{contribuyente}|{fecha_expedicion}|{fecha_vencimiento}\n")
 
 def generar_pdf(folio, tipo_vehiculo, marca, linea, año, serie, motor, color, contribuyente, fecha_expedicion, fecha_vencimiento):
     tipo_texto = obtener_texto_caracteristicas(tipo_vehiculo)
@@ -116,8 +98,6 @@ def generar_pdf(folio, tipo_vehiculo, marca, linea, año, serie, motor, color, c
     output_path = os.path.join(PDF_OUTPUT_FOLDER, f"{folio}.pdf")
     doc.save(output_path)
     doc.close()
-
-# Rutas
 
 @app.route('/', methods=['GET', 'POST'])
 def login():
@@ -154,7 +134,7 @@ def formulario():
         fecha_expedicion = formatear_fecha(fecha_actual)
         fecha_vencimiento = formatear_fecha(fecha_actual + timedelta(days=30))
 
-        guardar_en_supabase(folio_generado, tipo_vehiculo, marca, linea, año, serie, motor, color, contribuyente, fecha_expedicion, fecha_vencimiento)
+        guardar_en_txt(folio_generado, tipo_vehiculo, marca, linea, año, serie, motor, color, contribuyente, fecha_expedicion, fecha_vencimiento)
         generar_pdf(folio_generado, tipo_vehiculo, marca, linea, año, serie, motor, color, contribuyente, fecha_expedicion, fecha_vencimiento)
 
         return render_template('exito.html', folio=folio_generado)
