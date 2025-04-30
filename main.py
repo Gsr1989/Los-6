@@ -83,17 +83,17 @@ def generar_pdf(folio, tipo_vehiculo, marca, linea, año, serie, motor, color, c
 
     # Coordenadas centradas para tamaño carta (aproximadas)
     page.insert_text((402, 122), f"{folio}", fontsize=14, color=(1, 0, 0))
-    page.insert_text((290, 137), f"TLAPA DE COMONFORT, GRO. A {fecha_expedicion}", fontsize=12)
-    page.insert_text((110, 316), f"{fecha_expedicion} AL {fecha_vencimiento}", fontsize=14)
+    page.insert_text((290, 137), f"TLAPA DE COMONFORT, GRO. A {fecha_expedicion}", fontsize=10)
+    page.insert_text((110, 316), f"{fecha_expedicion} AL {fecha_vencimiento}", fontsize=18)
 
-    page.insert_text((73, 370), f"CARACTERÍSTICAS {tipo_texto}:", fontsize=20)
-    page.insert_text((180, 320), f"NÚMERO DE SERIE: {serie}", fontsize=14)
-    page.insert_text((180, 345), f"NÚMERO DE MOTOR: {motor}", fontsize=14)
-    page.insert_text((180, 370), f"MARCA: {marca}", fontsize=14)
-    page.insert_text((180, 395), f"MODELO: {linea}", fontsize=14)
-    page.insert_text((180, 420), f"AÑO: {año}", fontsize=14)
-    page.insert_text((180, 445), f"COLOR: {color}", fontsize=14)
-    page.insert_text((180, 470), f"CONTRIBUYENTE: {contribuyente}", fontsize=14)
+    page.insert_text((73, 370), f"CARACTERÍSTICAS {tipo_texto}:", fontsize=8)
+    page.insert_text((180, 395), f"NÚMERO DE SERIE: {serie}", fontsize=8)
+    page.insert_text((180, 410), f"NÚMERO DE MOTOR: {motor}", fontsize=8)
+    page.insert_text((180, 425), f"MARCA: {marca}", fontsize=8)
+    page.insert_text((180, 440), f"MODELO: {linea}", fontsize=8)
+    page.insert_text((180, 455), f"AÑO: {año}", fontsize=8)
+    page.insert_text((180, 470), f"COLOR: {color}", fontsize=8)
+    page.insert_text((180, 485), f"CONTRIBUYENTE: {contribuyente}", fontsize=8)
 
     if not os.path.exists(PDF_OUTPUT_FOLDER):
         os.makedirs(PDF_OUTPUT_FOLDER)
