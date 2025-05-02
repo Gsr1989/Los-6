@@ -17,7 +17,7 @@ CONTRASENA_VALIDA = "Warrior2025"
 def cargar_folio():
     if not os.path.exists(FOLIO_FILE):
         with open(FOLIO_FILE, 'w') as f:
-            f.write('AA0000')
+            f.write('AB0000')
     with open(FOLIO_FILE, 'r') as f:
         return f.read().strip()
 
@@ -54,7 +54,7 @@ def generar_pdf(folio, marca, linea, año, serie, motor, color, contribuyente, f
     doc = fitz.open(PLANTILLA_PDF)
     page = doc[0]
 
-    # Parte superior (vertical)
+    # Parte superior
     page.insert_text((402, 122), f"{folio}", fontsize=14, color=(1, 0, 0))
     page.insert_text((290, 137), f"TLAPA DE COMONFORT, GRO. A {fecha_expedicion}", fontsize=10)
     page.insert_text((110, 316), f"{fecha_expedicion} AL {fecha_vencimiento}", fontsize=18)
@@ -66,7 +66,7 @@ def generar_pdf(folio, marca, linea, año, serie, motor, color, contribuyente, f
     page.insert_text((129, 453), f"{color}", fontsize=8)
     page.insert_text((89, 465), f"{contribuyente}", fontsize=8)
 
-    # Parte inferior (rotada)
+    # Parte inferior (rotado)
     base_y = 650
     origin = fitz.Point(500, base_y)
     angle = 90
@@ -93,9 +93,15 @@ def generar_pdf(folio, marca, linea, año, serie, motor, color, contribuyente, f
 
     if not os.path.exists(PDF_OUTPUT_FOLDER):
         os.makedirs(PDF_OUTPUT_FOLDER)
+
     output_path = os.path.join(PDF_OUTPUT_FOLDER, f"{folio}.pdf")
-    doc.save(output_path)
-    doc.close()
+    try:
+        doc.save(output_path)
+        print(f"PDF guardado exitosamente en: {output_path}")
+    except Exception as e:
+        print(f"ERROR al guardar PDF: {e}")
+    finally:
+        doc.close()
 
 @app.route('/', methods=['GET', 'POST'])
 def login():
@@ -141,6 +147,8 @@ def formulario():
 @app.route('/descargar/<folio>')
 def descargar(folio):
     path = os.path.join(PDF_OUTPUT_FOLDER, f"{folio}.pdf")
+    if not os.path.exists(path):
+        return "El archivo no existe", 404
     return send_file(path, as_attachment=True)
 
 @app.route('/logout')
