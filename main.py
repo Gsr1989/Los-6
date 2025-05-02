@@ -46,54 +46,50 @@ def incrementar_letras(letras):
             letra1 = 'A'
     return letra1 + letra2
 
-def formatear_fecha(fecha):
-    meses = {
-        "January": "ENERO", "February": "FEBRERO", "March": "MARZO", "April": "ABRIL",
-        "May": "MAYO", "June": "JUNIO", "July": "JULIO", "August": "AGOSTO",
-        "September": "SEPTIEMBRE", "October": "OCTUBRE", "November": "NOVIEMBRE", "December": "DICIEMBRE"
-    }
-    dia = fecha.day
-    mes = meses[fecha.strftime('%B')]
-    año = fecha.year
-    return f"{dia} DE {mes} DE {año}"
-
-def obtener_texto_caracteristicas(tipo):
-    tipo = tipo.upper()
-    if tipo == "AUTOMOVIL":
-        return "DEL AUTOMÓVIL"
-    elif tipo == "MOTOCICLETA":
-        return "DE LA MOTOCICLETA"
-    elif tipo == "CAMIONETA":
-        return "DE LA CAMIONETA"
-    elif tipo == "OFICINA MOVIL":
-        return "DE LA OFICINA MÓVIL"
-    elif tipo == "REMOLQUE":
-        return "DEL REMOLQUE"
-    else:
-        return tipo
-
-def guardar_en_txt(folio, tipo, marca, linea, año, serie, motor, color, contribuyente, fecha_expedicion, fecha_vencimiento):
+def guardar_en_txt(folio, marca, linea, año, serie, motor, color, contribuyente, fecha_expedicion, fecha_vencimiento):
     with open(REGISTRO_FILE, 'a') as f:
-        f.write(f"{folio}|{tipo}|{marca}|{linea}|{año}|{serie}|{motor}|{color}|{contribuyente}|{fecha_expedicion}|{fecha_vencimiento}\n")
+        f.write(f"{folio}|{marca}|{linea}|{año}|{serie}|{motor}|{color}|{contribuyente}|{fecha_expedicion}|{fecha_vencimiento}\n")
 
-def generar_pdf(folio, tipo_vehiculo, marca, linea, año, serie, motor, color, contribuyente, fecha_expedicion, fecha_vencimiento):
-    tipo_texto = obtener_texto_caracteristicas(tipo_vehiculo)
+def generar_pdf(folio, marca, linea, año, serie, motor, color, contribuyente, fecha_expedicion, fecha_vencimiento):
     doc = fitz.open(PLANTILLA_PDF)
     page = doc[0]
 
-    # Coordenadas centradas para tamaño carta (aproximadas)
+    # Parte superior (vertical)
     page.insert_text((402, 122), f"{folio}", fontsize=14, color=(1, 0, 0))
     page.insert_text((290, 137), f"TLAPA DE COMONFORT, GRO. A {fecha_expedicion}", fontsize=10)
     page.insert_text((110, 316), f"{fecha_expedicion} AL {fecha_vencimiento}", fontsize=18)
+    page.insert_text((83, 393), f"{serie}", fontsize=8)
+    page.insert_text((77, 405), f"{motor}", fontsize=8)
+    page.insert_text((129, 417), f"{marca}", fontsize=8)
+    page.insert_text((123, 429), f"{linea}", fontsize=8)
+    page.insert_text((140, 441), f"{año}", fontsize=8)
+    page.insert_text((129, 453), f"{color}", fontsize=8)
+    page.insert_text((89, 465), f"{contribuyente}", fontsize=8)
 
-    page.insert_text((69, 370), f"CARACTERÍSTICAS {tipo_texto}:", fontsize=14)
-    page.insert_text((83, 393), f"NÚMERO DE SERIE: {serie}", fontsize=8)
-    page.insert_text((77, 405), f"NÚMERO DE MOTOR: {motor}", fontsize=8)
-    page.insert_text((129, 417), f"MARCA: {marca}", fontsize=8)
-    page.insert_text((123, 429), f"MODELO: {linea}", fontsize=8)
-    page.insert_text((140, 441), f"AÑO: {año}", fontsize=8)
-    page.insert_text((129, 453), f"COLOR: {color}", fontsize=8)
-    page.insert_text((89, 465), f"CONTRIBUYENTE: {contribuyente}", fontsize=8)
+    # Parte inferior (rotada)
+    base_y = 650
+    origin = fitz.Point(500, base_y)
+    angle = 90
+    datos = [
+        f"{folio}",
+        f"{fecha_expedicion} AL {fecha_vencimiento}",
+        f"{serie}",
+        f"{motor}",
+        f"{marca}",
+        f"{linea}",
+        f"{año}",
+        f"{color}",
+        f"{contribuyente}"
+    ]
+
+    for i, txt in enumerate(datos):
+        page.insert_text(
+            origin + (0, i * 16),
+            txt,
+            fontsize=8,
+            rotate=angle,
+            color=(0, 0, 0)
+        )
 
     if not os.path.exists(PDF_OUTPUT_FOLDER):
         os.makedirs(PDF_OUTPUT_FOLDER)
@@ -120,7 +116,6 @@ def formulario():
         return redirect(url_for('login'))
 
     if request.method == 'POST':
-        tipo_vehiculo = request.form['tipo_vehiculo'].upper()
         marca = request.form['marca'].upper()
         linea = request.form['linea'].upper()
         año = request.form['año'].upper()
@@ -133,11 +128,11 @@ def formulario():
         folio_generado = siguiente_folio(folio_actual)
 
         fecha_actual = datetime.now()
-        fecha_expedicion = formatear_fecha(fecha_actual)
-        fecha_vencimiento = formatear_fecha(fecha_actual + timedelta(days=30))
+        fecha_expedicion = fecha_actual.strftime("%d/%m/%Y")
+        fecha_vencimiento = (fecha_actual + timedelta(days=30)).strftime("%d/%m/%Y")
 
-        guardar_en_txt(folio_generado, tipo_vehiculo, marca, linea, año, serie, motor, color, contribuyente, fecha_expedicion, fecha_vencimiento)
-        generar_pdf(folio_generado, tipo_vehiculo, marca, linea, año, serie, motor, color, contribuyente, fecha_expedicion, fecha_vencimiento)
+        guardar_en_txt(folio_generado, marca, linea, año, serie, motor, color, contribuyente, fecha_expedicion, fecha_vencimiento)
+        generar_pdf(folio_generado, marca, linea, año, serie, motor, color, contribuyente, fecha_expedicion, fecha_vencimiento)
 
         return render_template('exito.html', folio=folio_generado)
 
