@@ -56,8 +56,8 @@ def generar_pdf(folio, marca, linea, año, serie, motor, color, contribuyente, f
 
     # Parte superior
     page.insert_text((402, 122), f"{folio}", fontsize=14, color=(1, 0, 0))
-    page.insert_text((270, 132), f"{fecha_expedicion}", fontsize=10)  # Fecha de expedición
-    page.insert_text((360, 132), f"{fecha_vencimiento}", fontsize=10)  # Fecha de vencimiento
+    page.insert_text((270, 132), f"{fecha_expedicion}", fontsize=10)
+    page.insert_text((360, 132), f"{fecha_vencimiento}", fontsize=10)
     page.insert_text((83, 393), f"{serie}", fontsize=8)
     page.insert_text((77, 405), f"{motor}", fontsize=8)
     page.insert_text((129, 417), f"{marca}", fontsize=8)
@@ -66,10 +66,11 @@ def generar_pdf(folio, marca, linea, año, serie, motor, color, contribuyente, f
     page.insert_text((129, 453), f"{color}", fontsize=8)
     page.insert_text((89, 465), f"{contribuyente}", fontsize=8)
 
-    # Parte inferior (rotado)
-    base_y = 650
-    origin = fitz.Point(500, base_y)
-    angle = 90
+    # Parte inferior (rotado 180°)
+    base_y = 500
+    origin = fitz.Point(300, base_y)
+    angle = 180
+
     datos = [
         f"{folio}",
         f"{fecha_expedicion}",
