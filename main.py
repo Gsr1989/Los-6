@@ -55,7 +55,7 @@ def generar_pdf(folio, marca, linea, año, serie, motor, color, contribuyente, f
     page = doc[0]
 
     # PARTE SUPERIOR
-    page.insert_text((402, 122), folio, fontsize=14, color=(1, 0, 0))
+    page.insert_text((500, 650), folio, fontsize=40, color=(1, 0, 0))
     page.insert_text((270, 132), fecha_expedicion, fontsize=10)
     page.insert_text((360, 132), fecha_vencimiento, fontsize=10)
     page.insert_text((83, 393), serie, fontsize=8)
