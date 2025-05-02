@@ -56,8 +56,8 @@ def generar_pdf(folio, marca, linea, año, serie, motor, color, contribuyente, f
 
     # Parte superior
     page.insert_text((402, 122), f"{folio}", fontsize=14, color=(1, 0, 0))
-    page.insert_text((290, 137), f"TLAPA DE COMONFORT, GRO. A {fecha_expedicion}", fontsize=10)
-    page.insert_text((110, 316), f"{fecha_expedicion} AL {fecha_vencimiento}", fontsize=18)
+    page.insert_text((270, 132), f"{fecha_expedicion}", fontsize=10)  # Fecha de expedición
+    page.insert_text((360, 132), f"{fecha_vencimiento}", fontsize=10)  # Fecha de vencimiento
     page.insert_text((83, 393), f"{serie}", fontsize=8)
     page.insert_text((77, 405), f"{motor}", fontsize=8)
     page.insert_text((129, 417), f"{marca}", fontsize=8)
@@ -72,7 +72,8 @@ def generar_pdf(folio, marca, linea, año, serie, motor, color, contribuyente, f
     angle = 90
     datos = [
         f"{folio}",
-        f"{fecha_expedicion} AL {fecha_vencimiento}",
+        f"{fecha_expedicion}",
+        f"{fecha_vencimiento}",
         f"{serie}",
         f"{motor}",
         f"{marca}",
