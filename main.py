@@ -66,10 +66,10 @@ def generar_pdf(folio, marca, linea, año, serie, motor, color, contribuyente, f
     page.insert_text((129, 453), f"{color}", fontsize=8)
     page.insert_text((89, 465), f"{contribuyente}", fontsize=8)
 
-    # Parte inferior (rotado 180°)
-    base_y = 500
-    origin = fitz.Point(300, base_y)
-    angle = 180
+    # Parte inferior (rotado 90° a la izquierda)
+    base_y = 650
+    origin = fitz.Point(500, base_y)
+    angle = 270
 
     datos = [
         f"{folio}",
