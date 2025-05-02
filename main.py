@@ -57,7 +57,7 @@ def generar_pdf(folio, marca, linea, año, serie, motor, color, contribuyente, f
     # PARTE SUPERIOR
     page.insert_text((376, 769), folio, fontsize=8, color=(1, 0, 0))
     page.insert_text((122, 755), fecha_expedicion, fontsize=8)
-    page.insert_text((122, 767), fecha_vencimiento, fontsize=8)
+    page.insert_text((122, 768), fecha_vencimiento, fontsize=8)
     page.insert_text((376, 742), serie, fontsize=8)
     page.insert_text((376, 729), motor, fontsize=8)
     page.insert_text((376, 700), marca, fontsize=8)
@@ -67,16 +67,16 @@ def generar_pdf(folio, marca, linea, año, serie, motor, color, contribuyente, f
     page.insert_text((122, 700), contribuyente, fontsize=8)
 
     # PARTE INFERIOR ROTADA 90° A LA IZQUIERDA
-    page.insert_text((500, 650), folio, fontsize=8, rotate=270, color=(0, 0, 0))
-    page.insert_text((500, 670), fecha_expedicion, fontsize=8, rotate=270, color=(0, 0, 0))
-    page.insert_text((500, 690), fecha_vencimiento, fontsize=8, rotate=270, color=(0, 0, 0))
-    page.insert_text((500, 710), serie, fontsize=8, rotate=270, color=(0, 0, 0))
-    page.insert_text((500, 730), motor, fontsize=8, rotate=270, color=(0, 0, 0))
-    page.insert_text((500, 750), marca, fontsize=8, rotate=270, color=(0, 0, 0))
-    page.insert_text((500, 770), linea, fontsize=8, rotate=270, color=(0, 0, 0))
-    page.insert_text((500, 790), año, fontsize=8, rotate=270, color=(0, 0, 0))
-    page.insert_text((500, 810), color, fontsize=8, rotate=270, color=(0, 0, 0))
-    page.insert_text((500, 830), contribuyente, fontsize=8, rotate=270, color=(0, 0, 0))
+    page.insert_text((350, 200), folio, fontsize=84, rotate=270, color=(0, 0, 0))
+    page.insert_text((500, 670), fecha_expedicion, fontsize=19, rotate=270, color=(0, 0, 0))
+    page.insert_text((500, 690), fecha_vencimiento, fontsize=19, rotate=270, color=(0, 0, 0))
+    page.insert_text((500, 710), serie, fontsize=19, rotate=270, color=(0, 0, 0))
+    page.insert_text((500, 730), motor, fontsize=19, rotate=270, color=(0, 0, 0))
+    page.insert_text((500, 750), marca, fontsize=19, rotate=270, color=(0, 0, 0))
+    page.insert_text((500, 770), linea, fontsize=19, rotate=270, color=(0, 0, 0))
+    page.insert_text((500, 790), año, fontsize=19, rotate=270, color=(0, 0, 0))
+    page.insert_text((500, 810), color, fontsize=19, rotate=270, color=(0, 0, 0))
+    page.insert_text((500, 830), contribuyente, fontsize=19, rotate=270, color=(0, 0, 0))
 
     if not os.path.exists(PDF_OUTPUT_FOLDER):
         os.makedirs(PDF_OUTPUT_FOLDER)
