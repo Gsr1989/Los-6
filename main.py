@@ -67,15 +67,15 @@ def generar_pdf(folio, marca, linea, año, serie, motor, color, contribuyente, f
 
     # PARTE INFERIOR ROTADA 90° A LA IZQUIERDA
     page.insert_text((440, 200), folio, fontsize=83, rotate=270, color=(0, 0, 0))
-    page.insert_text((500, 670), fecha_expedicion, fontsize=19, rotate=270, color=(0, 0, 0))
-    page.insert_text((500, 690), fecha_vencimiento, fontsize=19, rotate=270, color=(0, 0, 0))
+    page.insert_text((60, 220), fecha_expedicion, fontsize=8, rotate=270, color=(0, 0, 0))
+    page.insert_text((50, 220), fecha_vencimiento, fontsize=8, rotate=270, color=(0, 0, 0))
     page.insert_text((168, 115), serie, fontsize=19, rotate=270, color=(0, 0, 0))
     page.insert_text((224, 115), motor, fontsize=19, rotate=270, color=(0, 0, 0))
     page.insert_text((280, 115), marca, fontsize=19, rotate=270, color=(0, 0, 0))
-    page.insert_text((280, 180), linea, fontsize=19, rotate=270, color=(0, 0, 0))
-    page.insert_text((280, 300), año, fontsize=19, rotate=270, color=(0, 0, 0))
-    page.insert_text((224, 250), color, fontsize=19, rotate=270, color=(0, 0, 0))
-    page.insert_text((500, 830), contribuyente, fontsize=19, rotate=270, color=(0, 0, 0))
+    page.insert_text((280, 320), linea, fontsize=19, rotate=270, color=(0, 0, 0))
+    page.insert_text((280, 420), año, fontsize=19, rotate=270, color=(0, 0, 0))
+    page.insert_text((224, 400), color, fontsize=19, rotate=270, color=(0, 0, 0))
+    page.insert_text((90, 220), contribuyente, fontsize=8, rotate=270, color=(0, 0, 0))
 
     if not os.path.exists(PDF_OUTPUT_FOLDER):
         os.makedirs(PDF_OUTPUT_FOLDER)
