@@ -55,15 +55,15 @@ def generar_pdf(folio, marca, linea, año, serie, motor, color, contribuyente, f
     page = doc[0]
 
     # PARTE SUPERIOR
-    page.insert_text((340, 745), folio, fontsize=8, color=(1, 0, 0))
-    page.insert_text((122, 760), fecha_expedicion, fontsize=10)
-    page.insert_text((122, 770), fecha_vencimiento, fontsize=10)
-    page.insert_text((340, 725), serie, fontsize=8)
-    page.insert_text((350, 725), motor, fontsize=8)
-    page.insert_text((350, 700), marca, fontsize=8)
-    page.insert_text((350, 715), linea, fontsize=8)
-    page.insert_text((340, 441), año, fontsize=8)
-    page.insert_text((350, 735), color, fontsize=8)
+    page.insert_text((365, 745), folio, fontsize=8, color=(1, 0, 0))
+    page.insert_text((122, 750), fecha_expedicion, fontsize=8)
+    page.insert_text((122, 765), fecha_vencimiento, fontsize=8)
+    page.insert_text((365, 725), serie, fontsize=8)
+    page.insert_text((365, 725), motor, fontsize=8)
+    page.insert_text((365, 700), marca, fontsize=8)
+    page.insert_text((365, 715), linea, fontsize=8)
+    page.insert_text((365, 441), año, fontsize=8)
+    page.insert_text((365, 735), color, fontsize=8)
     page.insert_text((122, 700), contribuyente, fontsize=8)
 
     # PARTE INFERIOR ROTADA 90° A LA IZQUIERDA
