@@ -51,6 +51,10 @@
         button:hover {
             background-color: #1e6fa7;
         }
+        a button {
+            width: 100%;
+            margin-top: 10px;
+        }
     </style>
 </head>
 <body>
@@ -67,6 +71,14 @@
         <input type="text" name="contribuyente" placeholder="Nombre del Contribuyente" required>
         <button type="submit">Generar PDF</button>
     </form>
+
+    <a href="{{ url_for('reimprimir') }}">
+        <button type="button">Reimprimir Permiso</button>
+    </a>
+
+    <a href="{{ url_for('folio_actual') }}">
+        <button type="button">Ver Folio Actual</button>
+    </a>
 
 </body>
 </html>
