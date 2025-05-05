@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Folios Generados</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        body {
+            background-color: #002b36;
+            color: white;
+            font-family: Arial, sans-serif;
+            padding: 10px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: #073642;
+            margin-top: 10px;
+        }
+        th, td {
+            padding: 8px;
+            text-align: left;
+            border-bottom: 1px solid #555;
+        }
+        th {
+            background-color: #005f87;
+        }
+        a {
+            color: #268bd2;
+        }
+    </style>
+</head>
+<body>
+    <h2>Lista de Permisos Generados</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Folio</th>
+                <th>Marca</th>
+                <th>Línea</th>
+                <th>Año</th>
+                <th>Serie</th>
+                <th>Motor</th>
+                <th>Color</th>
+                <th>Contribuyente</th>
+                <th>Expedición</th>
+                <th>Vencimiento</th>
+                <th>PDF</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for reg in registros %}
+            <tr>
+                <td>{{ reg[0] }}</td>
+                <td>{{ reg[1] }}</td>
+                <td>{{ reg[2] }}</td>
+                <td>{{ reg[3] }}</td>
+                <td>{{ reg[4] }}</td>
+                <td>{{ reg[5] }}</td>
+                <td>{{ reg[6] }}</td>
+                <td>{{ reg[7] }}</td>
+                <td>{{ reg[8] }}</td>
+                <td>{{ reg[9] }}</td>
+                <td><a href="{{ url_for('descargar', folio=reg[0]) }}">Descargar</a></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>
