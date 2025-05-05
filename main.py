@@ -135,13 +135,6 @@ def formulario():
 
     return render_template('formulario.html')
 
-@app.route('/descargar/<folio>')
-def descargar(folio):
-    path = os.path.join(PDF_OUTPUT_FOLDER, f"{folio}.pdf")
-    if not os.path.exists(path):
-        return "El archivo no existe", 404
-    return send_file(path, as_attachment=True)
-
 @app.route('/folio_actual')
 def folio_actual():
     if 'usuario' not in session:
@@ -156,6 +149,29 @@ def folio_actual():
         mensaje = f"Folio actual: {folio} (Mes: {mes})"
 
     return render_template("folio_actual.html", mensaje=mensaje)
+
+@app.route('/reimprimir', methods=['GET', 'POST'])
+def reimprimir():
+    if 'usuario' not in session:
+        return redirect(url_for('login'))
+
+    if request.method == 'POST':
+        criterio = request.form['criterio'].upper()
+        with open(REGISTRO_FILE, 'r') as f:
+            for linea in f:
+                datos = linea.strip().split('|')
+                if criterio in datos:
+                    folio = datos[0]
+                    return redirect(url_for('descargar', folio=folio))
+        flash('No se encontró el folio/serie/nombre.', 'warning')
+    return render_template('reimprimir.html')
+
+@app.route('/descargar/<folio>')
+def descargar(folio):
+    path = os.path.join(PDF_OUTPUT_FOLDER, f"{folio}.pdf")
+    if not os.path.exists(path):
+        return "El archivo no existe", 404
+    return send_file(path, as_attachment=True)
 
 @app.route('/logout')
 def logout():
