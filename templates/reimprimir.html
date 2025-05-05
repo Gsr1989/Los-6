@@ -6,65 +6,40 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <style>
         body {
-            background-color: #002b36;
+            background-color: #073642;
             font-family: Arial, sans-serif;
             color: white;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
             padding: 20px;
-        }
-        h2 {
-            margin-top: 20px;
+            text-align: center;
         }
         form {
-            background-color: #073642;
-            padding: 20px;
-            border-radius: 10px;
-            width: 90%;
-            max-width: 400px;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
+            margin-top: 20px;
         }
         input, button {
             padding: 10px;
             font-size: 16px;
-            border-radius: 5px;
             border: none;
+            border-radius: 6px;
         }
         input {
+            width: 80%;
+            max-width: 300px;
             background-color: #fdf6e3;
             color: black;
         }
         button {
             background-color: #268bd2;
             color: white;
-            font-weight: bold;
-        }
-        .resultado {
-            margin-top: 20px;
+            margin-top: 10px;
         }
     </style>
 </head>
 <body>
     <h2>Reimprimir Permiso</h2>
     <form method="POST">
-        <input type="text" name="folio" placeholder="Buscar por Folio">
-        <input type="text" name="serie" placeholder="Buscar por Número de Serie">
-        <input type="text" name="contribuyente" placeholder="Buscar por Nombre">
-        <button type="submit">Buscar</button>
+        <input type="text" name="criterio" placeholder="Folio, Serie o Nombre" required>
+        <br>
+        <button type="submit">Buscar y Descargar</button>
     </form>
-
-    {% if resultado %}
-        <div class="resultado">
-            <p>Permiso encontrado: {{ resultado }}</p>
-            <a href="{{ url_for('descargar', folio=resultado) }}">
-                <button>Descargar PDF</button>
-            </a>
-        </div>
-    {% elif resultado == None and request.method == 'POST' %}
-        <p>No se encontró ningún permiso con los datos ingresados.</p>
-    {% endif %}
 </body>
 </html>
