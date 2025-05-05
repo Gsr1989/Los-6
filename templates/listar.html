@@ -68,17 +68,17 @@
         <tbody>
             {% for reg in registros %}
             <tr>
-                <td>{{ reg[0] }}</td>
-                <td>{{ reg[1] }}</td>
-                <td>{{ reg[2] }}</td>
-                <td>{{ reg[3] }}</td>
-                <td>{{ reg[4] }}</td>
-                <td>{{ reg[5] }}</td>
-                <td>{{ reg[6] }}</td>
-                <td>{{ reg[7] }}</td>
-                <td>{{ reg[8] }}</td>
-                <td>{{ reg[9] }}</td>
-                <td><a href="{{ url_for('descargar', folio=reg[0]) }}">Descargar</a></td>
+                <td>{{ reg.folio }}</td>
+                <td>{{ reg.marca }}</td>
+                <td>{{ reg.linea }}</td>
+                <td>{{ reg.anio }}</td>
+                <td>{{ reg.serie }}</td>
+                <td>{{ reg.motor }}</td>
+                <td>{{ reg.color }}</td>
+                <td>{{ reg.contribuyente }}</td>
+                <td>{{ reg.fecha_exp }}</td>
+                <td>{{ reg.fecha_venc }}</td>
+                <td><a href="{{ url_for('descargar', folio=reg.folio) }}">Descargar</a></td>
             </tr>
             {% endfor %}
         </tbody>
