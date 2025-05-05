@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Folio Actual</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        body {
+            background-color: #002b36;
+            color: white;
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+        .card {
+            background-color: #073642;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+        }
+        .card p {
+            font-size: 20px;
+            margin: 0;
+        }
+        a button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #268bd2;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <p>{{ mensaje }}</p>
+        <a href="{{ url_for('formulario') }}"><button>Volver al Panel</button></a>
+    </div>
+</body>
+</html>
