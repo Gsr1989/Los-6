@@ -11,27 +11,44 @@
             font-family: Arial, sans-serif;
             padding: 10px;
         }
+        h2 {
+            text-align: center;
+            margin-bottom: 15px;
+        }
         table {
             width: 100%;
             border-collapse: collapse;
             background-color: #073642;
-            margin-top: 10px;
         }
         th, td {
             padding: 8px;
             text-align: left;
             border-bottom: 1px solid #555;
+            font-size: 14px;
         }
         th {
             background-color: #005f87;
         }
         a {
             color: #268bd2;
+            text-decoration: underline;
+        }
+        .volver {
+            margin-top: 20px;
+            text-align: center;
+        }
+        .volver a button {
+            padding: 10px 20px;
+            background-color: #268bd2;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
         }
     </style>
 </head>
 <body>
-    <h2>Lista de Permisos Generados</h2>
+    <h2>Folios Generados</h2>
     <table>
         <thead>
             <tr>
@@ -66,5 +83,8 @@
             {% endfor %}
         </tbody>
     </table>
+    <div class="volver">
+        <a href="{{ url_for('formulario') }}"><button>Volver al Panel</button></a>
+    </div>
 </body>
 </html>
