@@ -17,44 +17,52 @@ CONTRASENA_VALIDA = "Warrior2025"
 def cargar_folio():
     if not os.path.exists(FOLIO_FILE):
         with open(FOLIO_FILE, 'w') as f:
-            f.write('AB0000')
+            f.write('AA|0|2024-01')
     with open(FOLIO_FILE, 'r') as f:
-        return f.read().strip()
+        letras, numero, mes = f.read().strip().split('|')
+        return letras, int(numero), mes
 
-def siguiente_folio(folio_actual):
-    letras = folio_actual[:2]
-    numeros = int(folio_actual[2:])
-    if numeros < 9999:
-        numeros += 1
-    else:
-        letras = incrementar_letras(letras)
-        numeros = 1
-    nuevo_folio = f"{letras}{numeros:04d}"
+def guardar_folio(letras, numero, mes):
     with open(FOLIO_FILE, 'w') as f:
-        f.write(nuevo_folio)
-    return nuevo_folio
+        f.write(f'{letras}|{numero}|{mes}')
 
 def incrementar_letras(letras):
-    letra1, letra2 = letras
-    if letra2 != 'Z':
-        letra2 = chr(ord(letra2) + 1)
+    l1, l2 = letras
+    if l2 != 'Z':
+        l2 = chr(ord(l2) + 1)
     else:
-        letra2 = 'A'
-        if letra1 != 'Z':
-            letra1 = chr(ord(letra1) + 1)
+        l2 = 'A'
+        if l1 != 'Z':
+            l1 = chr(ord(l1) + 1)
         else:
-            letra1 = 'A'
-    return letra1 + letra2
+            l1 = 'A'
+    return l1 + l2
 
-def guardar_en_txt(folio, marca, linea, año, serie, motor, color, contribuyente, fecha_expedicion, fecha_vencimiento):
+def siguiente_folio():
+    letras, numero, mes_guardado = cargar_folio()
+    mes_actual = datetime.now().strftime('%Y-%m')
+
+    if mes_actual != mes_guardado:
+        letras = incrementar_letras(letras)
+        numero = 1
+        mes_guardado = mes_actual
+    else:
+        numero += 1
+        if numero > 999999:
+            letras = incrementar_letras(letras)
+            numero = 1
+
+    guardar_folio(letras, numero, mes_guardado)
+    return f"{letras}{numero:04d}"
+
+def guardar_en_txt(folio, marca, linea, anio, serie, motor, color, contribuyente, fecha_expedicion, fecha_vencimiento):
     with open(REGISTRO_FILE, 'a') as f:
-        f.write(f"{folio}|{marca}|{linea}|{año}|{serie}|{motor}|{color}|{contribuyente}|{fecha_expedicion}|{fecha_vencimiento}\n")
+        f.write(f"{folio}|{marca}|{linea}|{anio}|{serie}|{motor}|{color}|{contribuyente}|{fecha_expedicion}|{fecha_vencimiento}\n")
 
-def generar_pdf(folio, marca, linea, año, serie, motor, color, contribuyente, fecha_expedicion, fecha_vencimiento):
+def generar_pdf(folio, marca, linea, anio, serie, motor, color, contribuyente, fecha_expedicion, fecha_vencimiento):
     doc = fitz.open(PLANTILLA_PDF)
     page = doc[0]
 
-    # PARTE SUPERIOR
     page.insert_text((376, 769), folio, fontsize=8, color=(1, 0, 0))
     page.insert_text((122, 755), fecha_expedicion, fontsize=8)
     page.insert_text((122, 768), fecha_vencimiento, fontsize=8)
@@ -65,7 +73,6 @@ def generar_pdf(folio, marca, linea, año, serie, motor, color, contribuyente, f
     page.insert_text((376, 756), color, fontsize=8)
     page.insert_text((122, 700), contribuyente, fontsize=8)
 
-    # PARTE INFERIOR ROTADA 90° A LA IZQUIERDA
     page.insert_text((440, 200), folio, fontsize=83, rotate=270, color=(0, 0, 0))
     page.insert_text((77, 205), fecha_expedicion, fontsize=8, rotate=270, color=(0, 0, 0))
     page.insert_text((63, 205), fecha_vencimiento, fontsize=8, rotate=270, color=(0, 0, 0))
@@ -73,7 +80,7 @@ def generar_pdf(folio, marca, linea, año, serie, motor, color, contribuyente, f
     page.insert_text((224, 110), motor, fontsize=19, rotate=270, color=(0, 0, 0))
     page.insert_text((280, 110), marca, fontsize=19, rotate=270, color=(0, 0, 0))
     page.insert_text((280, 340), linea, fontsize=19, rotate=270, color=(0, 0, 0))
-    page.insert_text((280, 458), año, fontsize=19, rotate=270, color=(0, 0, 0))
+    page.insert_text((280, 458), anio, fontsize=19, rotate=270, color=(0, 0, 0))
     page.insert_text((224, 410), color, fontsize=19, rotate=270, color=(0, 0, 0))
     page.insert_text((115, 205), contribuyente, fontsize=8, rotate=270, color=(0, 0, 0))
 
@@ -83,7 +90,6 @@ def generar_pdf(folio, marca, linea, año, serie, motor, color, contribuyente, f
     output_path = os.path.join(PDF_OUTPUT_FOLDER, f"{folio}.pdf")
     try:
         doc.save(output_path)
-        print(f"PDF guardado exitosamente en: {output_path}")
     except Exception as e:
         print(f"ERROR al guardar PDF: {e}")
     finally:
@@ -93,8 +99,8 @@ def generar_pdf(folio, marca, linea, año, serie, motor, color, contribuyente, f
 def login():
     if request.method == 'POST':
         usuario = request.form['usuario']
-        contraseña = request.form['contraseña']
-        if usuario == USUARIO_VALIDO and contraseña == CONTRASENA_VALIDA:
+        contrasena = request.form['contraseña']
+        if usuario == USUARIO_VALIDO and contrasena == CONTRASENA_VALIDA:
             session['usuario'] = usuario
             return redirect(url_for('formulario'))
         else:
@@ -110,23 +116,22 @@ def formulario():
     if request.method == 'POST':
         marca = request.form['marca'].upper()
         linea = request.form['linea'].upper()
-        año = request.form['año'].upper()
+        anio = request.form['año'].upper()
         serie = request.form['serie'].upper()
         motor = request.form['motor'].upper()
         color = request.form['color'].upper()
         contribuyente = request.form['contribuyente'].upper()
 
-        folio_actual = cargar_folio()
-        folio_generado = siguiente_folio(folio_actual)
+        folio = siguiente_folio()
 
         fecha_actual = datetime.now()
         fecha_expedicion = fecha_actual.strftime("%d/%m/%Y")
         fecha_vencimiento = (fecha_actual + timedelta(days=30)).strftime("%d/%m/%Y")
 
-        guardar_en_txt(folio_generado, marca, linea, año, serie, motor, color, contribuyente, fecha_expedicion, fecha_vencimiento)
-        generar_pdf(folio_generado, marca, linea, año, serie, motor, color, contribuyente, fecha_expedicion, fecha_vencimiento)
+        guardar_en_txt(folio, marca, linea, anio, serie, motor, color, contribuyente, fecha_expedicion, fecha_vencimiento)
+        generar_pdf(folio, marca, linea, anio, serie, motor, color, contribuyente, fecha_expedicion, fecha_vencimiento)
 
-        return render_template('exito.html', folio=folio_generado)
+        return render_template('exito.html', folio=folio)
 
     return render_template('formulario.html')
 
@@ -136,6 +141,21 @@ def descargar(folio):
     if not os.path.exists(path):
         return "El archivo no existe", 404
     return send_file(path, as_attachment=True)
+
+@app.route('/folio_actual')
+def folio_actual():
+    if 'usuario' not in session:
+        return redirect(url_for('login'))
+
+    letras, numero, mes = cargar_folio()
+    folio = f"{letras}{numero:04d}"
+
+    if letras == "ZZ":
+        mensaje = "¡Folio reiniciado! Sobreviviste 56 años, cabrón. Misión cumplida."
+    else:
+        mensaje = f"Folio actual: {folio} (Mes: {mes})"
+
+    return render_template("folio_actual.html", mensaje=mensaje)
 
 @app.route('/logout')
 def logout():
