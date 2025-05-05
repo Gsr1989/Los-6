@@ -17,15 +17,18 @@ CONTRASENA_VALIDA = "Warrior2025"
 def cargar_folio():
     if not os.path.exists(FOLIO_FILE):
         with open(FOLIO_FILE, 'w') as f:
-            f.write('AA0000')
+            f.write('AA0001')
     with open(FOLIO_FILE, 'r') as f:
         return f.read().strip()
 
 def siguiente_folio(folio_actual):
     letras = folio_actual[:2]
-    numeros = int(folio_actual[2:])
+    try:
+        numeros = int(folio_actual[2:])
+    except ValueError:
+        numeros = 0
     if numeros < 9999:
-        numeros += 1
+        numeros = max(numeros + 1, 1)  # Asegura que nunca sea 0000
     else:
         letras = incrementar_letras(letras)
         numeros = 1
@@ -65,7 +68,7 @@ def generar_pdf(folio, marca, linea, año, serie, motor, color, contribuyente, f
     page.insert_text((376, 756), color, fontsize=8)
     page.insert_text((122, 700), contribuyente, fontsize=8)
 
-    # PARTE INFERIOR ROTADA 90° A LA IZQUIERDA
+    # PARTE INFERIOR ROTADA
     page.insert_text((440, 200), folio, fontsize=83, rotate=270, color=(0, 0, 0))
     page.insert_text((77, 205), fecha_expedicion, fontsize=8, rotate=270)
     page.insert_text((63, 205), fecha_vencimiento, fontsize=8, rotate=270)
@@ -158,10 +161,23 @@ def listar():
     if not os.path.exists(REGISTRO_FILE):
         return render_template('listar.html', registros=[])
     
-    with open(REGISTRO_FILE, 'r') as f:
-        lineas = f.readlines()
-
-    registros = [linea.strip().split('|') for linea in lineas if linea.strip()]
+    registros = []
+    with open(REGISTRO_FILE, 'r', encoding='utf-8') as f:
+        for linea in f:
+            datos = linea.strip().split('|')
+            if len(datos) == 10:
+                registros.append({
+                    "folio": datos[0],
+                    "marca": datos[1],
+                    "linea": datos[2],
+                    "anio": datos[3],
+                    "serie": datos[4],
+                    "motor": datos[5],
+                    "color": datos[6],
+                    "contribuyente": datos[7],
+                    "fecha_exp": datos[8],
+                    "fecha_venc": datos[9]
+                })
     return render_template('listar.html', registros=registros)
 
 @app.route('/logout')
