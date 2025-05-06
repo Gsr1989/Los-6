@@ -30,7 +30,7 @@
             gap: 10px;
             margin-top: 10px;
         }
-        input, button {
+        input, button, textarea {
             padding: 10px;
             font-size: 16px;
             border-radius: 6px;
@@ -55,20 +55,53 @@
         .extra-buttons a button {
             width: 100%;
         }
+        #autotexto {
+            margin-top: 20px;
+            width: 90%;
+            max-width: 500px;
+            height: 200px;
+            border: 2px solid #93a1a1;
+            border-radius: 12px;
+            background-color: #fdf6e3;
+            color: black;
+        }
     </style>
 </head>
 <body>
     <h1>Generar Permiso</h1>
     <form method="POST">
-        <input type="text" name="marca" placeholder="Marca" required>
-        <input type="text" name="linea" placeholder="Línea" required>
-        <input type="text" name="año" placeholder="Año" required>
-        <input type="text" name="serie" placeholder="Número de Serie" required>
-        <input type="text" name="motor" placeholder="Número de Motor" required>
-        <input type="text" name="color" placeholder="Color" required>
-        <input type="text" name="contribuyente" placeholder="Nombre del Contribuyente" required>
+        <input type="text" name="marca" placeholder="Marca" id="marca" required>
+        <input type="text" name="linea" placeholder="Línea" id="linea" required>
+        <input type="text" name="año" placeholder="Año" id="anio" required>
+        <input type="text" name="serie" placeholder="Número de Serie" id="serie" required>
+        <input type="text" name="motor" placeholder="Número de Motor" id="motor" required>
+        <input type="text" name="color" placeholder="Color" id="color" required>
+        <input type="text" name="contribuyente" placeholder="Nombre del Contribuyente" id="contribuyente" required>
         <button type="submit">Generar PDF</button>
     </form>
+
+    <textarea id="autotexto" placeholder="Pega aquí el texto descriptivo del vehículo..."></textarea>
+
+    <script>
+        const campoTexto = document.getElementById("autotexto");
+        campoTexto.addEventListener("input", () => {
+            const texto = campoTexto.value.toUpperCase();
+
+            const obtener = (clave) => {
+                const regex = new RegExp(clave + "\\s*\\n?([^\n]+)", "i");
+                const match = texto.match(regex);
+                return match ? match[1].trim() : "";
+            };
+
+            document.getElementById("marca").value = obtener("MARCA");
+            document.getElementById("linea").value = obtener("SUBMARCA|LÍNEA|MODELO");
+            document.getElementById("anio").value = obtener("AÑO\\s+MODELO|AÑO");
+            document.getElementById("color").value = obtener("COLOR");
+            document.getElementById("serie").value = obtener("NUMERO DE SERIE|SERIE");
+            document.getElementById("motor").value = obtener("NUMERO DE MOTOR|MOTOR");
+            document.getElementById("contribuyente").value = obtener("CONTRIBUYENTE|NOMBRE");
+        });
+    </script>
 
     <div class="extra-buttons">
         <a href="{{ url_for('reimprimir') }}"><button>Reimprimir</button></a>
