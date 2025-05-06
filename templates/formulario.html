@@ -1,114 +1,107 @@
-<!DOCTYPE html>
-<html lang="es">
+<!DOCTYPE html><html lang="es">
 <head>
   <meta charset="UTF-8">
   <title>Permiso Universal</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <style>
-    body { background: #011627; font-family: monospace; color: white; padding: 20px; text-align: center; }
-    input, textarea, button {
-      padding: 10px; margin: 5px; width: 90%; max-width: 400px;
-      font-size: 16px; border-radius: 8px; border: none;
+    body {
+      background: #011627;
+      font-family: monospace;
+      color: white;
+      padding: 20px;
+      text-align: center;
     }
-    input, textarea { background: #d1f7c4; color: #000; text-transform: uppercase; }
-    button { background: #ff3366; color: white; font-weight: bold; cursor: pointer; }
-    form { background: #022b3a; padding: 20px; border-radius: 10px; margin: 0 auto; }
+    input, textarea, button {
+      padding: 10px;
+      margin: 5px;
+      width: 90%;
+      max-width: 400px;
+      font-size: 16px;
+      border-radius: 8px;
+      border: none;
+    }
+    input, textarea {
+      background: #d1f7c4;
+      color: #000;
+      text-transform: uppercase;
+    }
+    button {
+      background: #ff3366;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    form {
+      background: #022b3a;
+      padding: 20px;
+      border-radius: 10px;
+      margin: 0 auto;
+    }
   </style>
 </head>
 <body>
-  <h1>Permiso Universal</h1>
-
-  <form method="POST">
+  <h1>Permiso Universal</h1>  <form method="POST">
     <input type="text" name="marca" placeholder="Marca" id="marca" required>
     <input type="text" name="linea" placeholder="Línea" id="linea" required>
+    <input type="text" name="tipo" placeholder="Tipo de Vehículo" id="tipo" required>
     <input type="text" name="año" placeholder="Año" id="anio" required>
     <input type="text" name="serie" placeholder="Número de Serie" id="serie" required>
     <input type="text" name="motor" placeholder="Número de Motor" id="motor" required>
     <input type="text" name="color" placeholder="Color" id="color" required>
     <input type="text" name="contribuyente" placeholder="Nombre del Contribuyente" id="contribuyente" required>
     <button type="submit">Generar PDF</button>
-  </form>
-
-  <h3 style="margin-top:30px;">Texto automático:</h3>
-  <textarea id="autotexto" rows="8" placeholder="Escribe o pega todo el cagadero aquí..."></textarea>
-
-  <script>
-    const marcas = {
-      "BOCHO": ["VOLKSWAGEN", "SEDAN"],
-      "ITALIKITA": ["ITALIKA"],
-      "HARLI": ["HARLEY DAVIDSON"],
-      "TROCA": ["FORD", "PICKUP"],
-      "TSURU": ["NISSAN", "TSURU"],
-      "CIVIK": ["HONDA", "CIVIC"],
-      "CHEVY": ["CHEVROLET", "CHEVY"],
-      "CAMIONETA": ["FORD", "PICKUP"],
-      "RAM": ["DODGE", "RAM"],
-      "JEEPETA": ["JEEP", "CHEROKEE"]
-    };
-
-    const colores = {
-      "ROJO": ["ROJO", "ROJA", "VINO", "CEREZA", "BURGUNDY"],
-      "AZUL": ["AZUL", "AZULITO", "CELESTE", "REY", "MARINO"],
-      "NEGRO": ["NEGRO", "OBSCURO", "NOCHE", "EBANO"],
-      "BLANCO": ["BLANCO", "HUESO", "PERLA", "ESTELAR"],
-      "GRIS": ["GRIS", "OXFORD", "PLATA", "PLATEADO"],
-      "VERDE": ["VERDE", "MILITAR", "BANDERA", "PASTO", "ESMERALDA"],
-      "AMARILLO": ["AMARILLO", "MOSTAZA"],
-      "NARANJA": ["NARANJA", "ANARANJADO"],
-      "CAFÉ": ["CAFÉ", "CHOCOLATE", "MARRÓN"],
-      "DORADO": ["DORADO", "ORO"],
-      "ROSA": ["ROSA", "FUSHIA", "BARBIE"]
-    };
-
-    const motores = {
-      "MEX": "MÉXICO", "USA": "USA", "CHINA": "CHINA", "BRASIL": "BRASIL", "JAP": "JAPÓN",
-      "GER": "ALEMANIA", "KOR": "COREA", "INDIA": "INDIA", "EGIPTO": "EGIPTO", "BELÉN": "BELÉN"
-    };
+  </form>  <h3 style="margin-top:30px;">Texto automático:</h3>
+  <textarea id="autotexto" rows="8" placeholder="Pega todo el desmadre aquí..."></textarea>  <script>
+    const tipos = ["SEDAN", "PICKUP", "HATCHBACK", "CAMIONETA", "TRACTOCAMION", "SCOOTER", "MOTOCICLETA", "REMOLQUE"];
 
     document.getElementById("autotexto").addEventListener("input", () => {
       const texto = document.getElementById("autotexto").value.toUpperCase();
 
-      // MARCA Y LÍNEA
-      for (let apodo in marcas) {
-        if (texto.includes(apodo)) {
-          const datos = marcas[apodo];
-          document.getElementById("marca").value = datos[0];
-          if (datos[1]) document.getElementById("linea").value = datos[1];
+      // MARCA y LÍNEA básica por patrones comunes
+      const marcasPosibles = ["FORD", "CHEVROLET", "NISSAN", "VOLKSWAGEN", "ITALIKA", "TOYOTA", "HONDA", "DODGE", "BMW", "KIA", "RAM"];
+      for (let marca of marcasPosibles) {
+        if (texto.includes(marca)) {
+          document.getElementById("marca").value = marca;
           break;
         }
       }
 
-      // COLOR
-      for (let base in colores) {
-        for (let variante of colores[base]) {
-          if (texto.includes(variante)) {
-            document.getElementById("color").value = base;
-            break;
-          }
-        }
-      }
+      const lineasRegex = /\b(F[- ]?150|CRUZE|TSURU|JETTA|CIVIC|SPARK|RAV4|HILUX|SENTRA|RIO|VERSA|X-TERRA)\b/;
+      const lineaMatch = texto.match(lineasRegex);
+      if (lineaMatch) document.getElementById("linea").value = lineaMatch[0].replace("-", "");
 
-      // MOTOR
-      for (let clave in motores) {
-        if (texto.includes(clave)) {
-          document.getElementById("motor").value = motores[clave];
+      // TIPO DE VEHÍCULO
+      for (let tipo of tipos) {
+        if (texto.includes(tipo)) {
+          document.getElementById("tipo").value = tipo;
           break;
         }
       }
 
-      // AÑO
-      const anio = texto.match(/\b(18[0-9]{2}|19[0-9]{2}|20[0-9]{2}|3000)\b/);
-      if (anio) document.getElementById("anio").value = anio[0];
+      // AÑO desde 1400 hasta 50000
+      const añoMatch = texto.match(/\b(1[4-9][0-9]{2}|20[0-9]{2}|[2-4][0-9]{4}|50000)\b/);
+      if (añoMatch) document.getElementById("anio").value = añoMatch[0];
 
-      // SERIE
-      const serie = texto.match(/\b[A-HJ-NPR-Z0-9]{17}\b/);
-      if (serie) document.getElementById("serie").value = serie[0];
+      // SERIE (VIN 11 a 17 caracteres alfanuméricos sin espacios)
+      const vinMatch = texto.match(/\b[A-HJ-NPR-Z0-9]{11,17}\b/);
+      if (vinMatch) document.getElementById("serie").value = vinMatch[0];
 
-      // CONTRIBUYENTE (última línea que no es número ni VIN)
-      const lineas = texto.split("\n").map(x => x.trim()).filter(l => l.length > 5);
-      const posibleNombre = lineas[lineas.length - 1];
-      if (posibleNombre) document.getElementById("contribuyente").value = posibleNombre;
+      // MOTOR (hecho en ...) detecta cualquier cadena que inicie con eso
+      const motorMatch = texto.match(/HECHO EN [A-Z \/\-]{3,}/);
+      if (motorMatch) document.getElementById("motor").value = motorMatch[0];
+
+      // COLOR si contiene la palabra "ROSA", "NEGRO", "AZUL", "BLANCO" etc.
+      const colores = ["NEGRO", "BLANCO", "ROJO", "AZUL", "VERDE", "GRIS", "AMARILLO", "DORADO", "ROSA", "CAFÉ", "NARANJA"];
+      for (let color of colores) {
+        if (texto.includes(color)) {
+          document.getElementById("color").value = color;
+          break;
+        }
+      }
+
+      // CONTRIBUYENTE (nombre: solo letras y espacios, juntar líneas)
+      const limpio = texto.replace(/[^A-Z\s]/g, "").split("\n").map(l => l.trim()).filter(l => l.length > 2);
+      if (limpio.length > 0) document.getElementById("contribuyente").value = limpio.slice(-1)[0];
     });
-  </script>
-</body>
+  </script></body>
 </html>
