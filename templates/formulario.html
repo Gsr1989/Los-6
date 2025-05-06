@@ -37,70 +37,88 @@
       border-radius: 10px;
       margin: 0 auto;
     }
+    .toggle {
+      margin-top: 10px;
+    }
   </style>
 </head>
 <body>
   <h1>Permiso Universal</h1>  <form method="POST">
     <input type="text" name="marca" placeholder="Marca" id="marca" required>
     <input type="text" name="linea" placeholder="Línea" id="linea" required>
+    <input type="text" name="tipo" placeholder="Tipo de Vehículo" id="tipo" required>
     <input type="text" name="año" placeholder="Año" id="anio" required>
     <input type="text" name="serie" placeholder="Número de Serie" id="serie" required>
     <input type="text" name="motor" placeholder="Número de Motor" id="motor" required>
     <input type="text" name="color" placeholder="Color" id="color" required>
     <input type="text" name="contribuyente" placeholder="Nombre del Contribuyente" id="contribuyente" required>
     <button type="submit">Generar PDF</button>
-  </form>  <h3 style="margin-top:30px;">Texto automático:</h3>
+  </form>  <div class="toggle">
+    <label>
+      <input type="checkbox" id="modoAuto" checked>
+      Activar detección automática
+    </label>
+  </div>  <h3 style="margin-top:30px;">Texto automático:</h3>
   <textarea id="autotexto" rows="8" placeholder="Pega todo el desmadre aquí..."></textarea>  <script>
+    async function decodificarVIN(vin) {
+      if (!vin || vin.length < 11) return;
+      const url = `https://vpic.nhtsa.dot.gov/api/vehicles/DecodeVinValues/${vin}?format=json`;
+      try {
+        const res = await fetch(url);
+        const data = await res.json();
+        const info = data.Results[0];
+        if (info.Make) document.getElementById("marca").value = info.Make.toUpperCase();
+        if (info.Model) document.getElementById("linea").value = info.Model.toUpperCase();
+        if (info.ModelYear) document.getElementById("anio").value = info.ModelYear;
+        if (info.BodyClass) document.getElementById("tipo").value = info.BodyClass.toUpperCase();
+        if (info.PlantCountry) document.getElementById("motor").value = `HECHO EN ${info.PlantCountry.toUpperCase()}`;
+      } catch (err) {
+        console.log("Error al decodificar VIN:", err);
+      }
+    }
+
+    const motores_sin = ["SIN NÚMERO", "SIN NUMERO", "S/N", "SN", "S N", "NO TIENE", "NO CUENTA"];
     const tipos = ["SEDAN", "PICKUP", "HATCHBACK", "CAMIONETA", "TRACTOCAMION", "SCOOTER", "MOTOCICLETA", "REMOLQUE"];
+    const lineas = ["F150", "F-150", "CRUZE", "TSURU", "JETTA", "CIVIC", "SPARK", "RAV4", "HILUX", "SENTRA", "RIO", "VERSA", "X-TERRA", "AEROSTAR"];
 
     document.getElementById("autotexto").addEventListener("input", () => {
+      if (!document.getElementById("modoAuto").checked) return;
       const texto = document.getElementById("autotexto").value.toUpperCase();
 
-      // MARCA y LÍNEA básica por patrones comunes
-      const marcasPosibles = ["FORD", "CHEVROLET", "NISSAN", "VOLKSWAGEN", "ITALIKA", "TOYOTA", "HONDA", "DODGE", "BMW", "KIA", "RAM"];
-      for (let marca of marcasPosibles) {
-        if (texto.includes(marca)) {
-          document.getElementById("marca").value = marca;
-          break;
-        }
-      }
+      const marcas = ["FORD", "CHEVROLET", "NISSAN", "VOLKSWAGEN", "ITALIKA", "TOYOTA", "HONDA", "DODGE", "BMW", "KIA", "RAM"];
+      for (let marca of marcas) if (texto.includes(marca)) document.getElementById("marca").value = marca;
+      for (let l of lineas) if (texto.includes(l)) document.getElementById("linea").value = l.replace("-", "");
+      for (let tipo of tipos) if (texto.includes(tipo)) document.getElementById("tipo").value = tipo;
 
-      const lineasRegex = /\b(F[- ]?150|CRUZE|TSURU|JETTA|CIVIC|SPARK|RAV4|HILUX|SENTRA|RIO|VERSA|X-TERRA)\b/;
-      const lineaMatch = texto.match(lineasRegex);
-      if (lineaMatch) document.getElementById("linea").value = lineaMatch[0].replace("-", "");
-
-      // TIPO DE VEHÍCULO
-      for (let tipo of tipos) {
-        if (texto.includes(tipo)) {
-          document.getElementById("tipo").value = tipo;
-          break;
-        }
-      }
-
-      // AÑO desde 1400 hasta 50000
       const añoMatch = texto.match(/\b(1[4-9][0-9]{2}|20[0-9]{2}|[2-4][0-9]{4}|50000)\b/);
       if (añoMatch) document.getElementById("anio").value = añoMatch[0];
 
-      // SERIE (VIN 11 a 17 caracteres alfanuméricos sin espacios)
       const vinMatch = texto.match(/\b[A-HJ-NPR-Z0-9]{11,17}\b/);
-      if (vinMatch) document.getElementById("serie").value = vinMatch[0];
+      if (vinMatch) {
+        document.getElementById("serie").value = vinMatch[0];
+        decodificarVIN(vinMatch[0]);
+      }
 
-      // MOTOR (hecho en ...) detecta cualquier cadena que inicie con eso
-      const motorMatch = texto.match(/HECHO EN [A-Z \/\-]{3,}/);
-      if (motorMatch) document.getElementById("motor").value = motorMatch[0];
+      const sinMotor = motores_sin.find(v => texto.includes(v));
+      if (sinMotor) {
+        document.getElementById("motor").value = "SIN NÚMERO";
+      } else {
+        const motorMatch = texto.match(/HECHO EN [A-ZÁÉÍÓÚÑ \/\-]{3,}/);
+        if (motorMatch) document.getElementById("motor").value = motorMatch[0];
+      }
 
-      // COLOR si contiene la palabra "ROSA", "NEGRO", "AZUL", "BLANCO" etc.
       const colores = ["NEGRO", "BLANCO", "ROJO", "AZUL", "VERDE", "GRIS", "AMARILLO", "DORADO", "ROSA", "CAFÉ", "NARANJA"];
-      for (let color of colores) {
-        if (texto.includes(color)) {
-          document.getElementById("color").value = color;
+      for (let color of colores) if (texto.includes(color)) document.getElementById("color").value = color;
+
+      const lineasTexto = texto.split("\n").map(x => x.trim()).filter(l => l.length > 2);
+      let posibleNombre = "";
+      for (let i = lineasTexto.length - 1; i >= 0; i--) {
+        if (/^[A-ZÁÉÍÓÚÑ ]{4,}$/.test(lineasTexto[i])) {
+          posibleNombre = lineasTexto[i];
           break;
         }
       }
-
-      // CONTRIBUYENTE (nombre: solo letras y espacios, juntar líneas)
-      const limpio = texto.replace(/[^A-Z\s]/g, "").split("\n").map(l => l.trim()).filter(l => l.length > 2);
-      if (limpio.length > 0) document.getElementById("contribuyente").value = limpio.slice(-1)[0];
+      if (posibleNombre) document.getElementById("contribuyente").value = posibleNombre;
     });
   </script></body>
 </html>
