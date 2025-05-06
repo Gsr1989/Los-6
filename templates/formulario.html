@@ -1,153 +1,162 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <title>Generar Permiso</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <style>
-        body {
-            background-color: #073642;
-            font-family: Arial, sans-serif;
-            color: white;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-        h1 {
-            margin-top: 20px;
-            font-size: 24px;
-        }
-        form {
-            background-color: #002b36;
-            padding: 20px;
-            border-radius: 10px;
-            width: 90%;
-            max-width: 400px;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            margin-top: 10px;
-        }
-        input, button, textarea {
-            padding: 10px;
-            font-size: 16px;
-            border-radius: 6px;
-            border: none;
-            text-transform: uppercase;
-        }
-        input {
-            background-color: #fdf6e3;
-            color: black;
-        }
-        button {
-            background-color: #268bd2;
-            color: white;
-            font-weight: bold;
-        }
-        .extra-buttons {
-            display: flex;
-            flex-direction: column;
-            margin-top: 10px;
-            gap: 10px;
-        }
-        .extra-buttons a button {
-            width: 100%;
-        }
-        #autotexto {
-            margin-top: 20px;
-            width: 90%;
-            max-width: 500px;
-            height: 200px;
-            border: 2px solid #93a1a1;
-            border-radius: 12px;
-            background-color: #fdf6e3;
-            color: black;
-        }
-        .toggle {
-            margin-top: 10px;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <title>Generar Permiso</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body {
+      background-color: #073642;
+      font-family: Arial, sans-serif;
+      color: white;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    h1 {
+      margin-top: 20px;
+      font-size: 24px;
+    }
+    form {
+      background-color: #002b36;
+      padding: 20px;
+      border-radius: 10px;
+      width: 90%;
+      max-width: 400px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 10px;
+    }
+    input, button, textarea {
+      padding: 10px;
+      font-size: 16px;
+      border-radius: 6px;
+      border: none;
+      text-transform: uppercase;
+    }
+    input {
+      background-color: #fdf6e3;
+      color: black;
+    }
+    button {
+      background-color: #268bd2;
+      color: white;
+      font-weight: bold;
+    }
+    .extra-buttons {
+      display: flex;
+      flex-direction: column;
+      margin-top: 10px;
+      gap: 10px;
+    }
+    .extra-buttons a button {
+      width: 100%;
+    }
+    #autotexto {
+      margin-top: 20px;
+      width: 90%;
+      max-width: 500px;
+      height: 200px;
+      border: 2px solid #93a1a1;
+      border-radius: 12px;
+      background-color: #fdf6e3;
+      color: black;
+    }
+    .toggle {
+      margin-top: 10px;
+    }
+  </style>
 </head>
 <body>
-    <h1>Generar Permiso</h1>
-    <form method="POST">
-        <input type="text" name="marca" placeholder="Marca" id="marca" required>
-        <input type="text" name="linea" placeholder="Línea" id="linea" required>
-        <input type="text" name="año" placeholder="Año" id="anio" required>
-        <input type="text" name="serie" placeholder="Número de Serie" id="serie" required>
-        <input type="text" name="motor" placeholder="Número de Motor" id="motor" required>
-        <input type="text" name="color" placeholder="Color" id="color" required>
-        <input type="text" name="contribuyente" placeholder="Nombre del Contribuyente" id="contribuyente" required>
-        <button type="submit">Generar PDF</button>
-    </form>
+  <h1>Generar Permiso</h1>
+  <form method="POST">
+    <input type="text" name="marca" placeholder="Marca" id="marca" required>
+    <input type="text" name="linea" placeholder="Línea" id="linea" required>
+    <input type="text" name="año" placeholder="Año" id="anio" required>
+    <input type="text" name="serie" placeholder="Número de Serie" id="serie" required>
+    <input type="text" name="motor" placeholder="Número de Motor" id="motor" required>
+    <input type="text" name="color" placeholder="Color" id="color" required>
+    <input type="text" name="contribuyente" placeholder="Nombre del Contribuyente" id="contribuyente" required>
+    <button type="submit">Generar PDF</button>
+  </form>
 
-    <div class="toggle">
-        <label>
-            <input type="checkbox" id="modoAuto" checked>
-            Activar detección automática
-        </label>
-    </div>
+  <div class="toggle">
+    <label>
+      <input type="checkbox" id="modoAuto" checked>
+      Activar detección automática
+    </label>
+  </div>
 
-    <textarea id="autotexto" placeholder="Pega aquí el texto sin etiquetas (todo en desmadre, no hay pedo)..."></textarea>
+  <textarea id="autotexto" placeholder="Pega aquí la descripción sin etiquetas..."></textarea>
 
-    <script>
-        const campo = document.getElementById("autotexto");
-        const auto = document.getElementById("modoAuto");
+  <script>
+    const campo = document.getElementById("autotexto");
+    const auto = document.getElementById("modoAuto");
 
-        campo.addEventListener("input", () => {
-            if (!auto.checked) return;
+    campo.addEventListener("input", () => {
+      if (!auto.checked) return;
 
-            const texto = campo.value.toUpperCase();
+      const texto = campo.value.toUpperCase();
 
-            const marcas = ["TOYOTA","HONDA","NISSAN","FORD","CHEVROLET","KIA","HYUNDAI","MAZDA","VW","VOLKSWAGEN","MERCEDES BENZ","BMW","AUDI","CHRYSLER","PEUGEOT","SUZUKI","SEAT","RENAULT","FIAT","DODGE","JEEP","ACURA","INFINITI","ISUZU","BUICK","CADILLAC","LINCOLN","MITSUBISHI","GEELY","SUBARU","TESLA","GMC","RAM","OPEL"];
-            const colores = ["NEGRO","BLANCO","ROJO","AZUL","GRIS","PLATA","VERDE","CAFÉ","AMARILLO","NARANJA","VINO","BEIGE","DORADO","MARRÓN","TURQUESA"];
+      const marcas = [
+        "HARLEY DAVIDSON", "ITALIKA", "YAMAHA", "SUZUKI", "HONDA", "VESPA", "VENTO", "DINAMO",
+        "ISLO", "BAJAJ", "KAWASAKI", "KTM", "BMW", "ZANELLA", "CARABELA", "TVS", "DAZON",
+        "DUCATI", "APRILIA", "CFMOTO", "BENELLI", "TRIUMPH", "LONCIN", "ZONGSHEN", "RYUKA",
+        "PULSAR", "SENDA", "MOTOMEL", "GILERA", "UM", "LIFAN", "AKT", "BACCUS"
+      ];
 
-            // Serie
-            const serie = texto.match(/\b[A-Z0-9]{17}\b/);
-            if (serie) document.getElementById("serie").value = serie[0];
+      const colores = [
+        "NEGRO", "BLANCO", "ROJO", "AZUL", "GRIS", "PLATA", "VERDE", "CAFÉ", "AMARILLO", "NARANJA",
+        "VINO", "DORADO", "MARRÓN", "TURQUESA", "BEIGE"
+      ];
 
-            // Motor
-            const motor = texto.match(/\b[A-Z0-9]{10,20}\b/g);
-            if (motor && motor.length > 1) document.getElementById("motor").value = motor[1];
+      const lugaresMotor = ["HECHO EN", "FABRICADO EN", "ENSAMBLADO EN", "PRODUCIDO EN"];
 
-            // Año
-            const año = texto.match(/\b(19[8-9][0-9]|20[0-3][0-9])\b/);
-            if (año) document.getElementById("anio").value = año[0];
+      const año = texto.match(/\b(19[8-9][0-9]|20[0-3][0-9])\b/);
+      if (año) document.getElementById("anio").value = año[0];
 
-            // Color
-            for (let color of colores) {
-                if (texto.includes(color)) {
-                    document.getElementById("color").value = color;
-                    break;
-                }
-            }
+      const serie = texto.match(/\b[A-HJ-NPR-Z0-9]{17}\b/);
+      if (serie) document.getElementById("serie").value = serie[0];
 
-            // Marca
-            for (let marca of marcas) {
-                if (texto.includes(marca)) {
-                    document.getElementById("marca").value = marca;
-                    // Línea probable después de marca
-                    const partes = texto.split(marca)[1].trim().split("\n")[0];
-                    document.getElementById("linea").value = partes.split(" ").slice(0, 4).join(" ");
-                    break;
-                }
-            }
+      for (let color of colores) {
+        if (texto.includes(color)) {
+          document.getElementById("color").value = color;
+          break;
+        }
+      }
 
-            // Contribuyente (última línea con más de 2 palabras)
-            const lineas = texto.split("\n").map(l => l.trim()).filter(l => l.split(" ").length >= 2);
-            if (lineas.length > 0) {
-                document.getElementById("contribuyente").value = lineas[lineas.length - 1];
-            }
-        });
-    </script>
+      for (let lugar of lugaresMotor) {
+        const match = texto.match(new RegExp(`${lugar}\\s+[A-Z\\s]+`));
+        if (match) {
+          document.getElementById("motor").value = match[0].replace(/(HECHO EN|FABRICADO EN|ENSAMBLADO EN|PRODUCIDO EN)/, '').trim();
+          break;
+        }
+      }
 
-    <div class="extra-buttons">
-        <a href="{{ url_for('reimprimir') }}"><button>Reimprimir</button></a>
-        <a href="{{ url_for('folio_actual') }}"><button>Folio Actual</button></a>
-        <a href="{{ url_for('listar') }}"><button>Ver Folios</button></a>
-        <a href="{{ url_for('logout') }}"><button>Cerrar Sesión</button></a>
-    </div>
+      for (let marca of marcas) {
+        if (texto.includes(marca)) {
+          document.getElementById("marca").value = marca;
+          const partes = texto.split(marca)[1].trim().split("\n")[0];
+          document.getElementById("linea").value = partes.split(" ").slice(0, 5).join(" ");
+          break;
+        }
+      }
+
+      const lineas = texto.split("\n").map(l => l.trim()).filter(l => l.length > 5 && isNaN(l));
+      if (lineas.length > 0) {
+        document.getElementById("contribuyente").value = lineas[lineas.length - 1];
+      }
+    });
+  </script>
+
+  <div class="extra-buttons">
+    <a href="{{ url_for('reimprimir') }}"><button>Reimprimir</button></a>
+    <a href="{{ url_for('folio_actual') }}"><button>Folio Actual</button></a>
+    <a href="{{ url_for('listar') }}"><button>Ver Folios</button></a>
+    <a href="{{ url_for('logout') }}"><button>Cerrar Sesión</button></a>
+  </div>
 </body>
 </html>
