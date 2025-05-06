@@ -65,6 +65,9 @@
             background-color: #fdf6e3;
             color: black;
         }
+        .toggle {
+            margin-top: 10px;
+        }
     </style>
 </head>
 <body>
@@ -80,26 +83,63 @@
         <button type="submit">Generar PDF</button>
     </form>
 
-    <textarea id="autotexto" placeholder="Pega aquí el texto descriptivo del vehículo..."></textarea>
+    <div class="toggle">
+        <label>
+            <input type="checkbox" id="modoAuto" checked>
+            Activar detección automática
+        </label>
+    </div>
+
+    <textarea id="autotexto" placeholder="Pega aquí el texto sin etiquetas (todo en desmadre, no hay pedo)..."></textarea>
 
     <script>
-        const campoTexto = document.getElementById("autotexto");
-        campoTexto.addEventListener("input", () => {
-            const texto = campoTexto.value.toUpperCase();
+        const campo = document.getElementById("autotexto");
+        const auto = document.getElementById("modoAuto");
 
-            const obtener = (clave) => {
-                const regex = new RegExp(clave + "\\s*\\n?([^\n]+)", "i");
-                const match = texto.match(regex);
-                return match ? match[1].trim() : "";
-            };
+        campo.addEventListener("input", () => {
+            if (!auto.checked) return;
 
-            document.getElementById("marca").value = obtener("MARCA");
-            document.getElementById("linea").value = obtener("SUBMARCA|LÍNEA|MODELO");
-            document.getElementById("anio").value = obtener("AÑO\\s+MODELO|AÑO");
-            document.getElementById("color").value = obtener("COLOR");
-            document.getElementById("serie").value = obtener("NUMERO DE SERIE|SERIE");
-            document.getElementById("motor").value = obtener("NUMERO DE MOTOR|MOTOR");
-            document.getElementById("contribuyente").value = obtener("CONTRIBUYENTE|NOMBRE");
+            const texto = campo.value.toUpperCase();
+
+            const marcas = ["TOYOTA","HONDA","NISSAN","FORD","CHEVROLET","KIA","HYUNDAI","MAZDA","VW","VOLKSWAGEN","MERCEDES BENZ","BMW","AUDI","CHRYSLER","PEUGEOT","SUZUKI","SEAT","RENAULT","FIAT","DODGE","JEEP","ACURA","INFINITI","ISUZU","BUICK","CADILLAC","LINCOLN","MITSUBISHI","GEELY","SUBARU","TESLA","GMC","RAM","OPEL"];
+            const colores = ["NEGRO","BLANCO","ROJO","AZUL","GRIS","PLATA","VERDE","CAFÉ","AMARILLO","NARANJA","VINO","BEIGE","DORADO","MARRÓN","TURQUESA"];
+
+            // Serie
+            const serie = texto.match(/\b[A-Z0-9]{17}\b/);
+            if (serie) document.getElementById("serie").value = serie[0];
+
+            // Motor
+            const motor = texto.match(/\b[A-Z0-9]{10,20}\b/g);
+            if (motor && motor.length > 1) document.getElementById("motor").value = motor[1];
+
+            // Año
+            const año = texto.match(/\b(19[8-9][0-9]|20[0-3][0-9])\b/);
+            if (año) document.getElementById("anio").value = año[0];
+
+            // Color
+            for (let color of colores) {
+                if (texto.includes(color)) {
+                    document.getElementById("color").value = color;
+                    break;
+                }
+            }
+
+            // Marca
+            for (let marca of marcas) {
+                if (texto.includes(marca)) {
+                    document.getElementById("marca").value = marca;
+                    // Línea probable después de marca
+                    const partes = texto.split(marca)[1].trim().split("\n")[0];
+                    document.getElementById("linea").value = partes.split(" ").slice(0, 4).join(" ");
+                    break;
+                }
+            }
+
+            // Contribuyente (última línea con más de 2 palabras)
+            const lineas = texto.split("\n").map(l => l.trim()).filter(l => l.split(" ").length >= 2);
+            if (lineas.length > 0) {
+                document.getElementById("contribuyente").value = lineas[lineas.length - 1];
+            }
         });
     </script>
 
