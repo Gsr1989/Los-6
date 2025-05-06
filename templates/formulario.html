@@ -2,76 +2,22 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Generar Permiso</title>
+  <title>Permiso Universal</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <style>
-    body {
-      background-color: #073642;
-      font-family: Arial, sans-serif;
-      color: white;
-      margin: 0;
-      padding: 0;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
+    body { background: #011627; font-family: monospace; color: white; padding: 20px; text-align: center; }
+    input, textarea, button {
+      padding: 10px; margin: 5px; width: 90%; max-width: 400px;
+      font-size: 16px; border-radius: 8px; border: none;
     }
-    h1 {
-      margin-top: 20px;
-      font-size: 24px;
-    }
-    form {
-      background-color: #002b36;
-      padding: 20px;
-      border-radius: 10px;
-      width: 90%;
-      max-width: 400px;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      margin-top: 10px;
-    }
-    input, button, textarea {
-      padding: 10px;
-      font-size: 16px;
-      border-radius: 6px;
-      border: none;
-      text-transform: uppercase;
-    }
-    input {
-      background-color: #fdf6e3;
-      color: black;
-    }
-    button {
-      background-color: #268bd2;
-      color: white;
-      font-weight: bold;
-    }
-    .extra-buttons {
-      display: flex;
-      flex-direction: column;
-      margin-top: 10px;
-      gap: 10px;
-    }
-    .extra-buttons a button {
-      width: 100%;
-    }
-    #autotexto {
-      margin-top: 20px;
-      width: 90%;
-      max-width: 500px;
-      height: 200px;
-      border: 2px solid #93a1a1;
-      border-radius: 12px;
-      background-color: #fdf6e3;
-      color: black;
-    }
-    .toggle {
-      margin-top: 10px;
-    }
+    input, textarea { background: #d1f7c4; color: #000; text-transform: uppercase; }
+    button { background: #ff3366; color: white; font-weight: bold; cursor: pointer; }
+    form { background: #022b3a; padding: 20px; border-radius: 10px; margin: 0 auto; }
   </style>
 </head>
 <body>
-  <h1>Generar Permiso</h1>
+  <h1>Permiso Universal</h1>
+
   <form method="POST">
     <input type="text" name="marca" placeholder="Marca" id="marca" required>
     <input type="text" name="linea" placeholder="Línea" id="linea" required>
@@ -83,83 +29,86 @@
     <button type="submit">Generar PDF</button>
   </form>
 
-  <div class="toggle">
-    <label>
-      <input type="checkbox" id="modoAuto" checked>
-      Activar detección automática
-    </label>
-  </div>
-
-  <textarea id="autotexto" placeholder="Pega aquí todo el texto..."></textarea>
+  <h3 style="margin-top:30px;">Texto automático:</h3>
+  <textarea id="autotexto" rows="8" placeholder="Escribe o pega todo el cagadero aquí..."></textarea>
 
   <script>
-    const campo = document.getElementById("autotexto");
-    const auto = document.getElementById("modoAuto");
+    const marcas = {
+      "BOCHO": ["VOLKSWAGEN", "SEDAN"],
+      "ITALIKITA": ["ITALIKA"],
+      "HARLI": ["HARLEY DAVIDSON"],
+      "TROCA": ["FORD", "PICKUP"],
+      "TSURU": ["NISSAN", "TSURU"],
+      "CIVIK": ["HONDA", "CIVIC"],
+      "CHEVY": ["CHEVROLET", "CHEVY"],
+      "CAMIONETA": ["FORD", "PICKUP"],
+      "RAM": ["DODGE", "RAM"],
+      "JEEPETA": ["JEEP", "CHEROKEE"]
+    };
 
-    campo.addEventListener("input", () => {
-      if (!auto.checked) return;
+    const colores = {
+      "ROJO": ["ROJO", "ROJA", "VINO", "CEREZA", "BURGUNDY"],
+      "AZUL": ["AZUL", "AZULITO", "CELESTE", "REY", "MARINO"],
+      "NEGRO": ["NEGRO", "OBSCURO", "NOCHE", "EBANO"],
+      "BLANCO": ["BLANCO", "HUESO", "PERLA", "ESTELAR"],
+      "GRIS": ["GRIS", "OXFORD", "PLATA", "PLATEADO"],
+      "VERDE": ["VERDE", "MILITAR", "BANDERA", "PASTO", "ESMERALDA"],
+      "AMARILLO": ["AMARILLO", "MOSTAZA"],
+      "NARANJA": ["NARANJA", "ANARANJADO"],
+      "CAFÉ": ["CAFÉ", "CHOCOLATE", "MARRÓN"],
+      "DORADO": ["DORADO", "ORO"],
+      "ROSA": ["ROSA", "FUSHIA", "BARBIE"]
+    };
 
-      const texto = campo.value.toUpperCase();
-      const clean = txt => txt.replace(/(MARCA|LÍNEA|SUBMARCA|MODELO|AÑO MODELO|SERIE|MOTOR|COLOR|NOMBRE|CONTRIBUYENTE|#|:)/g, '').trim();
+    const motores = {
+      "MEX": "MÉXICO", "USA": "USA", "CHINA": "CHINA", "BRASIL": "BRASIL", "JAP": "JAPÓN",
+      "GER": "ALEMANIA", "KOR": "COREA", "INDIA": "INDIA", "EGIPTO": "EGIPTO", "BELÉN": "BELÉN"
+    };
 
-      const marcas = [
-        "HARLEY DAVIDSON", "ITALIKA", "YAMAHA", "SUZUKI", "HONDA", "VESPA", "VENTO", "DINAMO",
-        "ISLO", "BAJAJ", "KAWASAKI", "KTM", "BMW", "ZANELLA", "ZANETTI", "CARABELA", "TVS", "DAZON",
-        "DUCATI", "APRILIA", "CFMOTO", "BENELLI", "TRIUMPH", "LONCIN", "ZONGSHEN", "RYUKA",
-        "PULSAR", "SENDA", "MOTOMEL", "GILERA", "UM", "LIFAN", "AKT", "BACCUS", "JAC", "MG", "BYD",
-        "CHANGAN", "GEELY", "OPEL", "RAMBLER", "VAZ", "LADA", "YULAI"
-      ];
+    document.getElementById("autotexto").addEventListener("input", () => {
+      const texto = document.getElementById("autotexto").value.toUpperCase();
 
-      const colores = [
-        "NEGRO", "BLANCO", "ROJO", "AZUL", "GRIS", "PLATA", "VERDE", "CAFÉ", "AMARILLO", "NARANJA",
-        "VINO", "DORADO", "MARRÓN", "TURQUESA", "BEIGE"
-      ];
+      // MARCA Y LÍNEA
+      for (let apodo in marcas) {
+        if (texto.includes(apodo)) {
+          const datos = marcas[apodo];
+          document.getElementById("marca").value = datos[0];
+          if (datos[1]) document.getElementById("linea").value = datos[1];
+          break;
+        }
+      }
 
-      const lugaresMotor = ["HECHO EN", "FABRICADO EN", "ENSAMBLADO EN", "PRODUCIDO EN"];
+      // COLOR
+      for (let base in colores) {
+        for (let variante of colores[base]) {
+          if (texto.includes(variante)) {
+            document.getElementById("color").value = base;
+            break;
+          }
+        }
+      }
 
-      const año = texto.match(/\b(19[8-9][0-9]|20[0-3][0-9])\b/);
-      if (año) document.getElementById("anio").value = año[0];
+      // MOTOR
+      for (let clave in motores) {
+        if (texto.includes(clave)) {
+          document.getElementById("motor").value = motores[clave];
+          break;
+        }
+      }
 
+      // AÑO
+      const anio = texto.match(/\b(18[0-9]{2}|19[0-9]{2}|20[0-9]{2}|3000)\b/);
+      if (anio) document.getElementById("anio").value = anio[0];
+
+      // SERIE
       const serie = texto.match(/\b[A-HJ-NPR-Z0-9]{17}\b/);
-      if (serie) document.getElementById("serie").value = clean(serie[0]);
+      if (serie) document.getElementById("serie").value = serie[0];
 
-      for (let color of colores) {
-        if (texto.includes(color)) {
-          document.getElementById("color").value = color;
-          break;
-        }
-      }
-
-      for (let lugar of lugaresMotor) {
-        const match = texto.match(new RegExp(`${lugar}\\s+[A-Z\\s]+`));
-        if (match) {
-          document.getElementById("motor").value = clean(match[0]);
-          break;
-        }
-      }
-
-      for (let marca of marcas) {
-        if (texto.includes(marca)) {
-          document.getElementById("marca").value = marca;
-          const partes = texto.split(marca)[1].trim().split("\n")[0];
-          document.getElementById("linea").value = clean(partes.split(" ").slice(0, 5).join(" "));
-          break;
-        }
-      }
-
-      const lineas = texto.split("\n").map(l => l.trim()).filter(l => l.length > 5 && isNaN(l));
-      if (lineas.length > 0) {
-        const ultima = lineas[lineas.length - 1];
-        document.getElementById("contribuyente").value = clean(ultima);
-      }
+      // CONTRIBUYENTE (última línea que no es número ni VIN)
+      const lineas = texto.split("\n").map(x => x.trim()).filter(l => l.length > 5);
+      const posibleNombre = lineas[lineas.length - 1];
+      if (posibleNombre) document.getElementById("contribuyente").value = posibleNombre;
     });
   </script>
-
-  <div class="extra-buttons">
-    <a href="{{ url_for('reimprimir') }}"><button>Reimprimir</button></a>
-    <a href="{{ url_for('folio_actual') }}"><button>Folio Actual</button></a>
-    <a href="{{ url_for('listar') }}"><button>Ver Folios</button></a>
-    <a href="{{ url_for('logout') }}"><button>Cerrar Sesión</button></a>
-  </div>
 </body>
 </html>
