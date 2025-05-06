@@ -90,7 +90,7 @@
     </label>
   </div>
 
-  <textarea id="autotexto" placeholder="Pega aquí la descripción sin etiquetas..."></textarea>
+  <textarea id="autotexto" placeholder="Pega aquí todo el texto..."></textarea>
 
   <script>
     const campo = document.getElementById("autotexto");
@@ -100,12 +100,14 @@
       if (!auto.checked) return;
 
       const texto = campo.value.toUpperCase();
+      const clean = txt => txt.replace(/(MARCA|LÍNEA|SUBMARCA|MODELO|AÑO MODELO|SERIE|MOTOR|COLOR|NOMBRE|CONTRIBUYENTE|#|:)/g, '').trim();
 
       const marcas = [
         "HARLEY DAVIDSON", "ITALIKA", "YAMAHA", "SUZUKI", "HONDA", "VESPA", "VENTO", "DINAMO",
-        "ISLO", "BAJAJ", "KAWASAKI", "KTM", "BMW", "ZANELLA", "CARABELA", "TVS", "DAZON",
+        "ISLO", "BAJAJ", "KAWASAKI", "KTM", "BMW", "ZANELLA", "ZANETTI", "CARABELA", "TVS", "DAZON",
         "DUCATI", "APRILIA", "CFMOTO", "BENELLI", "TRIUMPH", "LONCIN", "ZONGSHEN", "RYUKA",
-        "PULSAR", "SENDA", "MOTOMEL", "GILERA", "UM", "LIFAN", "AKT", "BACCUS"
+        "PULSAR", "SENDA", "MOTOMEL", "GILERA", "UM", "LIFAN", "AKT", "BACCUS", "JAC", "MG", "BYD",
+        "CHANGAN", "GEELY", "OPEL", "RAMBLER", "VAZ", "LADA", "YULAI"
       ];
 
       const colores = [
@@ -119,7 +121,7 @@
       if (año) document.getElementById("anio").value = año[0];
 
       const serie = texto.match(/\b[A-HJ-NPR-Z0-9]{17}\b/);
-      if (serie) document.getElementById("serie").value = serie[0];
+      if (serie) document.getElementById("serie").value = clean(serie[0]);
 
       for (let color of colores) {
         if (texto.includes(color)) {
@@ -131,7 +133,7 @@
       for (let lugar of lugaresMotor) {
         const match = texto.match(new RegExp(`${lugar}\\s+[A-Z\\s]+`));
         if (match) {
-          document.getElementById("motor").value = match[0].replace(/(HECHO EN|FABRICADO EN|ENSAMBLADO EN|PRODUCIDO EN)/, '').trim();
+          document.getElementById("motor").value = clean(match[0]);
           break;
         }
       }
@@ -140,14 +142,15 @@
         if (texto.includes(marca)) {
           document.getElementById("marca").value = marca;
           const partes = texto.split(marca)[1].trim().split("\n")[0];
-          document.getElementById("linea").value = partes.split(" ").slice(0, 5).join(" ");
+          document.getElementById("linea").value = clean(partes.split(" ").slice(0, 5).join(" "));
           break;
         }
       }
 
       const lineas = texto.split("\n").map(l => l.trim()).filter(l => l.length > 5 && isNaN(l));
       if (lineas.length > 0) {
-        document.getElementById("contribuyente").value = lineas[lineas.length - 1];
+        const ultima = lineas[lineas.length - 1];
+        document.getElementById("contribuyente").value = clean(ultima);
       }
     });
   </script>
