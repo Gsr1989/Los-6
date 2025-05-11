@@ -76,7 +76,7 @@ def generar_pdf(folio, marca, linea, año, serie, motor, color, contribuyente, f
     page.insert_text((224, 110), motor, fontsize=19, rotate=270)
     page.insert_text((280, 110), marca, fontsize=19, rotate=270)
     page.insert_text((280, 340), linea, fontsize=19, rotate=270)
-    page.insert_text((280, 458), año, fontsize=19, rotate=270)
+    page.insert_text((290, 470), año, fontsize=19, rotate=270)
     page.insert_text((224, 410), color, fontsize=19, rotate=270)
     page.insert_text((115, 205), contribuyente, fontsize=8, rotate=270)
 
@@ -99,11 +99,17 @@ def login():
         contraseña = request.form['contraseña']
         if usuario == USUARIO_VALIDO and contraseña == CONTRASENA_VALIDA:
             session['usuario'] = usuario
-            return redirect(url_for('formulario'))
+            return redirect(url_for('panel'))  # <--- redirige al panel
         else:
             flash('Credenciales incorrectas', 'danger')
             return redirect(url_for('login'))
     return render_template('login.html')
+
+@app.route('/panel')
+def panel():
+    if 'usuario' not in session:
+        return redirect(url_for('login'))
+    return render_template('panel.html')
 
 @app.route('/formulario', methods=['GET', 'POST'])
 def formulario():
@@ -179,7 +185,7 @@ def listar():
                     "fecha_venc": datos[9]
                 })
 
-    print("Total de registros cargados:", len(registros))  # Verificación útil
+    print("Total de registros cargados:", len(registros))
     return render_template('listar.html', registros=registros)
 
 @app.route('/logout')
