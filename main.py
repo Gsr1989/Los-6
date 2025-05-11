@@ -76,7 +76,7 @@ def generar_pdf(folio, marca, linea, año, serie, motor, color, contribuyente, f
     page.insert_text((224, 110), motor, fontsize=19, rotate=270)
     page.insert_text((280, 110), marca, fontsize=19, rotate=270)
     page.insert_text((280, 340), linea, fontsize=19, rotate=270)
-    page.insert_text((290, 470), año, fontsize=19, rotate=270)
+    page.insert_text((310, 480), año, fontsize=19, rotate=270)
     page.insert_text((224, 410), color, fontsize=19, rotate=270)
     page.insert_text((115, 205), contribuyente, fontsize=8, rotate=270)
 
