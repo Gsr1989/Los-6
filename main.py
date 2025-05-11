@@ -28,7 +28,7 @@ def siguiente_folio(folio_actual):
     except ValueError:
         numeros = 0
     if numeros < 9999:
-        numeros = max(numeros + 1, 1)  # Asegura que nunca sea 0000
+        numeros = max(numeros + 1, 1)
     else:
         letras = incrementar_letras(letras)
         numeros = 1
@@ -50,7 +50,7 @@ def incrementar_letras(letras):
     return letra1 + letra2
 
 def guardar_en_txt(folio, marca, linea, año, serie, motor, color, contribuyente, fecha_expedicion, fecha_vencimiento):
-    with open(REGISTRO_FILE, 'a') as f:
+    with open(REGISTRO_FILE, 'a', encoding='utf-8') as f:
         f.write(f"{folio}|{marca}|{linea}|{año}|{serie}|{motor}|{color}|{contribuyente}|{fecha_expedicion}|{fecha_vencimiento}\n")
 
 def generar_pdf(folio, marca, linea, año, serie, motor, color, contribuyente, fecha_expedicion, fecha_vencimiento):
@@ -178,6 +178,8 @@ def listar():
                     "fecha_exp": datos[8],
                     "fecha_venc": datos[9]
                 })
+
+    print("Total de registros cargados:", len(registros))  # Verificación útil
     return render_template('listar.html', registros=registros)
 
 @app.route('/logout')
