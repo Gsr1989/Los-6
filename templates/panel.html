@@ -2,48 +2,42 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Panel de Registros</title>
+    <title>Panel Principal</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        body {
+            background-color: #002b36;
+            color: white;
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 40px;
+        }
+        h1 {
+            color: #00ffff;
+            margin-bottom: 40px;
+        }
+        .boton {
+            display: block;
+            width: 80%;
+            max-width: 300px;
+            margin: 15px auto;
+            padding: 15px;
+            background-color: #268bd2;
+            color: white;
+            text-decoration: none;
+            font-size: 18px;
+            border-radius: 8px;
+        }
+        .boton:hover {
+            background-color: #1c6ca1;
+        }
+    </style>
 </head>
 <body>
-    <h2>Registros</h2>
-
-    <form method="GET" action="{{ url_for('panel') }}">
-        <input type="text" name="buscar" placeholder="Buscar por número de serie" autocomplete="off">
-        <button type="submit">Buscar</button>
-    </form>
-
-    <table border="1" cellpadding="8" cellspacing="0">
-        <thead>
-            <tr>
-                <th>Folio</th>
-                <th>Marca</th>
-                <th>Línea</th>
-                <th>Año</th>
-                <th>Serie</th>
-                <th>Color</th>
-                <th>Contribuyente</th>
-                <th>Opciones</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for r in registros %}
-            <tr>
-                <td>{{ r['folio_generado'] }}</td>
-                <td>{{ r['marca'] }}</td>
-                <td>{{ r['linea'] }}</td>
-                <td>{{ r['anio'] }}</td>
-                <td>{{ r['serie'] }}</td>
-                <td>{{ r['color'] }}</td>
-                <td>{{ r['contribuyente'] }}</td>
-                <td>
-                    <a href="{{ url_for('editar', folio=r['folio_generado']) }}">Editar</a> |
-                    <a href="{{ url_for('eliminar', folio=r['folio_generado']) }}">Eliminar</a> |
-                    <a href="{{ url_for('descargar', folio=r['folio_generado']) }}">Descargar PDF</a>
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+    <h1>Bienvenido, elwarrior</h1>
+    <a href="{{ url_for('formulario') }}" class="boton">+ Generar nuevo permiso</a>
+    <a href="{{ url_for('listar') }}" class="boton">📄 Ver permisos generados</a>
+    <a href="{{ url_for('reimprimir') }}" class="boton">🔁 Reimprimir por folio</a>
+    <a href="{{ url_for('logout') }}" class="boton" style="background-color:#cb4b16;">Cerrar sesión</a>
 </body>
 </html>
