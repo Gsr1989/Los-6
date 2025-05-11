@@ -72,12 +72,12 @@ def generar_pdf(folio, marca, linea, año, serie, motor, color, contribuyente, f
     page.insert_text((440, 200), folio, fontsize=83, rotate=270, color=(0, 0, 0))
     page.insert_text((77, 205), fecha_expedicion, fontsize=8, rotate=270)
     page.insert_text((63, 205), fecha_vencimiento, fontsize=8, rotate=270)
-    page.insert_text((168, 110), serie, fontsize=19, rotate=270)
-    page.insert_text((224, 110), motor, fontsize=19, rotate=270)
-    page.insert_text((280, 110), marca, fontsize=19, rotate=270)
-    page.insert_text((280, 340), linea, fontsize=19, rotate=270)
-    page.insert_text((305, 510), año, fontsize=18, rotate=270)
-    page.insert_text((224, 410), color, fontsize=19, rotate=270)
+    page.insert_text((168, 110), serie, fontsize=18, rotate=270)
+    page.insert_text((224, 110), motor, fontsize=18, rotate=270)
+    page.insert_text((280, 110), marca, fontsize=18, rotate=270)
+    page.insert_text((280, 340), linea, fontsize=18, rotate=270)
+    page.insert_text((305, 520), año, fontsize=18, rotate=270)
+    page.insert_text((224, 410), color, fontsize=18, rotate=270)
     page.insert_text((115, 205), contribuyente, fontsize=8, rotate=270)
 
     if not os.path.exists(PDF_OUTPUT_FOLDER):
