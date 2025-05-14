@@ -91,7 +91,7 @@
                 <td>
                     {% set venc = reg.fecha_venc.split('/') %}
                     {% set venc_str = venc[2] ~ '-' ~ venc[1] ~ '-' ~ venc[0] %}
-                    {% if venc_str <= now.strftime('%Y-%m-%d') %}
+                    {% if venc_str <= ahora.strftime('%Y-%m-%d') %}
                         <a href="{{ url_for('renovar', folio=reg.folio) }}" class="btn-renovar">Renovar</a>
                     {% else %}
                         <span style="color:gray;">Vigente</span>
