@@ -57,7 +57,6 @@ def generar_pdf(folio, marca, linea, año, serie, motor, color, contribuyente, f
     doc = fitz.open(PLANTILLA_PDF)
     page = doc[0]
 
-    # PARTE SUPERIOR
     page.insert_text((376, 769), folio, fontsize=8, color=(1, 0, 0))
     page.insert_text((122, 755), fecha_expedicion, fontsize=8)
     page.insert_text((122, 768), fecha_vencimiento, fontsize=8)
@@ -68,7 +67,6 @@ def generar_pdf(folio, marca, linea, año, serie, motor, color, contribuyente, f
     page.insert_text((376, 756), color, fontsize=8)
     page.insert_text((122, 700), contribuyente, fontsize=8)
 
-    # PARTE INFERIOR ROTADA
     page.insert_text((440, 200), folio, fontsize=83, rotate=270, color=(0, 0, 0))
     page.insert_text((77, 205), fecha_expedicion, fontsize=8, rotate=270)
     page.insert_text((63, 205), fecha_vencimiento, fontsize=8, rotate=270)
@@ -99,7 +97,7 @@ def login():
         contraseña = request.form['contraseña']
         if usuario == USUARIO_VALIDO and contraseña == CONTRASENA_VALIDA:
             session['usuario'] = usuario
-            return redirect(url_for('panel'))  # <--- redirige al panel
+            return redirect(url_for('panel'))
         else:
             flash('Credenciales incorrectas', 'danger')
             return redirect(url_for('login'))
@@ -187,6 +185,41 @@ def listar():
 
     print("Total de registros cargados:", len(registros))
     return render_template('listar.html', registros=registros)
+
+@app.route('/renovar/<folio>')
+def renovar(folio):
+    if not os.path.exists(REGISTRO_FILE):
+        flash("No existe el archivo de registros.", "danger")
+        return redirect(url_for('listar'))
+
+    registros = []
+    datos_encontrados = None
+    with open(REGISTRO_FILE, 'r', encoding='utf-8') as f:
+        for linea in f:
+            datos = linea.strip().split('|')
+            if len(datos) != 10:
+                continue
+            if datos[0] == folio:
+                fecha_venc = datetime.strptime(datos[9], "%d/%m/%Y")
+                if datetime.now() >= fecha_venc:
+                    datos_encontrados = datos
+            registros.append(linea)
+
+    if not datos_encontrados:
+        flash("No se puede renovar: el permiso aún no vence o no existe.", "warning")
+        return redirect(url_for('listar'))
+
+    nuevo_folio = siguiente_folio(cargar_folio())
+    nueva_fecha_exp = datetime.now().strftime("%d/%m/%Y")
+    nueva_fecha_venc = (datetime.now() + timedelta(days=30)).strftime("%d/%m/%Y")
+
+    _, marca, linea, año, serie, motor, color, contribuyente, _, _ = datos_encontrados
+
+    guardar_en_txt(nuevo_folio, marca, linea, año, serie, motor, color, contribuyente, nueva_fecha_exp, nueva_fecha_venc)
+    generar_pdf(nuevo_folio, marca, linea, año, serie, motor, color, contribuyente, nueva_fecha_exp, nueva_fecha_venc)
+
+    flash(f"Permiso renovado con éxito. Nuevo folio: {nuevo_folio}", "success")
+    return redirect(url_for('descargar', folio=nuevo_folio))
 
 @app.route('/logout')
 def logout():
