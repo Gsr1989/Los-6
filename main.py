@@ -8,8 +8,8 @@ app.secret_key = "secreto_perro"
 
 PDF_OUTPUT_FOLDER = 'static/pdfs'
 PLANTILLA_PDF = 'Guerrero.pdf'
-FOLIO_FILE = 'folio_actual.txt'
-REGISTRO_FILE = 'registros.txt'
+FOLIO_FILE = 'data/folio_actual.txt'
+REGISTRO_FILE = 'data/registros.txt'
 
 USUARIO_VALIDO = "elwarrior"
 CONTRASENA_VALIDA = "Warrior2025"
@@ -57,7 +57,6 @@ def generar_pdf(folio, marca, linea, año, serie, motor, color, contribuyente, f
     doc = fitz.open(PLANTILLA_PDF)
     page = doc[0]
 
-    # Datos parte superior
     page.insert_text((376, 769), folio, fontsize=8, color=(1, 0, 0))
     page.insert_text((122, 755), fecha_expedicion, fontsize=8)
     page.insert_text((122, 768), fecha_vencimiento, fontsize=8)
@@ -68,7 +67,6 @@ def generar_pdf(folio, marca, linea, año, serie, motor, color, contribuyente, f
     page.insert_text((376, 756), color, fontsize=8)
     page.insert_text((122, 700), contribuyente, fontsize=8)
 
-    # Parte rotada abajo
     page.insert_text((440, 200), folio, fontsize=83, rotate=270, color=(0, 0, 0))
     page.insert_text((77, 205), fecha_expedicion, fontsize=8, rotate=270)
     page.insert_text((63, 205), fecha_vencimiento, fontsize=8, rotate=270)
