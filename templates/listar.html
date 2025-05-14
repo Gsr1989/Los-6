@@ -45,6 +45,14 @@
             border-radius: 6px;
             font-size: 16px;
         }
+        .btn-renovar {
+            background-color: #b58900;
+            padding: 6px 10px;
+            border-radius: 4px;
+            color: white;
+            text-decoration: none;
+            font-size: 13px;
+        }
     </style>
 </head>
 <body>
@@ -63,6 +71,7 @@
                 <th>Expedición</th>
                 <th>Vencimiento</th>
                 <th>PDF</th>
+                <th>Renovar</th>
             </tr>
         </thead>
         <tbody>
@@ -79,6 +88,15 @@
                 <td>{{ reg.fecha_exp }}</td>
                 <td>{{ reg.fecha_venc }}</td>
                 <td><a href="{{ url_for('descargar', folio=reg.folio) }}">Descargar</a></td>
+                <td>
+                    {% set venc = reg.fecha_venc.split('/') %}
+                    {% set venc_str = venc[2] ~ '-' ~ venc[1] ~ '-' ~ venc[0] %}
+                    {% if venc_str <= now.strftime('%Y-%m-%d') %}
+                        <a href="{{ url_for('renovar', folio=reg.folio) }}" class="btn-renovar">Renovar</a>
+                    {% else %}
+                        <span style="color:gray;">Vigente</span>
+                    {% endif %}
+                </td>
             </tr>
             {% endfor %}
         </tbody>
