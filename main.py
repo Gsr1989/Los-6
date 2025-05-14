@@ -28,7 +28,7 @@ def siguiente_folio(folio_actual):
     except ValueError:
         numeros = 0
     if numeros < 9999:
-        numeros = max(numeros + 1, 1)
+        numeros += 1
     else:
         letras = incrementar_letras(letras)
         numeros = 1
@@ -57,6 +57,7 @@ def generar_pdf(folio, marca, linea, año, serie, motor, color, contribuyente, f
     doc = fitz.open(PLANTILLA_PDF)
     page = doc[0]
 
+    # Datos parte superior
     page.insert_text((376, 769), folio, fontsize=8, color=(1, 0, 0))
     page.insert_text((122, 755), fecha_expedicion, fontsize=8)
     page.insert_text((122, 768), fecha_vencimiento, fontsize=8)
@@ -67,6 +68,7 @@ def generar_pdf(folio, marca, linea, año, serie, motor, color, contribuyente, f
     page.insert_text((376, 756), color, fontsize=8)
     page.insert_text((122, 700), contribuyente, fontsize=8)
 
+    # Parte rotada abajo
     page.insert_text((440, 200), folio, fontsize=83, rotate=270, color=(0, 0, 0))
     page.insert_text((77, 205), fecha_expedicion, fontsize=8, rotate=270)
     page.insert_text((63, 205), fecha_vencimiento, fontsize=8, rotate=270)
@@ -82,13 +84,8 @@ def generar_pdf(folio, marca, linea, año, serie, motor, color, contribuyente, f
         os.makedirs(PDF_OUTPUT_FOLDER)
 
     output_path = os.path.join(PDF_OUTPUT_FOLDER, f"{folio}.pdf")
-    try:
-        doc.save(output_path)
-        print(f"PDF guardado exitosamente en: {output_path}")
-    except Exception as e:
-        print(f"ERROR al guardar PDF: {e}")
-    finally:
-        doc.close()
+    doc.save(output_path)
+    doc.close()
 
 @app.route('/', methods=['GET', 'POST'])
 def login():
@@ -100,7 +97,6 @@ def login():
             return redirect(url_for('panel'))
         else:
             flash('Credenciales incorrectas', 'danger')
-            return redirect(url_for('login'))
     return render_template('login.html')
 
 @app.route('/panel')
@@ -123,26 +119,24 @@ def formulario():
         color = request.form['color'].upper()
         contribuyente = request.form['contribuyente'].upper()
 
-        folio_actual = cargar_folio()
-        folio_generado = siguiente_folio(folio_actual)
-
+        folio = siguiente_folio(cargar_folio())
         fecha_actual = datetime.now()
-        fecha_expedicion = fecha_actual.strftime("%d/%m/%Y")
-        fecha_vencimiento = (fecha_actual + timedelta(days=30)).strftime("%d/%m/%Y")
+        fecha_exp = fecha_actual.strftime("%d/%m/%Y")
+        fecha_ven = (fecha_actual + timedelta(days=30)).strftime("%d/%m/%Y")
 
-        guardar_en_txt(folio_generado, marca, linea, año, serie, motor, color, contribuyente, fecha_expedicion, fecha_vencimiento)
-        generar_pdf(folio_generado, marca, linea, año, serie, motor, color, contribuyente, fecha_expedicion, fecha_vencimiento)
+        guardar_en_txt(folio, marca, linea, año, serie, motor, color, contribuyente, fecha_exp, fecha_ven)
+        generar_pdf(folio, marca, linea, año, serie, motor, color, contribuyente, fecha_exp, fecha_ven)
 
-        return render_template('exito.html', folio=folio_generado)
+        return render_template('exito.html', folio=folio)
 
     return render_template('formulario.html')
 
 @app.route('/descargar/<folio>')
 def descargar(folio):
     path = os.path.join(PDF_OUTPUT_FOLDER, f"{folio}.pdf")
-    if not os.path.exists(path):
-        return "El archivo no existe", 404
-    return send_file(path, as_attachment=True)
+    if os.path.exists(path):
+        return send_file(path, as_attachment=True)
+    return "El archivo no existe", 404
 
 @app.route('/folio_actual')
 def folio_actual():
@@ -152,7 +146,7 @@ def folio_actual():
 @app.route('/reimprimir', methods=['GET', 'POST'])
 def reimprimir():
     if request.method == 'POST':
-        folio = request.form['folio'].upper().strip()
+        folio = request.form['folio'].strip().upper()
         path = os.path.join(PDF_OUTPUT_FOLDER, f"{folio}.pdf")
         if os.path.exists(path):
             return send_file(path, as_attachment=True)
@@ -163,8 +157,8 @@ def reimprimir():
 @app.route('/listar')
 def listar():
     if not os.path.exists(REGISTRO_FILE):
-        return render_template('listar.html', registros=[])
-    
+        return render_template('listar.html', registros=[], ahora=datetime.now())
+
     registros = []
     with open(REGISTRO_FILE, 'r', encoding='utf-8') as f:
         for linea in f:
@@ -183,42 +177,42 @@ def listar():
                     "fecha_venc": datos[9]
                 })
 
-    print("Total de registros cargados:", len(registros))
-    return render_template('listar.html', registros=registros)
+    return render_template('listar.html', registros=registros, ahora=datetime.now())
 
 @app.route('/renovar/<folio>')
 def renovar(folio):
     if not os.path.exists(REGISTRO_FILE):
-        flash("No existe el archivo de registros.", "danger")
+        flash("Archivo de registros no encontrado", "danger")
         return redirect(url_for('listar'))
 
     registros = []
-    datos_encontrados = None
+    datos_antiguos = None
+
     with open(REGISTRO_FILE, 'r', encoding='utf-8') as f:
         for linea in f:
-            datos = linea.strip().split('|')
-            if len(datos) != 10:
+            partes = linea.strip().split('|')
+            if len(partes) != 10:
                 continue
-            if datos[0] == folio:
-                fecha_venc = datetime.strptime(datos[9], "%d/%m/%Y")
+            if partes[0] == folio:
+                fecha_venc = datetime.strptime(partes[9], "%d/%m/%Y")
                 if datetime.now() >= fecha_venc:
-                    datos_encontrados = datos
+                    datos_antiguos = partes
             registros.append(linea)
 
-    if not datos_encontrados:
-        flash("No se puede renovar: el permiso aún no vence o no existe.", "warning")
+    if not datos_antiguos:
+        flash("No se puede renovar aún. El folio no ha vencido.", "warning")
         return redirect(url_for('listar'))
 
     nuevo_folio = siguiente_folio(cargar_folio())
-    nueva_fecha_exp = datetime.now().strftime("%d/%m/%Y")
-    nueva_fecha_venc = (datetime.now() + timedelta(days=30)).strftime("%d/%m/%Y")
+    nueva_exp = datetime.now().strftime("%d/%m/%Y")
+    nueva_ven = (datetime.now() + timedelta(days=30)).strftime("%d/%m/%Y")
 
-    _, marca, linea, año, serie, motor, color, contribuyente, _, _ = datos_encontrados
+    _, marca, linea, año, serie, motor, color, contribuyente, _, _ = datos_antiguos
 
-    guardar_en_txt(nuevo_folio, marca, linea, año, serie, motor, color, contribuyente, nueva_fecha_exp, nueva_fecha_venc)
-    generar_pdf(nuevo_folio, marca, linea, año, serie, motor, color, contribuyente, nueva_fecha_exp, nueva_fecha_venc)
+    guardar_en_txt(nuevo_folio, marca, linea, año, serie, motor, color, contribuyente, nueva_exp, nueva_ven)
+    generar_pdf(nuevo_folio, marca, linea, año, serie, motor, color, contribuyente, nueva_exp, nueva_ven)
 
-    flash(f"Permiso renovado con éxito. Nuevo folio: {nuevo_folio}", "success")
+    flash(f"Permiso renovado. Nuevo folio: {nuevo_folio}", "success")
     return redirect(url_for('descargar', folio=nuevo_folio))
 
 @app.route('/logout')
