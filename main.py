@@ -9,7 +9,7 @@ app.secret_key = "secreto_perro"
 
 # ---------------- CONFIGURACIÓN SUPABASE ----------------
 SUPABASE_URL = "https://xsagwqepoljfsogusubw.supabase.co"
-# Usa tu SERVICE_ROLE key para poder leer e insertar
+# Service-Role key para lectura/escritura completa
 SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhzYWd3cWVwb2xqZnNvZ3VzdWJ3Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc0Mzk2Mzc1NSwiZXhwIjoyMDU5NTM5NzU1fQ.aaTWr2E_l20TlWjdZgKp3ddd3bmtnL22jZisvT_aN0w"
 supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 
@@ -19,8 +19,9 @@ PLANTILLA_PDF     = 'Guerrero.pdf'
 USUARIO_VALIDO    = "elwarrior"
 CONTRASENA_VALIDA = "Warrior2025"
 
-# ---------------- FOLIO ----------------
-def cargar_folio():
+# ---------------- FUNCIONES DE FOLIO ----------------
+def cargar_folio() -> str:
+    """Trae el último folio de Supabase o AA0001 si no hay ninguno."""
     res = (
         supabase
         .table("borradores_registros")
@@ -55,7 +56,7 @@ def incrementar_letras(l: str) -> str:
         a = chr(ord(a) + 1) if a != 'Z' else 'A'
     return a + b
 
-# ---------------- GUARDAR ----------------
+# ---------------- PERSISTENCIA EN SUPABASE ----------------
 def guardar_en_supabase(folio, marca, linea, anio, serie, motor, color, contribuyente, fexp, fven):
     supabase.table("borradores_registros").insert({
         "folio": folio,
@@ -70,11 +71,11 @@ def guardar_en_supabase(folio, marca, linea, anio, serie, motor, color, contribu
         "fecha_vencimiento": fven.isoformat()
     }).execute()
 
-# ---------------- PDF ----------------
+# ---------------- GENERACIÓN DE PDF ----------------
 def generar_pdf(folio, marca, linea, anio, serie, motor, color, contribuyente, fexp, fven):
     doc = fitz.open(PLANTILLA_PDF)
     page = doc[0]
-    # frente
+    # Frente
     page.insert_text((376,769), folio, fontsize=8, color=(1,0,0))
     page.insert_text((122,755), fexp.strftime("%d/%m/%Y"), fontsize=8)
     page.insert_text((122,768), fven.strftime("%d/%m/%Y"), fontsize=8)
@@ -84,7 +85,7 @@ def generar_pdf(folio, marca, linea, anio, serie, motor, color, contribuyente, f
     page.insert_text((376,714), linea, fontsize=8)
     page.insert_text((376,756), color, fontsize=8)
     page.insert_text((122,700), contribuyente, fontsize=8)
-    # lado rotado
+    # Lado rotado
     page.insert_text((440,200), folio, fontsize=83, rotate=270)
     page.insert_text((77,205), fexp.strftime("%d/%m/%Y"), fontsize=8, rotate=270)
     page.insert_text((63,205), fven.strftime("%d/%m/%Y"), fontsize=8, rotate=270)
@@ -100,12 +101,14 @@ def generar_pdf(folio, marca, linea, anio, serie, motor, color, contribuyente, f
     doc.save(out)
     doc.close()
 
-# ---------------- RUTAS ----------------
+# ---------------- RUTAS FLASK ----------------
 @app.route('/', methods=['GET','POST'])
 def login():
-    if request.method=='POST':
-        if (u:=request.form['usuario'])==USUARIO_VALIDO and (p:=request.form['contraseña'])==CONTRASENA_VALIDA:
-            session['usuario']=u
+    if request.method == 'POST':
+        u = request.form['usuario']
+        p = request.form['contraseña']
+        if u == USUARIO_VALIDO and p == CONTRASENA_VALIDA:
+            session['usuario'] = u
             return redirect(url_for('panel'))
         flash('Credenciales incorrectas','danger')
     return render_template('login.html')
@@ -120,7 +123,7 @@ def panel():
 def formulario():
     if 'usuario' not in session:
         return redirect(url_for('login'))
-    if request.method=='POST':
+    if request.method == 'POST':
         marca         = request.form['marca'].upper()
         linea         = request.form['linea'].upper()
         anio          = request.form['anio'].upper()
@@ -132,7 +135,7 @@ def formulario():
         ultimo = cargar_folio()
         folio  = siguiente_folio(ultimo)
         ahora  = datetime.now()
-        ven    = ahora + timedelta(days=30)
+        ven    = ahora + timedelta(days=int(request.form.get('validez',30)))
 
         guardar_en_supabase(folio, marca, linea, anio, serie, motor, color, contribuyente, ahora, ven)
         generar_pdf(folio, marca, linea, anio, serie, motor, color, contribuyente, ahora, ven)
@@ -148,39 +151,44 @@ def listar():
         .table("borradores_registros")
         .select("*")
         .order("id", desc=False)
+        .limit(-1)    # <— trae TODOS los registros
         .execute()
     )
     registros = []
     for r in res.data:
         registros.append({
-            "folio": r["folio"],
-            "marca": r["marca"],
-            "linea": r["linea"],
-            "anio":  r["anio"],
-            "serie": r["numero_serie"],
-            "motor": r["numero_motor"],
-            "color": r["color"],
+            "folio":         r["folio"],
+            "marca":         r["marca"],
+            "linea":         r["linea"],
+            "anio":          r["anio"],
+            "serie":         r["numero_serie"],
+            "motor":         r["numero_motor"],
+            "color":         r["color"],
             "contribuyente": r["contribuyente"],
-            "fecha_exp":    datetime.fromisoformat(r["fecha_expedicion"]).strftime("%d/%m/%Y"),
-            "fecha_venc":   datetime.fromisoformat(r["fecha_vencimiento"]).strftime("%d/%m/%Y"),
+            "fecha_exp":     datetime.fromisoformat(r["fecha_expedicion"]).strftime("%d/%m/%Y"),
+            "fecha_venc":    datetime.fromisoformat(r["fecha_vencimiento"]).strftime("%d/%m/%Y"),
         })
     return render_template('listar.html', registros=registros, ahora=datetime.now())
 
-@app.route('/descargar/<folio>')
-def descargar(folio):
-    p = os.path.join(PDF_OUTPUT_FOLDER, f"{folio}.pdf")
-    return send_file(p, as_attachment=True) if os.path.exists(p) else ("No existe",404)
-
-@app.route('/reimprimir', methods=['GET','POST'])
-def reimprimir():
-    if request.method=='POST':
+@app.route('/consultar', methods=['GET','POST'])
+def consultar():
+    """Alias para reimprimir desde el panel."""
+    if request.method == 'POST':
         fol = request.form['folio'].strip().upper()
         return redirect(url_for('descargar', folio=fol))
     return render_template('reimprimir.html')
 
+@app.route('/descargar/<folio>')
+def descargar(folio):
+    p = os.path.join(PDF_OUTPUT_FOLDER, f"{folio}.pdf")
+    if os.path.exists(p):
+        return send_file(p, as_attachment=True)
+    flash("PDF no encontrado","danger")
+    return redirect(url_for('panel'))
+
 @app.route('/renovar/<folio>')
 def renovar(folio):
-    # buscamos en Supabase
+    # buscamos el registro
     res = (
         supabase
         .table("borradores_registros")
@@ -203,15 +211,13 @@ def renovar(folio):
     hoy   = datetime.now()
     ven   = hoy + timedelta(days=30)
     guardar_en_supabase(
-        nuevo,
-        row["marca"], row["linea"], row["anio"],
+        nuevo, row["marca"], row["linea"], row["anio"],
         row["numero_serie"], row["numero_motor"],
         row["color"], row["contribuyente"],
         hoy, ven
     )
     generar_pdf(
-        nuevo,
-        row["marca"], row["linea"], row["anio"],
+        nuevo, row["marca"], row["linea"], row["anio"],
         row["numero_serie"], row["numero_motor"],
         row["color"], row["contribuyente"],
         hoy, ven
