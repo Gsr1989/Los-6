@@ -196,5 +196,16 @@ def listar():
 
     return render_template('listar.html', registros=registros, ahora=datetime.now())
 
+@app.route('/reimprimir', methods=['GET', 'POST'])
+def reimprimir():
+    if request.method == 'POST':
+        folio = request.form['folio'].strip().upper()
+        path = os.path.join(PDF_OUTPUT_FOLDER, f"{folio}.pdf")
+        if os.path.exists(path):
+            return send_file(path, as_attachment=True)
+        else:
+            flash("No se encontró el PDF con ese folio", "danger")
+    return render_template('reimprimir.html')
+
 if __name__ == '__main__':
     app.run(debug=True)
