@@ -194,33 +194,6 @@ def listar():
                     "fecha_venc": datos[9]
                 })
 
-    return render_template('listar.html', registros=registros)
-
-from datetime import datetime  # asegúrate de tener esto arriba
-
-@app.route('/listar')
-def listar():
-    if not os.path.exists(REGISTRO_FILE):
-        open(REGISTRO_FILE, 'a').close()
-
-    registros = []
-    with open(REGISTRO_FILE, 'r', encoding='utf-8') as f:
-        for linea in f:
-            datos = linea.strip().split('|')
-            if len(datos) == 10:
-                registros.append({
-                    "folio": datos[0],
-                    "marca": datos[1],
-                    "linea": datos[2],
-                    "anio": datos[3],
-                    "serie": datos[4],
-                    "motor": datos[5],
-                    "color": datos[6],
-                    "contribuyente": datos[7],
-                    "fecha_exp": datos[8],
-                    "fecha_venc": datos[9]
-                })
-
     return render_template('listar.html', registros=registros, ahora=datetime.now())
 
 if __name__ == '__main__':
