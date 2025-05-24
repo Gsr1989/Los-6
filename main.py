@@ -25,7 +25,7 @@ def cargar_folio():
         supabase
         .table("borradores_registros")
         .select("fol_texto")
-        .order("id", ascending=False)
+        .order("id", desc=True)     # ← usa `desc=True` para ordenar descendente
         .limit(1)
         .execute()
     )
@@ -79,7 +79,7 @@ def guardar_en_txt(folio, marca, linea, anio, serie, motor, color, contribuyente
 def generar_pdf(folio, marca, linea, anio, serie, motor, color, contribuyente, fexp, fven):
     doc = fitz.open(PLANTILLA_PDF)
     page = doc[0]
-    # normal
+    # Normal
     page.insert_text((376,769), folio, fontsize=8, color=(1,0,0))
     page.insert_text((122,755), fexp.strftime("%d/%m/%Y"), fontsize=8)
     page.insert_text((122,768), fven.strftime("%d/%m/%Y"), fontsize=8)
@@ -89,7 +89,7 @@ def generar_pdf(folio, marca, linea, anio, serie, motor, color, contribuyente, f
     page.insert_text((376,714), linea, fontsize=8)
     page.insert_text((376,756), color, fontsize=8)
     page.insert_text((122,700), contribuyente, fontsize=8)
-    # rotado
+    # Rotado
     page.insert_text((440,200), folio, fontsize=83, rotate=270)
     page.insert_text((77,205), fexp.strftime("%d/%m/%Y"), fontsize=8, rotate=270)
     page.insert_text((63,205), fven.strftime("%d/%m/%Y"), fontsize=8, rotate=270)
