@@ -24,7 +24,7 @@ def cargar_folio():
         supabase
         .table("borradores_registros")
         .select("folio")
-        .order("folio", desc=True)
+        .order("id", desc=True)
         .limit(1)
         .execute()
     )
@@ -146,8 +146,7 @@ def listar():
         supabase
         .table("borradores_registros")
         .select("*")
-        .order("folio", desc=False)  # <---- Ordena por folio alfabético
-        .limit(10000)                # <---- Quita límite de 1000
+        .order("id", desc=True)  # <-- Aquí el truco, mostrar los más nuevos primero
         .execute()
     )
     registros = []
