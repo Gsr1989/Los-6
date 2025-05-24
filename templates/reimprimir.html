@@ -1,5 +1,4 @@
-<!DOCTYPE html>
-<html lang="es">
+<!DOCTYPE html><html lang="es">
 <head>
     <meta charset="UTF-8">
     <title>Reimprimir Permiso</title>
@@ -14,15 +13,22 @@
         }
         h1 {
             color: #00ffff;
+            margin-bottom: 30px;
+        }
+        form {
+            display: inline-block;
+            background-color: #073642;
+            padding: 20px;
+            border-radius: 8px;
         }
         input[type="text"] {
             padding: 10px;
             font-size: 16px;
-            width: 80%;
+            width: 100%;
             max-width: 300px;
             border-radius: 5px;
             border: none;
-            margin-top: 20px;
+            margin-bottom: 15px;
         }
         input[type="submit"] {
             background-color: #268bd2;
@@ -31,28 +37,45 @@
             font-size: 16px;
             border: none;
             border-radius: 5px;
-            margin-top: 15px;
+            cursor: pointer;
+        }
+        input[type="submit"]:hover {
+            background-color: #1c6ca1;
         }
         .alerta {
             margin-top: 20px;
             color: #ff6f6f;
+            font-weight: bold;
+        }
+        .volver {
+            display: block;
+            margin: 30px auto;
+            text-decoration: none;
+            background-color: #00bcd4;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 6px;
+            max-width: 200px;
+        }
+        .volver:hover {
+            background-color: #0097a7;
         }
     </style>
 </head>
 <body>
     <h1>Reimprimir Permiso</h1>
-    <form method="POST">
-        <input type="text" name="folio" placeholder="Ingresa el folio">
-        <br>
+    <form method="POST" action="{{ url_for('reimprimir') }}">
+        <input type="text" name="folio" placeholder="Ingresa el folio" required>
         <input type="submit" value="Buscar PDF">
-    </form>
+    </form>{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    {% for category, message in messages %}
+      <div class="alerta">{{ message }}</div>
+    {% endfor %}
+  {% endif %}
+{% endwith %}
 
-    {% with messages = get_flashed_messages(with_categories=true) %}
-      {% if messages %}
-        {% for category, message in messages %}
-          <div class="alerta">{{ message }}</div>
-        {% endfor %}
-      {% endif %}
-    {% endwith %}
+<a href="{{ url_for('panel') }}" class="volver">Volver al Panel</a>
+
 </body>
 </html>
