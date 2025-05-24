@@ -21,12 +21,12 @@ CONTRASENA_VALIDA   = "Warrior2025"
 
 # ---------------- FUNCIONES DE FOLIO ----------------
 def cargar_folio():
-    # obtenemos el último folio registrado en Supabase
+    # trae el último folio de Supabase (id más alto primero)
     resp = (
         supabase
         .table("borradores_registros")
         .select("fol_texto")
-        .order("id", ascending=False)   # <--- ascending en lugar de ascendente
+        .order("id", desc=True)   # ahora sí usa el parámetro correcto
         .limit(1)
         .execute()
     )
@@ -38,7 +38,7 @@ def siguiente_folio(folio_actual):
     letras = folio_actual[:2]
     try:
         num = int(folio_actual[2:])
-    except ValueError:
+    except:
         num = 0
     if num < 9999:
         num += 1
@@ -123,6 +123,12 @@ def panel():
     if 'usuario' not in session:
         return redirect(url_for('login'))
     return render_template('panel.html')
+
+# punto de enlace para la "Consulta externa (gabacha)"
+@app.route('/consultar')
+def consultar():
+    # redirige al listado interno; cámbialo si quieres otra URL
+    return redirect(url_for('listar'))
 
 @app.route('/formulario', methods=['GET','POST'])
 def formulario():
