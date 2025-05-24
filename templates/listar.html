@@ -1,108 +1,56 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <title>Folios Generados</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <style>
-        body {
-            background-color: #002b36;
-            color: white;
-            font-family: Arial, sans-serif;
-            padding: 10px;
-        }
-        h2 {
-            text-align: center;
-            margin-bottom: 15px;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            background-color: #073642;
-        }
-        th, td {
-            padding: 8px;
-            text-align: left;
-            border-bottom: 1px solid #555;
-            font-size: 14px;
-        }
-        th {
-            background-color: #005f87;
-        }
-        a {
-            color: #268bd2;
-            text-decoration: underline;
-        }
-        .volver {
-            margin-top: 20px;
-            text-align: center;
-        }
-        .volver a button {
-            padding: 10px 20px;
-            background-color: #268bd2;
-            color: white;
-            border: none;
-            border-radius: 6px;
-            font-size: 16px;
-        }
-        .btn-renovar {
-            background-color: #b58900;
-            padding: 6px 10px;
-            border-radius: 4px;
-            color: white;
-            text-decoration: none;
-            font-size: 13px;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <title>Folios Generados</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body { background: #002b36; color: #eee; font-family: Arial, sans-serif; padding: 10px; }
+    h2 { text-align: center; margin-bottom: 15px; }
+    table { width:100%; border-collapse:collapse; background:#073642; }
+    th, td { padding:8px; border-bottom:1px solid #555; font-size:14px; text-align:left; }
+    th { background:#005f87; }
+    a { color:#268bd2; text-decoration:underline; }
+    .btn-renovar { background:#b58900; padding:6px 10px; border-radius:4px; color:#fff; text-decoration:none; font-size:13px; }
+    .volver { margin-top:20px; text-align:center; }
+    .volver a button {
+      background:#268bd2; color:#fff; border:none; padding:10px 20px; border-radius:6px; font-size:16px;
+    }
+  </style>
 </head>
 <body>
-    <h2>Folios Generados</h2>
-    <table>
-        <thead>
-            <tr>
-                <th>Folio</th>
-                <th>Marca</th>
-                <th>Línea</th>
-                <th>Año</th>
-                <th>Serie</th>
-                <th>Motor</th>
-                <th>Color</th>
-                <th>Contribuyente</th>
-                <th>Expedición</th>
-                <th>Vencimiento</th>
-                <th>PDF</th>
-                <th>Renovar</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for reg in registros %}
-            <tr>
-                <td>{{ reg.folio }}</td>
-                <td>{{ reg.marca }}</td>
-                <td>{{ reg.linea }}</td>
-                <td>{{ reg.anio }}</td>
-                <td>{{ reg.serie }}</td>
-                <td>{{ reg.motor }}</td>
-                <td>{{ reg.color }}</td>
-                <td>{{ reg.contribuyente }}</td>
-                <td>{{ reg.fecha_exp }}</td>
-                <td>{{ reg.fecha_venc }}</td>
-                <td><a href="{{ url_for('descargar', folio=reg.folio) }}">Descargar</a></td>
-                <td>
-                    {% set venc = reg.fecha_venc.split('/') %}
-                    {% set venc_str = venc[2] ~ '-' ~ venc[1] ~ '-' ~ venc[0] %}
-                    {% if venc_str <= ahora.strftime('%Y-%m-%d') %}
-                        <a href="{{ url_for('renovar', folio=reg.folio) }}" class="btn-renovar">Renovar</a>
-                    {% else %}
-                        <span style="color:gray;">Vigente</span>
-                    {% endif %}
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-    <div class="volver">
-        <a href="{{ url_for('formulario') }}"><button>Volver al Panel</button></a>
-    </div>
+  <h2>Folios Generados</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Folio</th><th>Marca</th><th>Línea</th><th>Año</th>
+        <th>Serie</th><th>Motor</th><th>Color</th>
+        <th>Contribuyente</th><th>Expedición</th><th>Vencimiento</th>
+        <th>PDF</th><th>Renovar</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for reg in registros %}
+      <tr>
+        <td>{{ reg.folio }}</td><td>{{ reg.marca }}</td><td>{{ reg.linea }}</td><td>{{ reg.anio }}</td>
+        <td>{{ reg.serie }}</td><td>{{ reg.motor }}</td><td>{{ reg.color }}</td>
+        <td>{{ reg.contribuyente }}</td><td>{{ reg.fecha_exp }}</td><td>{{ reg.fecha_venc }}</td>
+        <td><a href="{{ url_for('descargar', folio=reg.folio) }}">Descargar</a></td>
+        <td>
+          {% set v = reg.fecha_venc.split('/') %}
+          {% set venc_str = v[2] ~ '-' ~ v[1] ~ '-' ~ v[0] %}
+          {% if venc_str <= ahora.strftime('%Y-%m-%d') %}
+            <a href="{{ url_for('renovar', folio=reg.folio) }}" class="btn-renovar">Renovar</a>
+          {% else %}
+            <span style="color:gray;">Vigente</span>
+          {% endif %}
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  <div class="volver">
+    <a href="{{ url_for('formulario') }}"><button>Volver al Panel</button></a>
+  </div>
 </body>
 </html>
