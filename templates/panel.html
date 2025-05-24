@@ -27,9 +27,13 @@
             text-decoration: none;
             font-size: 18px;
             border-radius: 8px;
+            transition: 0.3s;
         }
         .boton:hover {
             background-color: #1c6ca1;
+        }
+        .salir {
+            background-color: #cb4b16 !important;
         }
     </style>
 </head>
@@ -38,6 +42,7 @@
     <a href="{{ url_for('formulario') }}" class="boton">+ Generar nuevo permiso</a>
     <a href="{{ url_for('listar') }}" class="boton">📄 Ver permisos generados</a>
     <a href="{{ url_for('reimprimir') }}" class="boton">🔁 Reimprimir por folio</a>
-    <a href="{{ url_for('logout') }}" class="boton" style="background-color:#cb4b16;">Cerrar sesión</a>
+    <a href="{{ url_for('consultar') }}" class="boton">🔎 Consulta externa (gabacha)</a>
+    <a href="{{ url_for('logout') }}" class="boton salir">Cerrar sesión</a>
 </body>
 </html>
