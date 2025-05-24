@@ -2,9 +2,15 @@ from flask import Flask, render_template, request, redirect, url_for, send_file,
 from datetime import datetime, timedelta
 import fitz  # PyMuPDF
 import os
+from supabase import create_client, Client
 
+# ---------------- CONFIGURACIÓN ----------------
 app = Flask(__name__)
 app.secret_key = "secreto_perro"
+
+SUPABASE_URL = "https://xsagwqepoljfsogusubw.supabase.co"
+SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhzYWd3cWVwb2xqZnNvZ3VzdWJ3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDM5NjM3NTUsImV4cCI6MjA1OTUzOTc1NX0.NUixULn0m2o49At8j6X58UqbXre2O2_JStqzls_8Gws"
+supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 
 PDF_OUTPUT_FOLDER = 'static/pdfs'
 PLANTILLA_PDF = 'Guerrero.pdf'
@@ -14,6 +20,7 @@ REGISTRO_FILE = 'data/registros.txt'
 USUARIO_VALIDO = "elwarrior"
 CONTRASENA_VALIDA = "Warrior2025"
 
+# ---------------- FUNCIONES ----------------
 def cargar_folio():
     if not os.path.exists(FOLIO_FILE):
         with open(FOLIO_FILE, 'w') as f:
@@ -49,6 +56,20 @@ def incrementar_letras(letras):
             letra1 = 'A'
     return letra1 + letra2
 
+def guardar_en_supabase(folio, marca, linea, año, serie, motor, color, contribuyente, fecha_exp, fecha_ven):
+    supabase.table("borradores_registros").insert({
+        "folio": folio,
+        "marca": marca,
+        "linea": linea,
+        "anio": año,
+        "numero_serie": serie,
+        "numero_motor": motor,
+        "color": color,
+        "contribuyente": contribuyente,
+        "fecha_expedicion": fecha_exp.isoformat(),
+        "fecha_vencimiento": fecha_ven.isoformat()
+    }).execute()
+
 def guardar_en_txt(folio, marca, linea, año, serie, motor, color, contribuyente, fecha_expedicion, fecha_vencimiento):
     with open(REGISTRO_FILE, 'a', encoding='utf-8') as f:
         f.write(f"{folio}|{marca}|{linea}|{año}|{serie}|{motor}|{color}|{contribuyente}|{fecha_expedicion}|{fecha_vencimiento}\n")
@@ -58,8 +79,8 @@ def generar_pdf(folio, marca, linea, año, serie, motor, color, contribuyente, f
     page = doc[0]
 
     page.insert_text((376, 769), folio, fontsize=8, color=(1, 0, 0))
-    page.insert_text((122, 755), fecha_expedicion, fontsize=8)
-    page.insert_text((122, 768), fecha_vencimiento, fontsize=8)
+    page.insert_text((122, 755), fecha_expedicion.strftime("%d/%m/%Y"), fontsize=8)
+    page.insert_text((122, 768), fecha_vencimiento.strftime("%d/%m/%Y"), fontsize=8)
     page.insert_text((376, 742), serie, fontsize=8)
     page.insert_text((376, 729), motor, fontsize=8)
     page.insert_text((376, 700), marca, fontsize=8)
@@ -68,8 +89,8 @@ def generar_pdf(folio, marca, linea, año, serie, motor, color, contribuyente, f
     page.insert_text((122, 700), contribuyente, fontsize=8)
 
     page.insert_text((440, 200), folio, fontsize=83, rotate=270, color=(0, 0, 0))
-    page.insert_text((77, 205), fecha_expedicion, fontsize=8, rotate=270)
-    page.insert_text((63, 205), fecha_vencimiento, fontsize=8, rotate=270)
+    page.insert_text((77, 205), fecha_expedicion.strftime("%d/%m/%Y"), fontsize=8, rotate=270)
+    page.insert_text((63, 205), fecha_vencimiento.strftime("%d/%m/%Y"), fontsize=8, rotate=270)
     page.insert_text((168, 110), serie, fontsize=18, rotate=270)
     page.insert_text((224, 110), motor, fontsize=18, rotate=270)
     page.insert_text((280, 110), marca, fontsize=18, rotate=270)
@@ -85,6 +106,7 @@ def generar_pdf(folio, marca, linea, año, serie, motor, color, contribuyente, f
     doc.save(output_path)
     doc.close()
 
+# ---------------- RUTAS ----------------
 @app.route('/', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
@@ -119,11 +141,11 @@ def formulario():
 
         folio = siguiente_folio(cargar_folio())
         fecha_actual = datetime.now()
-        fecha_exp = fecha_actual.strftime("%d/%m/%Y")
-        fecha_ven = (fecha_actual + timedelta(days=30)).strftime("%d/%m/%Y")
+        fecha_ven = fecha_actual + timedelta(days=30)
 
-        guardar_en_txt(folio, marca, linea, año, serie, motor, color, contribuyente, fecha_exp, fecha_ven)
-        generar_pdf(folio, marca, linea, año, serie, motor, color, contribuyente, fecha_exp, fecha_ven)
+        guardar_en_supabase(folio, marca, linea, año, serie, motor, color, contribuyente, fecha_actual, fecha_ven)
+        guardar_en_txt(folio, marca, linea, año, serie, motor, color, contribuyente, fecha_actual.strftime("%d/%m/%Y"), fecha_ven.strftime("%d/%m/%Y"))
+        generar_pdf(folio, marca, linea, año, serie, motor, color, contribuyente, fecha_actual, fecha_ven)
 
         return render_template('exito.html', folio=folio)
 
@@ -136,87 +158,11 @@ def descargar(folio):
         return send_file(path, as_attachment=True)
     return "El archivo no existe", 404
 
-@app.route('/folio_actual')
-def folio_actual():
-    folio = cargar_folio()
-    return render_template('folio_actual.html', mensaje=f"Folio actual: {folio}")
-
-@app.route('/reimprimir', methods=['GET', 'POST'])
-def reimprimir():
-    if request.method == 'POST':
-        folio = request.form['folio'].strip().upper()
-        path = os.path.join(PDF_OUTPUT_FOLDER, f"{folio}.pdf")
-        if os.path.exists(path):
-            return send_file(path, as_attachment=True)
-        else:
-            flash("No se encontró el PDF con ese folio", "danger")
-    return render_template('reimprimir.html')
-
-@app.route('/listar')
-def listar():
-    if not os.path.exists(REGISTRO_FILE):
-        return render_template('listar.html', registros=[], ahora=datetime.now())
-
-    registros = []
-    with open(REGISTRO_FILE, 'r', encoding='utf-8') as f:
-        for linea in f:
-            datos = linea.strip().split('|')
-            if len(datos) == 10:
-                registros.append({
-                    "folio": datos[0],
-                    "marca": datos[1],
-                    "linea": datos[2],
-                    "anio": datos[3],
-                    "serie": datos[4],
-                    "motor": datos[5],
-                    "color": datos[6],
-                    "contribuyente": datos[7],
-                    "fecha_exp": datos[8],
-                    "fecha_venc": datos[9]
-                })
-
-    return render_template('listar.html', registros=registros, ahora=datetime.now())
-
-@app.route('/renovar/<folio>')
-def renovar(folio):
-    if not os.path.exists(REGISTRO_FILE):
-        flash("Archivo de registros no encontrado", "danger")
-        return redirect(url_for('listar'))
-
-    registros = []
-    datos_antiguos = None
-
-    with open(REGISTRO_FILE, 'r', encoding='utf-8') as f:
-        for linea in f:
-            partes = linea.strip().split('|')
-            if len(partes) != 10:
-                continue
-            if partes[0] == folio:
-                fecha_venc = datetime.strptime(partes[9], "%d/%m/%Y")
-                if datetime.now() >= fecha_venc:
-                    datos_antiguos = partes
-            registros.append(linea)
-
-    if not datos_antiguos:
-        flash("No se puede renovar aún. El folio no ha vencido.", "warning")
-        return redirect(url_for('listar'))
-
-    nuevo_folio = siguiente_folio(cargar_folio())
-    nueva_exp = datetime.now().strftime("%d/%m/%Y")
-    nueva_ven = (datetime.now() + timedelta(days=30)).strftime("%d/%m/%Y")
-
-    _, marca, linea, año, serie, motor, color, contribuyente, _, _ = datos_antiguos
-
-    guardar_en_txt(nuevo_folio, marca, linea, año, serie, motor, color, contribuyente, nueva_exp, nueva_ven)
-    generar_pdf(nuevo_folio, marca, linea, año, serie, motor, color, contribuyente, nueva_exp, nueva_ven)
-
-    flash(f"Permiso renovado. Nuevo folio: {nuevo_folio}", "success")
-    return redirect(url_for('descargar', folio=nuevo_folio))
-
 @app.route('/logout')
 def logout():
     session.clear()
     return redirect(url_for('login'))
 
+# ---------------- MAIN ----------------
 if __name__ == '__main__':
     app.run(debug=True)
