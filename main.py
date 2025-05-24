@@ -21,12 +21,11 @@ CONTRASENA_VALIDA   = "Warrior2025"
 
 # ---------------- FUNCIONES DE FOLIO ----------------
 def cargar_folio():
-    # Trae el último folio desde Supabase; si no hay, inicia en AA0001
     resp = (
         supabase
         .table("borradores_registros")
         .select("fol_texto")
-        .order("id", {"ascending": False})
+        .order("id", ascending=False)
         .limit(1)
         .execute()
     )
@@ -48,13 +47,13 @@ def siguiente_folio(folio_actual):
     return f"{letras}{num:04d}"
 
 def incrementar_letras(l):
-    a,b = l
+    a, b = l
     if b != 'Z':
-        b = chr(ord(b)+1)
+        b = chr(ord(b) + 1)
     else:
         b = 'A'
-        a = chr(ord(a)+1) if a!='Z' else 'A'
-    return a+b
+        a = chr(ord(a) + 1) if a != 'Z' else 'A'
+    return a + b
 
 # ---------------- GUARDAR DATOS ----------------
 def guardar_en_supabase(folio, marca, linea, anio, serie, motor, color, contribuyente, fexp, fven):
@@ -80,7 +79,7 @@ def guardar_en_txt(folio, marca, linea, anio, serie, motor, color, contribuyente
 def generar_pdf(folio, marca, linea, anio, serie, motor, color, contribuyente, fexp, fven):
     doc = fitz.open(PLANTILLA_PDF)
     page = doc[0]
-    # Texto normal
+    # normal
     page.insert_text((376,769), folio, fontsize=8, color=(1,0,0))
     page.insert_text((122,755), fexp.strftime("%d/%m/%Y"), fontsize=8)
     page.insert_text((122,768), fven.strftime("%d/%m/%Y"), fontsize=8)
@@ -90,7 +89,7 @@ def generar_pdf(folio, marca, linea, anio, serie, motor, color, contribuyente, f
     page.insert_text((376,714), linea, fontsize=8)
     page.insert_text((376,756), color, fontsize=8)
     page.insert_text((122,700), contribuyente, fontsize=8)
-    # Lado rotado
+    # rotado
     page.insert_text((440,200), folio, fontsize=83, rotate=270)
     page.insert_text((77,205), fexp.strftime("%d/%m/%Y"), fontsize=8, rotate=270)
     page.insert_text((63,205), fven.strftime("%d/%m/%Y"), fontsize=8, rotate=270)
@@ -129,20 +128,18 @@ def formulario():
     if 'usuario' not in session:
         return redirect(url_for('login'))
     if request.method=='POST':
-        marca        = request.form['marca'].upper()
-        linea        = request.form['linea'].upper()
-        anio         = request.form['anio'].upper()
-        serie        = request.form['serie'].upper()
-        motor        = request.form['motor'].upper()
-        color        = request.form['color'].upper()
-        contribuyente= request.form['contribuyente'].upper()
-        # validez opcional desde select
-        dias         = int(request.form.get('validez', 30))
+        marca         = request.form['marca'].upper()
+        linea         = request.form['linea'].upper()
+        anio          = request.form['anio'].upper()
+        serie         = request.form['serie'].upper()
+        motor         = request.form['motor'].upper()
+        color         = request.form['color'].upper()
+        contribuyente = request.form['contribuyente'].upper()
+        dias          = int(request.form.get('validez', 30))
 
-        ultimo = cargar_folio()
-        folio  = siguiente_folio(ultimo)
-        ahora  = datetime.now()
-        venc   = ahora + timedelta(days=dias)
+        folio = siguiente_folio(cargar_folio())
+        ahora = datetime.now()
+        venc  = ahora + timedelta(days=dias)
 
         guardar_en_supabase(folio, marca, linea, anio, serie, motor, color, contribuyente, ahora, venc)
         guardar_en_txt(folio, marca, linea, anio, serie, motor, color, contribuyente,
@@ -173,15 +170,15 @@ def listar():
     if not os.path.exists(REGISTRO_FILE):
         os.makedirs(os.path.dirname(REGISTRO_FILE), exist_ok=True)
         open(REGISTRO_FILE,'a').close()
-    registros = []
+    registros=[]
     with open(REGISTRO_FILE,'r',encoding='utf-8') as f:
         for ln in f:
-            d = ln.strip().split('|')
+            d=ln.strip().split('|')
             if len(d)==10:
                 registros.append({
-                    "folio": d[0], "marca": d[1], "linea": d[2], "anio": d[3],
-                    "serie": d[4], "motor": d[5], "color": d[6],
-                    "contribuyente": d[7], "fecha_exp": d[8], "fecha_venc": d[9]
+                    "folio":d[0],"marca":d[1],"linea":d[2],"anio":d[3],
+                    "serie":d[4],"motor":d[5],"color":d[6],
+                    "contribuyente":d[7],"fecha_exp":d[8],"fecha_venc":d[9]
                 })
     return render_template('listar.html', registros=registros, ahora=datetime.now())
 
@@ -200,25 +197,25 @@ def renovar(folio):
     if not os.path.exists(REGISTRO_FILE):
         flash("Registros no existen","danger")
         return redirect(url_for('listar'))
-    datos = None
+    datos=None
     for ln in open(REGISTRO_FILE,'r',encoding='utf-8'):
-        p = ln.strip().split('|')
+        p=ln.strip().split('|')
         if len(p)==10 and p[0]==folio:
-            fecha_v = datetime.strptime(p[9],"%d/%m/%Y")
-            if datetime.now()>=fecha_v:
+            fv=datetime.strptime(p[9],"%d/%m/%Y")
+            if datetime.now()>=fv:
                 datos=p
             break
     if not datos:
         flash("No vence o no existe","warning")
         return redirect(url_for('listar'))
-    _, ma, li, an, se, mo, co, ct, fe, fv = datos
-    nuevo = siguiente_folio(cargar_folio())
-    hoy   = datetime.now()
-    ven   = hoy + timedelta(days=30)
-    guardar_en_supabase(nuevo, ma, li, an, se, mo, co, ct, hoy, ven)
-    guardar_en_txt(       nuevo, ma, li, an, se, mo, co, ct,
-                         hoy.strftime("%d/%m/%Y"), ven.strftime("%d/%m/%Y"))
-    generar_pdf(nuevo, ma, li, an, se, mo, co, ct, hoy, ven)
+    _,ma,li,an,se,mo,co,ct,fe,fv=datos
+    nuevo=siguiente_folio(cargar_folio())
+    hoy=datetime.now()
+    ven=hoy+timedelta(days=30)
+    guardar_en_supabase(nuevo,ma,li,an,se,mo,co,ct,hoy,ven)
+    guardar_en_txt(nuevo,ma,li,an,se,mo,co,ct,
+                   hoy.strftime("%d/%m/%Y"), ven.strftime("%d/%m/%Y"))
+    generar_pdf(nuevo,ma,li,an,se,mo,co,ct,hoy,ven)
     flash(f"Renovado folio {nuevo}","success")
     return redirect(url_for('descargar', folio=nuevo))
 
