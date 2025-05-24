@@ -18,15 +18,17 @@ PLANTILLA_PDF = 'Guerrero.pdf'
 USUARIO_VALIDO = "elwarrior"
 CONTRASENA_VALIDA = "Warrior2025"
 
-# ---------- FUNCIONES ----------
+# ---------- FUNCIONES DE FOLIO ----------
 def cargar_folio():
     res = supabase.table("borradores_registros").select("folio").order("id", desc=True).limit(1).execute()
     return res.data[0]["folio"] if res.data else "AA0000"
 
 def siguiente_folio(actual):
     letras = actual[:2]
-    try: num = int(actual[2:])
-    except: num = 0
+    try:
+        num = int(actual[2:])
+    except:
+        num = 0
     if num < 9999:
         num += 1
     else:
@@ -36,22 +38,33 @@ def siguiente_folio(actual):
 
 def incrementar_letras(letras):
     a, b = letras
-    b = chr(ord(b) + 1) if b != 'Z' else 'A'
-    a = chr(ord(a) + 1) if b == 'A' and a != 'Z' else a
+    if b != 'Z':
+        b = chr(ord(b) + 1)
+    else:
+        b = 'A'
+        a = chr(ord(a) + 1) if a != 'Z' else 'A'
     return a + b
 
+# ---------- GUARDAR EN SUPABASE ----------
 def guardar_en_supabase(folio, marca, linea, anio, serie, motor, color, contribuyente, fexp, fven):
     supabase.table("borradores_registros").insert({
-        "folio": folio, "marca": marca, "linea": linea, "anio": anio,
-        "numero_serie": serie, "numero_motor": motor, "color": color,
+        "folio": folio,
+        "marca": marca,
+        "linea": linea,
+        "anio": anio,
+        "numero_serie": serie,
+        "numero_motor": motor,
+        "color": color,
         "contribuyente": contribuyente,
         "fecha_expedicion": fexp.isoformat(),
         "fecha_vencimiento": fven.isoformat()
     }).execute()
 
+# ---------- GENERACIÓN DE PDF ----------
 def generar_pdf(folio, marca, linea, anio, serie, motor, color, contribuyente, fexp, fven):
     doc = fitz.open(PLANTILLA_PDF)
     page = doc[0]
+    # frente
     page.insert_text((376,769), folio, fontsize=8, color=(1,0,0))
     page.insert_text((122,755), fexp.strftime("%d/%m/%Y"), fontsize=8)
     page.insert_text((122,768), fven.strftime("%d/%m/%Y"), fontsize=8)
@@ -61,6 +74,7 @@ def generar_pdf(folio, marca, linea, anio, serie, motor, color, contribuyente, f
     page.insert_text((376,714), linea, fontsize=8)
     page.insert_text((376,756), color, fontsize=8)
     page.insert_text((122,700), contribuyente, fontsize=8)
+    # lado rotado
     page.insert_text((440,200), folio, fontsize=83, rotate=270)
     page.insert_text((77,205), fexp.strftime("%d/%m/%Y"), fontsize=8, rotate=270)
     page.insert_text((63,205), fven.strftime("%d/%m/%Y"), fontsize=8, rotate=270)
@@ -75,7 +89,7 @@ def generar_pdf(folio, marca, linea, anio, serie, motor, color, contribuyente, f
     doc.save(os.path.join(PDF_OUTPUT_FOLDER, f"{folio}.pdf"))
     doc.close()
 
-# ---------- RUTAS ----------
+# ---------- RUTAS FLASK ----------
 @app.route('/', methods=['GET','POST'])
 def login():
     if request.method == 'POST':
@@ -101,8 +115,14 @@ def formulario():
         folio = siguiente_folio(cargar_folio())
         ahora = datetime.now()
         ven = ahora + timedelta(days=30)
-        guardar_en_supabase(folio, datos['marca'], datos['linea'], datos['anio'], datos['serie'], datos['motor'], datos['color'], datos['contribuyente'], ahora, ven)
-        generar_pdf(folio, datos['marca'], datos['linea'], datos['anio'], datos['serie'], datos['motor'], datos['color'], datos['contribuyente'], ahora, ven)
+        guardar_en_supabase(
+            folio, datos['marca'], datos['linea'], datos['anio'], datos['serie'],
+            datos['motor'], datos['color'], datos['contribuyente'], ahora, ven
+        )
+        generar_pdf(
+            folio, datos['marca'], datos['linea'], datos['anio'], datos['serie'],
+            datos['motor'], datos['color'], datos['contribuyente'], ahora, ven
+        )
         return render_template("exito.html", folio=folio)
     return render_template("formulario.html")
 
@@ -110,15 +130,21 @@ def formulario():
 def listar():
     if 'usuario' not in session:
         return redirect(url_for('login'))
-    res = supabase.table("borradores_registros").select("*").order("id", desc=False).limit(1000).execute()
+    # El límite grande para que no corte folios. Puedes poner más si ocupas más de 10,000 registros.
+    res = supabase.table("borradores_registros").select("*").order("id", desc=False).limit(10000).execute()
     registros = []
     for r in res.data:
         registros.append({
-            "folio": r["folio"], "marca": r["marca"], "linea": r["linea"], "anio": r["anio"],
-            "serie": r["numero_serie"], "motor": r["numero_motor"], "color": r["color"],
+            "folio": r["folio"],
+            "marca": r["marca"],
+            "linea": r["linea"],
+            "anio":  r["anio"],
+            "serie": r["numero_serie"],
+            "motor": r["numero_motor"],
+            "color": r["color"],
             "contribuyente": r["contribuyente"],
             "fecha_exp": datetime.fromisoformat(r["fecha_expedicion"]).strftime("%d/%m/%Y"),
-            "fecha_venc": datetime.fromisoformat(r["fecha_vencimiento"]).strftime("%d/%m/%Y")
+            "fecha_venc": datetime.fromisoformat(r["fecha_vencimiento"]).strftime("%d/%m/%Y"),
         })
     return render_template("listar.html", registros=registros, ahora=datetime.now())
 
@@ -148,8 +174,14 @@ def renovar(folio):
     nuevo = siguiente_folio(cargar_folio())
     hoy = datetime.now()
     ven = hoy + timedelta(days=30)
-    guardar_en_supabase(nuevo, row["marca"], row["linea"], row["anio"], row["numero_serie"], row["numero_motor"], row["color"], row["contribuyente"], hoy, ven)
-    generar_pdf(nuevo, row["marca"], row["linea"], row["anio"], row["numero_serie"], row["numero_motor"], row["color"], row["contribuyente"], hoy, ven)
+    guardar_en_supabase(
+        nuevo, row["marca"], row["linea"], row["anio"], row["numero_serie"],
+        row["numero_motor"], row["color"], row["contribuyente"], hoy, ven
+    )
+    generar_pdf(
+        nuevo, row["marca"], row["linea"], row["anio"], row["numero_serie"],
+        row["numero_motor"], row["color"], row["contribuyente"], hoy, ven
+    )
     flash(f"Renovado folio {nuevo}", "success")
     return redirect(url_for('descargar', folio=nuevo))
 
