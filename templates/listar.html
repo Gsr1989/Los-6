@@ -1,4 +1,5 @@
-<!DOCTYPE html><html lang="es">
+<!DOCTYPE html>
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <title>Folios Generados</title>
@@ -22,34 +23,54 @@
     <table>
         <thead>
             <tr>
-                <th>Folio</th><th>Marca</th><th>Línea</th><th>Año</th>
-                <th>Serie</th><th>Motor</th><th>Color</th>
-                <th>Contribuyente</th><th>Expedición</th><th>Vencimiento</th>
-                <th>PDF</th><th>Renovar</th>
+                <th>Folio</th>
+                <th>Marca</th>
+                <th>Línea</th>
+                <th>Año</th>
+                <th>Serie</th>
+                <th>Motor</th>
+                <th>Color</th>
+                <th>Contribuyente</th>
+                <th>Expedición</th>
+                <th>Vencimiento</th>
+                <th>PDF</th>
+                <th>Renovar</th>
             </tr>
         </thead>
         <tbody>
             {% for reg in registros %}
             <tr>
-                <td>{{ reg.folio }}</td><td>{{ reg.marca }}</td><td>{{ reg.linea }}</td><td>{{ reg.anio }}</td>
-                <td>{{ reg.serie }}</td><td>{{ reg.motor }}</td><td>{{ reg.color }}</td>
-                <td>{{ reg.contribuyente }}</td><td>{{ reg.fecha_exp }}</td><td>{{ reg.fecha_venc }}</td>
-                <td><a href="{{ url_for('descargar', folio=reg.folio) }}">Descargar</a></td>
+                <td>{{ reg.folio }}</td>
+                <td>{{ reg.marca }}</td>
+                <td>{{ reg.linea }}</td>
+                <td>{{ reg.anio }}</td>
+                <td>{{ reg.serie }}</td>
+                <td>{{ reg.motor }}</td>
+                <td>{{ reg.color }}</td>
+                <td>{{ reg.contribuyente }}</td>
+                <td>{{ reg.fecha_exp }}</td>
+                <td>{{ reg.fecha_venc }}</td>
                 <td>
-                    {% set v = reg.fecha_venc.split('/') %}
-                    {% set venc_str = v[2] ~ '-' ~ v[1] ~ '-' ~ v[0] %}
-                    {% if venc_str <= ahora.strftime('%Y-%m-%d') %}
-                        <a href="{{ url_for('renovar', folio=reg.folio) }}" class="btn-renovar">Renovar</a>
-                    {% else %}
-                        <span style="color:gray;">Vigente</span>
-                    {% endif %}
+                  <a href="{{ url_for('descargar', folio=reg.folio) }}">Descargar</a>
+                </td>
+                <td>
+                  {# Convertimos "dd/mm/YYYY" a "YYYY-mm-dd" para comparar con ahora #}
+                  {% set partes = reg.fecha_venc.split('/') %}
+                  {% set venc_iso = partes[2] ~ '-' ~ partes[1] ~ '-' ~ partes[0] %}
+                  {% if venc_iso <= ahora.strftime('%Y-%m-%d') %}
+                    <a href="{{ url_for('renovar', folio=reg.folio) }}" class="btn-renovar">Renovar</a>
+                  {% else %}
+                    <span style="color:gray;">Vigente</span>
+                  {% endif %}
                 </td>
             </tr>
             {% endfor %}
         </tbody>
     </table>
     <div class="volver">
-        <a href="{{ url_for('formulario') }}"><button>Volver al Panel</button></a>
+        <a href="{{ url_for('formulario') }}">
+          <button>Volver al Panel</button>
+        </a>
     </div>
 </body>
 </html>
