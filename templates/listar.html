@@ -7,77 +7,133 @@
     <style>
         body { background: #002b36; color: #eee; font-family: Arial, sans-serif; padding: 10px; }
         h2 { text-align: center; margin-bottom: 15px; }
-        table { width:100%; border-collapse:collapse; background:#073642; }
-        th, td { padding:8px; border-bottom:1px solid #555; font-size:14px; text-align:left; }
-        th { background:#005f87; }
-        a { color:#268bd2; text-decoration:underline; }
-        .btn-renovar { background:#b58900; padding:6px 10px; border-radius:4px; color:#fff; text-decoration:none; font-size:13px; }
-        .volver { margin-top:20px; text-align:center; }
-        .volver a button {
-          background:#268bd2; color:#fff; border:none; padding:10px 20px; border-radius:6px; font-size:16px;
+        .tarjetas-container {
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+            max-width: 600px;
+            margin: auto;
+        }
+        .tarjeta {
+            background: #073642;
+            border-radius: 14px;
+            box-shadow: 0 2px 10px #0003;
+            padding: 16px 16px 10px 16px;
+            position: relative;
+        }
+        .tarjeta input[type=checkbox] {
+            position: absolute;
+            left: 10px;
+            top: 10px;
+            transform: scale(1.5);
+        }
+        .fila {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+        }
+        .label {
+            font-weight: bold;
+            min-width: 90px;
+        }
+        .valor {
+            word-break: break-all;
+        }
+        .botones {
+            margin-top: 12px;
+        }
+        .descargar {
+            background: #268bd2;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            padding: 7px 13px;
+            font-size: 15px;
+            margin-right: 10px;
+            text-decoration: none;
+            cursor:pointer;
+        }
+        .renovar {
+            background: #b58900;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            padding: 7px 13px;
+            font-size: 15px;
+            cursor:pointer;
+        }
+        .vigente {
+            color: #b2dfdb;
+            font-size: 14px;
+            margin-left: 10px;
         }
         .eliminar-btn {
-          margin:15px 0;
-          background:#c00;
-          color:#fff;
-          border:none;
-          border-radius:6px;
-          padding:12px 25px;
-          font-size:16px;
-          cursor:pointer;
+            width: 100%;
+            margin:20px 0 8px 0;
+            background:#c00;
+            color:#fff;
+            border:none;
+            border-radius:8px;
+            padding:14px 0;
+            font-size:17px;
+            cursor:pointer;
+        }
+        .select-todos {
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 7px;
+        }
+        .volver {
+            margin: 25px auto 0 auto;
+            text-align:center;
+        }
+        .volver a button {
+            background:#268bd2;
+            color:#fff;
+            border:none;
+            padding:13px 40px;
+            border-radius:8px;
+            font-size:18px;
+            margin:auto;
         }
     </style>
 </head>
 <body>
     <h2>Folios Generados</h2>
     <form method="POST" action="{{ url_for('eliminar_varios') }}">
-      <table>
-        <thead>
-          <tr>
-            <th><input type="checkbox" id="check_all" onclick="marcarTodos(this)"></th>
-            <th>Folio</th>
-            <th>Marca</th>
-            <th>Línea</th>
-            <th>Año</th>
-            <th>Serie</th>
-            <th>Motor</th>
-            <th>Color</th>
-            <th>Contribuyente</th>
-            <th>Expedición</th>
-            <th>Vencimiento</th>
-            <th>PDF</th>
-            <th>Renovar</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for reg in registros %}
-          <tr>
-            <td><input type="checkbox" name="folios" value="{{ reg.folio }}"></td>
-            <td>{{ reg.folio }}</td>
-            <td>{{ reg.marca }}</td>
-            <td>{{ reg.linea }}</td>
-            <td>{{ reg.anio }}</td>
-            <td>{{ reg.serie }}</td>
-            <td>{{ reg.motor }}</td>
-            <td>{{ reg.color }}</td>
-            <td>{{ reg.contribuyente }}</td>
-            <td>{{ reg.fecha_exp }}</td>
-            <td>{{ reg.fecha_venc }}</td>
-            <td><a href="{{ url_for('descargar', folio=reg.folio) }}">Descargar</a></td>
-            <td>
-              {% set v = reg.fecha_venc.split('/') %}
-              {% set venc_str = v[2] ~ '-' ~ v[1] ~ '-' ~ v[0] %}
-              {% if venc_str <= ahora.strftime('%Y-%m-%d') %}
-                <a href="{{ url_for('renovar', folio=reg.folio) }}" class="btn-renovar">Renovar</a>
-              {% else %}
-                <span style="color:gray;">Vigente</span>
-              {% endif %}
-            </td>
-          </tr>
-          {% endfor %}
-        </tbody>
-      </table>
-      <button type="submit" class="eliminar-btn">Eliminar seleccionados</button>
+        <div class="select-todos">
+            <input type="checkbox" id="check_all" onclick="marcarTodos(this)">
+            <label for="check_all">Seleccionar todos</label>
+        </div>
+        <div class="tarjetas-container">
+            {% for reg in registros %}
+            <div class="tarjeta">
+                <input type="checkbox" name="folios" value="{{ reg.folio }}">
+                <div class="fila"><span class="label">Folio:</span><span class="valor">{{ reg.folio }}</span></div>
+                <div class="fila"><span class="label">Marca:</span><span class="valor">{{ reg.marca }}</span></div>
+                <div class="fila"><span class="label">Línea:</span><span class="valor">{{ reg.linea }}</span></div>
+                <div class="fila"><span class="label">Año:</span><span class="valor">{{ reg.anio }}</span></div>
+                <div class="fila"><span class="label">Serie:</span><span class="valor">{{ reg.serie }}</span></div>
+                <div class="fila"><span class="label">Motor:</span><span class="valor">{{ reg.motor }}</span></div>
+                <div class="fila"><span class="label">Color:</span><span class="valor">{{ reg.color }}</span></div>
+                <div class="fila"><span class="label">Contribuyente:</span><span class="valor">{{ reg.contribuyente }}</span></div>
+                <div class="fila"><span class="label">Expedición:</span><span class="valor">{{ reg.fecha_exp }}</span></div>
+                <div class="fila"><span class="label">Vencimiento:</span><span class="valor">{{ reg.fecha_venc }}</span></div>
+                <div class="botones">
+                    <a class="descargar" href="{{ url_for('descargar', folio=reg.folio) }}">Descargar PDF</a>
+                    {% set v = reg.fecha_venc.split('/') %}
+                    {% set venc_str = v[2] ~ '-' ~ v[1] ~ '-' ~ v[0] %}
+                    {% if venc_str <= ahora.strftime('%Y-%m-%d') %}
+                        <a href="{{ url_for('renovar', folio=reg.folio) }}" class="renovar">Renovar</a>
+                    {% else %}
+                        <span class="vigente">Vigente</span>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        <button type="submit" class="eliminar-btn">Eliminar seleccionados</button>
     </form>
     <div class="volver">
         <a href="{{ url_for('formulario') }}"><button>Volver al Panel</button></a>
