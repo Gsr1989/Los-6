@@ -6,40 +6,53 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <style>
         body {
-            background-color: #073642;
-            font-family: Arial, sans-serif;
+            background-color: #002b36;
             color: white;
-            padding: 20px;
+            font-family: Arial, sans-serif;
             text-align: center;
+            padding: 50px;
         }
-        form {
-            margin-top: 20px;
+        h1 {
+            color: #00ffff;
         }
-        input, button {
+        input[type="text"] {
             padding: 10px;
             font-size: 16px;
-            border: none;
-            border-radius: 6px;
-        }
-        input {
             width: 80%;
             max-width: 300px;
-            background-color: #fdf6e3;
-            color: black;
+            border-radius: 5px;
+            border: none;
+            margin-top: 20px;
         }
-        button {
+        input[type="submit"] {
             background-color: #268bd2;
             color: white;
-            margin-top: 10px;
+            padding: 10px 20px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            margin-top: 15px;
+        }
+        .alerta {
+            margin-top: 20px;
+            color: #ff6f6f;
         }
     </style>
 </head>
 <body>
-    <h2>Reimprimir Permiso</h2>
+    <h1>Reimprimir Permiso</h1>
     <form method="POST">
-        <input type="text" name="criterio" placeholder="Folio, Serie o Nombre" required>
+        <input type="text" name="folio" placeholder="Ingresa el folio">
         <br>
-        <button type="submit">Buscar y Descargar</button>
+        <input type="submit" value="Buscar PDF">
     </form>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="alerta">{{ message }}</div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
 </body>
 </html>
