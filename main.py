@@ -199,5 +199,10 @@ def reimprimir():
             flash("No se encontró el PDF con ese folio", "danger")
     return render_template('reimprimir.html')
 
+@app.route('/logout')
+def logout():
+    session.clear()
+    return redirect(url_for('login'))
+
 if __name__ == '__main__':
     app.run(debug=True)
