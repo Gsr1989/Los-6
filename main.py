@@ -69,6 +69,8 @@ def guardar_en_supabase(folio, marca, linea, anio, serie, motor, color, contribu
     }).execute()
 
 def guardar_en_txt(folio, marca, linea, anio, serie, motor, color, contribuyente, fecha_exp, fecha_ven):
+    if not os.path.exists(os.path.dirname(REGISTRO_FILE)):
+        os.makedirs(os.path.dirname(REGISTRO_FILE), exist_ok=True)
     with open(REGISTRO_FILE, 'a', encoding='utf-8') as f:
         f.write(f"{folio}|{marca}|{linea}|{anio}|{serie}|{motor}|{color}|{contribuyente}|{fecha_exp}|{fecha_ven}\n")
 
@@ -99,7 +101,6 @@ def generar_pdf(folio, marca, linea, anio, serie, motor, color, contribuyente, f
 
     if not os.path.exists(PDF_OUTPUT_FOLDER):
         os.makedirs(PDF_OUTPUT_FOLDER)
-
     output_path = os.path.join(PDF_OUTPUT_FOLDER, f"{folio}.pdf")
     doc.save(output_path)
     doc.close()
@@ -126,7 +127,6 @@ def panel():
 def formulario():
     if 'usuario' not in session:
         return redirect(url_for('login'))
-
     if request.method == 'POST':
         marca = request.form['marca'].upper()
         linea = request.form['linea'].upper()
@@ -145,7 +145,6 @@ def formulario():
         generar_pdf(folio, marca, linea, anio, serie, motor, color, contribuyente, fecha_actual, fecha_ven)
 
         return render_template('exito.html', folio=folio)
-
     return render_template('formulario.html')
 
 @app.route('/consultar', methods=['GET', 'POST'])
@@ -166,16 +165,10 @@ def descargar(folio):
         return send_file(path, as_attachment=True)
     return "El archivo no existe", 404
 
-@app.route('/logout')
-def logout():
-    session.clear()
-    return redirect(url_for('login'))
-
 @app.route('/listar')
 def listar():
     if not os.path.exists(REGISTRO_FILE):
         open(REGISTRO_FILE, 'a').close()
-
     registros = []
     with open(REGISTRO_FILE, 'r', encoding='utf-8') as f:
         for linea in f:
@@ -193,7 +186,6 @@ def listar():
                     "fecha_exp": datos[8],
                     "fecha_venc": datos[9]
                 })
-
     return render_template('listar.html', registros=registros, ahora=datetime.now())
 
 @app.route('/reimprimir', methods=['GET', 'POST'])
