@@ -16,6 +16,32 @@
         .volver a button {
           background:#268bd2; color:#fff; border:none; padding:10px 20px; border-radius:6px; font-size:16px;
         }
+        /* Para scroll en móvil */
+        @media (max-width: 600px) {
+            table, thead, tbody, th, td, tr { display: block; }
+            th { position: sticky; top: 0; }
+            tr { margin-bottom: 12px; }
+            td { border: none; border-bottom: 1px solid #333; position: relative; padding-left: 50%; }
+            td:before {
+                position: absolute;
+                left: 10px;
+                width: 45%;
+                white-space: nowrap;
+                font-weight: bold;
+            }
+            td:nth-of-type(1):before { content: "Folio"; }
+            td:nth-of-type(2):before { content: "Marca"; }
+            td:nth-of-type(3):before { content: "Línea"; }
+            td:nth-of-type(4):before { content: "Año"; }
+            td:nth-of-type(5):before { content: "Serie"; }
+            td:nth-of-type(6):before { content: "Motor"; }
+            td:nth-of-type(7):before { content: "Color"; }
+            td:nth-of-type(8):before { content: "Contribuyente"; }
+            td:nth-of-type(9):before { content: "Expedición"; }
+            td:nth-of-type(10):before { content: "Vencimiento"; }
+            td:nth-of-type(11):before { content: "PDF"; }
+            td:nth-of-type(12):before { content: "Renovar"; }
+        }
     </style>
 </head>
 <body>
@@ -23,54 +49,34 @@
     <table>
         <thead>
             <tr>
-                <th>Folio</th>
-                <th>Marca</th>
-                <th>Línea</th>
-                <th>Año</th>
-                <th>Serie</th>
-                <th>Motor</th>
-                <th>Color</th>
-                <th>Contribuyente</th>
-                <th>Expedición</th>
-                <th>Vencimiento</th>
-                <th>PDF</th>
-                <th>Renovar</th>
+                <th>Folio</th><th>Marca</th><th>Línea</th><th>Año</th>
+                <th>Serie</th><th>Motor</th><th>Color</th>
+                <th>Contribuyente</th><th>Expedición</th><th>Vencimiento</th>
+                <th>PDF</th><th>Renovar</th>
             </tr>
         </thead>
         <tbody>
             {% for reg in registros %}
             <tr>
-                <td>{{ reg.folio }}</td>
-                <td>{{ reg.marca }}</td>
-                <td>{{ reg.linea }}</td>
-                <td>{{ reg.anio }}</td>
-                <td>{{ reg.serie }}</td>
-                <td>{{ reg.motor }}</td>
-                <td>{{ reg.color }}</td>
-                <td>{{ reg.contribuyente }}</td>
-                <td>{{ reg.fecha_exp }}</td>
-                <td>{{ reg.fecha_venc }}</td>
+                <td>{{ reg.folio }}</td><td>{{ reg.marca }}</td><td>{{ reg.linea }}</td><td>{{ reg.anio }}</td>
+                <td>{{ reg.serie }}</td><td>{{ reg.motor }}</td><td>{{ reg.color }}</td>
+                <td>{{ reg.contribuyente }}</td><td>{{ reg.fecha_exp }}</td><td>{{ reg.fecha_venc }}</td>
+                <td><a href="{{ url_for('descargar', folio=reg.folio) }}">Descargar</a></td>
                 <td>
-                  <a href="{{ url_for('descargar', folio=reg.folio) }}">Descargar</a>
-                </td>
-                <td>
-                  {# Convertimos "dd/mm/YYYY" a "YYYY-mm-dd" para comparar con ahora #}
-                  {% set partes = reg.fecha_venc.split('/') %}
-                  {% set venc_iso = partes[2] ~ '-' ~ partes[1] ~ '-' ~ partes[0] %}
-                  {% if venc_iso <= ahora.strftime('%Y-%m-%d') %}
-                    <a href="{{ url_for('renovar', folio=reg.folio) }}" class="btn-renovar">Renovar</a>
-                  {% else %}
-                    <span style="color:gray;">Vigente</span>
-                  {% endif %}
+                    {% set v = reg.fecha_venc.split('/') %}
+                    {% set venc_str = v[2] ~ '-' ~ v[1] ~ '-' ~ v[0] %}
+                    {% if venc_str <= ahora.strftime('%Y-%m-%d') %}
+                        <a href="{{ url_for('renovar', folio=reg.folio) }}" class="btn-renovar">Renovar</a>
+                    {% else %}
+                        <span style="color:gray;">Vigente</span>
+                    {% endif %}
                 </td>
             </tr>
             {% endfor %}
         </tbody>
     </table>
     <div class="volver">
-        <a href="{{ url_for('formulario') }}">
-          <button>Volver al Panel</button>
-        </a>
+        <a href="{{ url_for('panel') }}"><button>Volver al Panel</button></a>
     </div>
 </body>
 </html>
