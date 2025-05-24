@@ -223,5 +223,18 @@ def logout():
     session.clear()
     return redirect(url_for('login'))
 
+@app.route('/eliminar_varios', methods=['POST'])
+def eliminar_varios():
+    if 'usuario' not in session:
+        return redirect(url_for('login'))
+    folios = request.form.getlist('folios')
+    if folios:
+        for folio in folios:
+            supabase.table("borradores_registros").delete().eq("folio", folio).execute()
+        flash(f"Eliminados: {', '.join(folios)}", "success")
+    else:
+        flash("No seleccionaste ningún folio", "warning")
+    return redirect(url_for('listar'))
+
 if __name__ == '__main__':
     app.run(debug=True)
