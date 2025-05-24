@@ -27,22 +27,46 @@
             text-decoration: none;
             font-size: 18px;
             border-radius: 8px;
-            transition: 0.3s;
+            transition: background-color 0.3s;
         }
         .boton:hover {
             background-color: #1c6ca1;
         }
-        .salir {
-            background-color: #cb4b16 !important;
+        /* estilo específico para el botón de cerrar sesión */
+        .boton.salir {
+            background-color: #cb4b16;
+        }
+        .boton.salir:hover {
+            background-color: #a63b14;
         }
     </style>
 </head>
 <body>
     <h1>Bienvenido, elwarrior</h1>
-    <a href="{{ url_for('formulario') }}" class="boton">+ Generar nuevo permiso</a>
-    <a href="{{ url_for('listar') }}" class="boton">📄 Ver permisos generados</a>
-    <a href="{{ url_for('reimprimir') }}" class="boton">🔁 Reimprimir por folio</a>
-    <a href="{{ url_for('consultar') }}" class="boton">🔎 Consulta externa (gabacha)</a>
-    <a href="{{ url_for('logout') }}" class="boton salir">Cerrar sesión</a>
+
+    <!-- Crear nuevo permiso -->
+    <a href="{{ url_for('formulario') }}" class="boton">
+      + Generar nuevo permiso
+    </a>
+
+    <!-- Listar todos los permisos -->
+    <a href="{{ url_for('listar') }}" class="boton">
+      📄 Ver permisos generados
+    </a>
+
+    <!-- Reimprimir por folio -->
+    <a href="{{ url_for('reimprimir') }}" class="boton">
+      🖕 Reimprimir por folio
+    </a>
+
+    <!-- Consulta externa (gabacha) -->
+    <a href="{{ url_for('consultar') }}" class="boton">
+      🔎 Consulta externa (gabacha)
+    </a>
+
+    <!-- Cerrar sesión -->
+    <a href="{{ url_for('logout') }}" class="boton salir">
+      Cerrar sesión
+    </a>
 </body>
 </html>
