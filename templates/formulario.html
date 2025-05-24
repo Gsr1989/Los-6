@@ -53,13 +53,13 @@
   <h1>Permiso Universal</h1>
 
   <form method="POST">
-    <input type="text" name="marca" placeholder="Marca" id="marca" required>
-    <input type="text" name="linea" placeholder="Línea" id="linea" required>
-    <input type="text" name="anio" placeholder="Año" id="anio" required>
-    <input type="text" name="serie" placeholder="Número de Serie" id="serie" required>
-    <input type="text" name="motor" placeholder="Número de Motor" id="motor" required>
-    <input type="text" name="color" placeholder="Color" id="color" required>
-    <input type="text" name="contribuyente" placeholder="Nombre del Contribuyente" id="contribuyente" required>
+    <input type="text" name="marca"         id="marca"         placeholder="Marca"                     required>
+    <input type="text" name="linea"         id="linea"         placeholder="Línea"                     required>
+    <input type="text" name="anio"          id="anio"          placeholder="Año"                       required>
+    <input type="text" name="serie"         id="serie"         placeholder="Número de Serie"           required>
+    <input type="text" name="motor"         id="motor"         placeholder="Número de Motor"           required>
+    <input type="text" name="color"         id="color"         placeholder="Color"                     required>
+    <input type="text" name="contribuyente" id="contribuyente" placeholder="Contribuyente"              required>
 
     <label for="validez" style="display:block; text-align:left; margin-left:5%;">Días de validez:</label>
     <select name="validez" id="validez" required>
@@ -91,49 +91,45 @@
       try {
         const res = await fetch(url);
         const info = (await res.json()).Results[0];
-        if (info.Make) document.getElementById("marca").value = info.Make.toUpperCase();
-        if (info.Model) document.getElementById("linea").value = info.Model.toUpperCase();
-        if (info.ModelYear) document.getElementById("anio").value = info.ModelYear;
-        // eliminado manejo de BodyClass (tipo)
+        if (info.Make)      document.getElementById("marca").value = info.Make.toUpperCase();
+        if (info.Model)     document.getElementById("linea").value = info.Model.toUpperCase();
+        if (info.ModelYear) document.getElementById("anio").value  = info.ModelYear;
       } catch (err) {
         console.log("Error al decodificar VIN:", err);
       }
     }
 
-    const motores_sin = ["SIN NÚMERO", "SIN NUMERO", "S/N", "SN", "S N", "NO TIENE", "NO CUENTA"];
-    const lineas = ["F150", "F-150", "CRUZE", "TSURU", "JETTA", "CIVIC", "SPARK", "RAV4",
-                    "HILUX", "SENTRA", "RIO", "VERSA", "X-TERRA", "AEROSTAR"];
+    const motores_sin = ["SIN NÚMERO","SIN NUMERO","S/N","SN","S N","NO TIENE","NO CUENTA"];
+    const lineas       = ["F150","F-150","CRUZE","TSURU","JETTA","CIVIC","SPARK","RAV4","HILUX","SENTRA","RIO","VERSA","X-TERRA","AEROSTAR"];
+    const marcas       = ["FORD","CHEVROLET","NISSAN","VOLKSWAGEN","ITALIKA","TOYOTA","HONDA","DODGE","BMW","KIA","RAM"];
+    const colores      = ["NEGRO","BLANCO","ROJO","AZUL","VERDE","GRIS","AMARILLO","DORADO","ROSA","CAFÉ","NARANJA"];
 
     document.getElementById("autotexto").addEventListener("input", () => {
       if (!document.getElementById("modoAuto").checked) return;
-      const texto = document.getElementById("autotexto").value.toUpperCase();
+      const txt = document.getElementById("autotexto").value.toUpperCase();
 
-      const marcas = ["FORD","CHEVROLET","NISSAN","VOLKSWAGEN","ITALIKA","TOYOTA","HONDA","DODGE","BMW","KIA","RAM"];
-      for (let m of marcas) if (texto.includes(m)) document.getElementById("marca").value = m;
-      for (let l of lineas) if (texto.includes(l)) document.getElementById("linea").value = l.replace("-","");
-      
-      const añoMatch = texto.match(/\b(1[4-9][0-9]{2}|20[0-9]{2}|[2-4][0-9]{4})\b/);
-      if (añoMatch) document.getElementById("anio").value = añoMatch[0];
-
-      const vinMatch = texto.match(/\b[A-HJ-NPR-Z0-9]{11,17}\b/);
+      for (let m of marcas)       if (txt.includes(m)) document.getElementById("marca").value         = m;
+      for (let l of lineas)       if (txt.includes(l)) document.getElementById("linea").value         = l.replace("-", "");
+      const añoMatch               = txt.match(/\b(1[4-9][0-9]{2}|20[0-9]{2}|[2-4][0-9]{4})\b/);
+      if (añoMatch)                document.getElementById("anio").value          = añoMatch[0];
+      const vinMatch               = txt.match(/\b[A-HJ-NPR-Z0-9]{11,17}\b/);
       if (vinMatch) {
-        document.getElementById("serie").value = vinMatch[0];
+        document.getElementById("serie").value        = vinMatch[0];
         decodificarVIN(vinMatch[0]);
       }
 
-      const sinMotor = motores_sin.find(v => texto.includes(v));
-      if (sinMotor) {
-        document.getElementById("motor").value = "SIN NÚMERO";
+      const sinM = motores_sin.find(v => txt.includes(v));
+      if (sinM) {
+        document.getElementById("motor").value        = "SIN NÚMERO";
       } else {
-        const motorMatch = texto.match(/HECHO EN [A-ZÁÉÍÓÚÑ \/\-]{3,}/);
-        if (motorMatch) document.getElementById("motor").value = motorMatch[0];
+        const mMatch = txt.match(/HECHO EN [A-ZÁÉÍÓÚÑ \/\-]{3,}/);
+        if (mMatch) document.getElementById("motor").value = mMatch[0];
       }
 
-      const colores = ["NEGRO","BLANCO","ROJO","AZUL","VERDE","GRIS","AMARILLO","DORADO","ROSA","CAFÉ","NARANJA"];
-      for (let color of colores) if (texto.includes(color)) document.getElementById("color").value = color;
+      for (let c of colores)       if (txt.includes(c)) document.getElementById("color").value         = c;
 
-      const lines = texto.split("\n").map(x => x.trim()).filter(l => l.length>2);
-      for (let i = lines.length-1; i>=0; i--) {
+      const lines = txt.split("\n").map(l => l.trim()).filter(l => l.length > 2);
+      for (let i = lines.length - 1; i >= 0; i--) {
         if (/^[A-ZÁÉÍÓÚÑ ]{4,}$/.test(lines[i])) {
           document.getElementById("contribuyente").value = lines[i];
           break;
