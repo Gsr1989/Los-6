@@ -19,6 +19,17 @@ USUARIO_VALIDO    = "elwarrior"
 CONTRASENA_VALIDA = "Warrior2025"
 
 # ---------------- FOLIO ----------------
+def generar_folio_unico(supabase):
+    letras = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+    for letra1 in letras:
+        for letra2 in letras:
+            for numero in range(1, 10000):
+                folio = f"{letra1}{letra2}{str(numero).zfill(4)}"
+                existe = supabase.table("borradores_registros").select("folio").eq("folio", folio).execute()
+                if not existe.data:
+                    return folio
+    return None  # Si no encuentra ninguno
+
 def cargar_folio():
     res = (
         supabase
