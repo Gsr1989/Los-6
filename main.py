@@ -30,41 +30,6 @@ def generar_folio_unico(supabase):
                     return folio
     return None  # Si no encuentra ninguno
 
-def cargar_folio():
-    res = (
-        supabase
-        .table("borradores_registros")
-        .select("folio")
-        .order("id", desc=True)
-        .limit(1)
-        .execute()
-    )
-    if res.data:
-        return res.data[0]["folio"]
-    return "AF3411"
-
-def siguiente_folio(actual: str) -> str:
-    letras = actual[:2]
-    try:
-        num = int(actual[2:])
-    except ValueError:
-        num = 0
-    if num < 9999:
-        num += 1
-    else:
-        letras = incrementar_letras(letras)
-        num = 1
-    return f"{letras}{num:04d}"
-
-def incrementar_letras(l: str) -> str:
-    a, b = l
-    if b != 'Z':
-        b = chr(ord(b) + 1)
-    else:
-        b = 'A'
-        a = chr(ord(a) + 1) if a != 'Z' else 'A'
-    return a + b
-
 # ---------------- GUARDAR ----------------
 def guardar_en_supabase(folio, marca, linea, anio, serie, motor, color, contribuyente, fexp, fven):
     supabase.table("borradores_registros").insert({
@@ -84,7 +49,6 @@ def guardar_en_supabase(folio, marca, linea, anio, serie, motor, color, contribu
 def generar_pdf(folio, marca, linea, anio, serie, motor, color, contribuyente, fexp, fven):
     doc = fitz.open(PLANTILLA_PDF)
     page = doc[0]
-    # frente
     page.insert_text((376,769), folio, fontsize=8, color=(1,0,0))
     page.insert_text((122,755), fexp.strftime("%d/%m/%Y"), fontsize=8)
     page.insert_text((122,768), fven.strftime("%d/%m/%Y"), fontsize=8)
@@ -94,7 +58,6 @@ def generar_pdf(folio, marca, linea, anio, serie, motor, color, contribuyente, f
     page.insert_text((376,714), linea, fontsize=8)
     page.insert_text((376,756), color, fontsize=8)
     page.insert_text((122,700), contribuyente, fontsize=8)
-    # lado rotado
     page.insert_text((440,200), folio, fontsize=83, rotate=270)
     page.insert_text((77,205), fexp.strftime("%d/%m/%Y"), fontsize=8, rotate=270)
     page.insert_text((63,205), fven.strftime("%d/%m/%Y"), fontsize=8, rotate=270)
@@ -139,8 +102,7 @@ def formulario():
         color         = request.form['color'].upper()
         contribuyente = request.form['contribuyente'].upper()
 
-        ultimo = cargar_folio()
-        folio  = siguiente_folio(ultimo)
+        folio  = generar_folio_unico(supabase)
         ahora  = datetime.now()
         ven    = ahora + timedelta(days=30)
 
@@ -153,13 +115,7 @@ def formulario():
 def listar():
     if 'usuario' not in session:
         return redirect(url_for('login'))
-    res = (
-        supabase
-        .table("borradores_registros")
-        .select("*")
-        .order("id", desc=True)  # <-- Aquí el truco, mostrar los más nuevos primero
-        .execute()
-    )
+    res = supabase.table("borradores_registros").select("*").order("id", desc=True).execute()
     registros = []
     for r in res.data:
         registros.append({
@@ -190,42 +146,20 @@ def reimprimir():
 
 @app.route('/renovar/<folio>')
 def renovar(folio):
-    # buscamos en Supabase
-    res = (
-        supabase
-        .table("borradores_registros")
-        .select("*")
-        .eq("folio", folio)
-        .limit(1)
-        .execute()
-    )
+    res = supabase.table("borradores_registros").select("*").eq("folio", folio).limit(1).execute()
     if not res.data:
         flash("Folio no encontrado","danger")
         return redirect(url_for('listar'))
-
     row = res.data[0]
-    venc = datetime.fromisoformat(row["fecha_vencimiento"])
-    if datetime.now() < venc:
-        flash("Aún vigente, no se puede renovar","warning")
-        return redirect(url_for('listar'))
-
-    nuevo = siguiente_folio(cargar_folio())
+    nuevo = generar_folio_unico(supabase)
     hoy   = datetime.now()
     ven   = hoy + timedelta(days=30)
-    guardar_en_supabase(
-        nuevo,
-        row["marca"], row["linea"], row["anio"],
-        row["numero_serie"], row["numero_motor"],
-        row["color"], row["contribuyente"],
-        hoy, ven
-    )
-    generar_pdf(
-        nuevo,
-        row["marca"], row["linea"], row["anio"],
-        row["numero_serie"], row["numero_motor"],
-        row["color"], row["contribuyente"],
-        hoy, ven
-    )
+    guardar_en_supabase(nuevo, row["marca"], row["linea"], row["anio"],
+                        row["numero_serie"], row["numero_motor"],
+                        row["color"], row["contribuyente"], hoy, ven)
+    generar_pdf(nuevo, row["marca"], row["linea"], row["anio"],
+                row["numero_serie"], row["numero_motor"],
+                row["color"], row["contribuyente"], hoy, ven)
     flash(f"Renovado folio {nuevo}","success")
     return redirect(url_for('descargar', folio=nuevo))
 
