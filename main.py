@@ -30,7 +30,7 @@ def cargar_folio():
     )
     if res.data:
         return res.data[0]["folio"]
-    return "AF0001"
+    return "AF3411"
 
 def siguiente_folio(actual: str) -> str:
     letras = actual[:2]
