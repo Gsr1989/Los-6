@@ -21,14 +21,25 @@ CONTRASENA_VALIDA = "Warrior2025"
 # ---------------- FOLIO ----------------
 def generar_folio_unico(supabase):
     letras = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+    inicio_letras = "AD"
+    inicio_numero = 6032
+
+    # Empezamos desde AD6032 hasta ZZ9999
+    empezar = False
     for letra1 in letras:
         for letra2 in letras:
+            combinacion = letra1 + letra2
             for numero in range(1, 10000):
-                folio = f"{letra1}{letra2}{str(numero).zfill(4)}"
+                if not empezar:
+                    if combinacion == inicio_letras and numero == inicio_numero:
+                        empezar = True
+                    else:
+                        continue
+                folio = f"{combinacion}{str(numero).zfill(4)}"
                 existe = supabase.table("borradores_registros").select("folio").eq("folio", folio).execute()
                 if not existe.data:
                     return folio
-    return None  # Si no encuentra ninguno
+    return None
 
 # ---------------- GUARDAR ----------------
 def guardar_en_supabase(folio, marca, linea, anio, serie, motor, color, contribuyente, fexp, fven):
