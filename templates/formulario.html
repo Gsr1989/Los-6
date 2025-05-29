@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Permiso Universal</title>
+  <title>Permiso Guerrero</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <style>
     body {
@@ -21,7 +21,7 @@
       border-radius: 8px;
       border: none;
     }
-    input, textarea, select {
+    input, textarea {
       background: #d1f7c4;
       color: #000;
       text-transform: uppercase;
@@ -50,23 +50,19 @@
   </style>
 </head>
 <body>
-  <h1>Permiso Universal</h1>
+  <h1>Permiso Guerrero</h1>
 
-  <form method="POST">
-    <input type="text" name="marca"         id="marca"         placeholder="Marca"                     required>
-    <input type="text" name="linea"         id="linea"         placeholder="Línea"                     required>
-    <input type="text" name="anio"          id="anio"          placeholder="Año"                       required>
-    <input type="text" name="serie"         id="serie"         placeholder="Número de Serie"           required>
-    <input type="text" name="motor"         id="motor"         placeholder="Número de Motor"           required>
-    <input type="text" name="color"         id="color"         placeholder="Color"                     required>
-    <input type="text" name="contribuyente" id="contribuyente" placeholder="Contribuyente"              required>
+  <form method="POST" autocomplete="off">
+    <input type="text" name="marca"         id="marca"         placeholder="Marca"         required oninput="saltar(this, 'linea')" maxlength="20">
+    <input type="text" name="linea"         id="linea"         placeholder="Línea"         required oninput="saltar(this, 'anio')" maxlength="20">
+    <input type="text" name="anio"          id="anio"          placeholder="Año"           required oninput="saltar(this, 'serie')" maxlength="4">
+    <input type="text" name="serie"         id="serie"         placeholder="Número de Serie" required oninput="saltar(this, 'motor')" maxlength="17">
+    <input type="text" name="motor"         id="motor"         placeholder="Número de Motor" required oninput="saltar(this, 'color')" maxlength="25">
+    <input type="text" name="color"         id="color"         placeholder="Color"         required oninput="saltar(this, 'contribuyente')" maxlength="15">
+    <input type="text" name="contribuyente" id="contribuyente" placeholder="Contribuyente"  required>
 
-    <label for="validez" style="display:block; text-align:left; margin-left:5%;">Días de validez:</label>
-    <select name="validez" id="validez" required>
-      <option value="30" selected>30 días</option>
-      <option value="60">60 días</option>
-      <option value="90">90 días</option>
-    </select>
+    <!-- CAMPO FIJO Y ESCONDIDO DE VIGENCIA -->
+    <input type="hidden" name="validez" value="30">
 
     <button type="submit">Generar PDF</button>
     <a href="{{ url_for('panel') }}">
@@ -85,6 +81,12 @@
   <textarea id="autotexto" rows="8" placeholder="Pega todo el desmadre aquí..."></textarea>
 
   <script>
+    function saltar(input, siguienteId) {
+      if (input.value.length === input.maxLength) {
+        document.getElementById(siguienteId).focus();
+      }
+    }
+
     async function decodificarVIN(vin) {
       if (!vin || vin.length < 11) return;
       const url = `https://vpic.nhtsa.dot.gov/api/vehicles/DecodeVinValues/${vin}?format=json`;
